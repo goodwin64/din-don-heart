@@ -2,6 +2,7 @@
   "name": "din-don-heart",
   "version": "0.1.0",
   "private": true,
+  "homepage": "https://goodwin64.github.io/din-don-heart/",
   "dependencies": {
     "autoprefixer": "7.1.6",
     "babel-core": "6.26.0",
@@ -95,6 +96,5 @@
     "enzyme-adapter-react-16": "^1.1.1",
     "jest": "^22.4.3",
     "jest-cli": "^22.4.3"
-  },
-  "homepage": "https://goodwin64.github.io/din-don-heart/"
+  }
 }
