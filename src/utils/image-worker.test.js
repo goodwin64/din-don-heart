@@ -1,19 +1,30 @@
-import { workercode } from './image-worker';
+import { imageWorkerCode } from './image-worker';
+
+const noop = () => {};
 
 describe('@image-worker', () => {
-  it('operates with Worker`s "self" from scope', () => {
-    global.self = {
-      onmessage: () => {},
-      postMessage: jest.fn(),
-    };
-    global.createImageBitmap = () => new Promise(
-      response => global.self.postMessage(response),
-      () => console.error('Catch statement'),
-    );
+  Object.defineProperties(global.self, {
+    onmessage: { value: noop },
+    postMessage: { value: noop },
+  });
+  Object.defineProperty(global, 'createImageBitmap', {
+    value: filepath => Promise
+      .resolve(filepath)
+      .then(response => global.self.postMessage(response)),
+  });
 
-    expect(global.self.postMessage).not.toHaveBeenCalled();
-    workercode();
+  it('operates with Worker`s "self" from scope', () => {
+    const spyPostMsg = jest.spyOn(global.self, 'postMessage');
+
+    expect(spyPostMsg).not.toHaveBeenCalled();
+    expect(global.self.onmessage).toBe(noop);
+
+    imageWorkerCode();
     global.self.onmessage({ data: { file: '1234.js' } });
-    expect(global.self.postMessage).toHaveBeenCalled();
+
+    // no access to inner scope and Promise "then" invocation, but need test async-ly
+    setTimeout(() => {
+      expect(spyPostMsg).toHaveBeenCalledWith('1234.js');
+    }, 0);
   });
 });

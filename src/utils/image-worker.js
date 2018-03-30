@@ -1,4 +1,4 @@
-export const workercode = () => {
+export const imageWorkerCode = () => {
   /* eslint-disable no-restricted-globals */
   self.onmessage = (e) => {
     createImageBitmap(e.data.file)
@@ -9,7 +9,7 @@ export const workercode = () => {
   /* eslint-enable no-restricted-globals */
 };
 
-let code = workercode.toString();
+let code = imageWorkerCode.toString();
 code = code.substring(code.indexOf('{') + 1, code.lastIndexOf('}'));
 
 if (!code) {

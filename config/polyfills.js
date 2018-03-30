@@ -1,4 +1,5 @@
 'use strict';
+/* eslint-disable */
 
 if (typeof Promise === 'undefined') {
   // Rejection tracking prevents a common issue where React gets into an
@@ -21,10 +22,14 @@ if (process.env.NODE_ENV === 'test') {
   require('raf').polyfill(global);
 }
 
-global.Blob = global.Blob || function (content, options) {
-  return { content, options };
-};
+if (typeof Blob === 'undefined') {
+  global.Blob = function (content, options) {
+    return { content: content, options: options };
+  };
+}
 
-global.URL = global.URL || {
-  createObjectURL: () => null,
-};
+if (typeof URL === 'undefined' || typeof URL.createObjectURL !== 'function') {
+  global.URL = {
+    createObjectURL: function () {}
+  };
+}
