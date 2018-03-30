@@ -4,7 +4,7 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import { App } from './App';
 import registerServiceWorker from './registerServiceWorker';
-import initImagePicker from './image-picker';
+import initImagePicker from './utils/image-picker';
 
 ReactDOM.render(<App />, document.getElementById('root'));
 registerServiceWorker();

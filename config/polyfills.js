@@ -20,3 +20,11 @@ Object.assign = require('object-assign');
 if (process.env.NODE_ENV === 'test') {
   require('raf').polyfill(global);
 }
+
+global.Blob = global.Blob || function (content, options) {
+  return { content, options };
+};
+
+global.URL = global.URL || {
+  createObjectURL: () => null,
+};

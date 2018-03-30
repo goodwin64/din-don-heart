@@ -1,4 +1,4 @@
-import workerScript from './worker';
+import workerScript from './image-worker';
 
 const myWorker = new Worker(workerScript);
 

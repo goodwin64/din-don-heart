@@ -1,4 +1,4 @@
-const workercode = () => {
+export const workercode = () => {
   /* eslint-disable no-restricted-globals */
   self.onmessage = (e) => {
     createImageBitmap(e.data.file)
