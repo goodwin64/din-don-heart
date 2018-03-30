@@ -1,4 +1,5 @@
 'use strict';
+/* eslint-disable */
 
 if (typeof Promise === 'undefined') {
   // Rejection tracking prevents a common issue where React gets into an
@@ -19,4 +20,16 @@ Object.assign = require('object-assign');
 // We don't polyfill it in the browser--this is user's responsibility.
 if (process.env.NODE_ENV === 'test') {
   require('raf').polyfill(global);
+}
+
+if (typeof Blob === 'undefined') {
+  global.Blob = function (content, options) {
+    return { content: content, options: options };
+  };
+}
+
+if (typeof URL === 'undefined' || typeof URL.createObjectURL !== 'function') {
+  global.URL = {
+    createObjectURL: function () {}
+  };
 }

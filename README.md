@@ -21,4 +21,4 @@ Optional nice features:
 Easy development:
 - [x] Travis CI configuration
 - [ ] Github templates
-- [ ] ESLint + prettier
+- [x] ESLint + prettier
