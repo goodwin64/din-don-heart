@@ -5,6 +5,8 @@
     "react/prefer-stateless-function": 0
   },
   "env": {
-    "jest": true
+    "jest": true,
+    "browser": true,
+    "node": true
   }
 }
