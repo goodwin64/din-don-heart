@@ -1,0 +1,10 @@
+{
+  "extends": "airbnb",
+  "rules": {
+    "func-names": ["error", "never"],
+    "react/prefer-stateless-function": 0
+  },
+  "env": {
+    "jest": true
+  }
+}
