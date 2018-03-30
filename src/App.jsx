@@ -1,8 +1,9 @@
-import React, { Component } from 'react';
+import React from 'react';
+
 import logo from './logo.svg';
 import './App.css';
 
-class App extends Component {
+export class App extends React.PureComponent {
   render() {
     return (
       <div className="App">
@@ -13,6 +14,8 @@ class App extends Component {
         <p className="motto">
           Everything you should know about your heart
         </p>
+        <input type="file" id="filepicker" />
+        <canvas id="outCanvas" />
       </div>
     );
   }
