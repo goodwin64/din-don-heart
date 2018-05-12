@@ -30,11 +30,32 @@ export const mapRgbaToCustomPixels = rgbaPixels => [].slice.call(rgbaPixels)
     a: arr[3],
   }));
 
-export const getImagePixelsMatrix = (flatArr = [], rowWidth) => (
+/**
+ * Groups flat Pixels array by Y coordinate (letters)
+ */
+export const getPixelsByLetters = (flatArr = [], rowWidth) => (
   flatArr.length
     ? flatArr.chunk(rowWidth)
     : flatArr
 );
+
+/**
+ * Groups flat Pixels array by X coordinate (time)
+ */
+export const getPixelsByTime = (flatArr = [], columnsCount) =>
+  flatArr.reduce((acc, curr, index) => {
+    if (index < columnsCount) {
+      // container not yet exists
+      return [
+        ...acc,
+        [curr],
+      ];
+    }
+    const currentColumn = index % columnsCount;
+    const container = acc[currentColumn];
+    container.push(curr);
+    return acc;
+  }, []);
 
 export const getCurrentLetter = (imageData, alphabet, yCoord) => {
   const alphabetSize = alphabet.length;

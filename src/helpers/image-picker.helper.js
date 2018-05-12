@@ -1,6 +1,6 @@
 // import getDisease from './disease.helper';
 import { ERROR_IMAGE_SIZE, onImageError } from './error-handlers.helper';
-import { getImageData, getImagePixelsMatrix, mapRgbaToCustomPixels } from './canvas.helper';
+import { getImageData, getPixelsByTime, mapRgbaToCustomPixels } from './canvas.helper';
 
 const myWorker = new Worker('image-worker.js');
 const defaultFile = {};
@@ -25,7 +25,7 @@ export default function initImagePicker(outCanvas, filepicker) {
     }
 
     const imagePixels = mapRgbaToCustomPixels(imageData.data);
-    const imagePixelsMatrix = getImagePixelsMatrix(imagePixels, imageData.width);
+    const imagePixelsMatrix = getPixelsByTime(imagePixels, imageData.width);
     console.log(imagePixelsMatrix);
   };
 
