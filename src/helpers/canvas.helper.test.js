@@ -1,4 +1,4 @@
-import { getImagePixelsMatrix, mapRgbaToCustomPixels } from './canvas.helper';
+import { getCurrentLetter, getImagePixelsMatrix, mapRgbaToCustomPixels } from './canvas.helper';
 
 describe('mapRgbaToCustomPixels method', () => {
   it('should map 1-pixel array', () => {
@@ -51,5 +51,43 @@ describe('getImagePixelsMatrix method', () => {
     ];
 
     expect(actual).toEqual(expected);
+  });
+});
+
+describe('getCurrentLetter method', () => {
+  const mockAbc = ['A', 'B', 'C', 'D', 'E'];
+  const mockImageData = { height: 8 };
+  let expected;
+
+  it('should recognize first letter if outside of boundary (left)', () => {
+    expect(getCurrentLetter(mockImageData, mockAbc, -20)).toEqual('A');
+  });
+
+  it('should recognize first letter if outside of boundary (right)', () => {
+    expect(getCurrentLetter(mockImageData, mockAbc, 20)).toEqual('E');
+  });
+
+  it('should recognize step A', () => {
+    expected = 'A';
+
+    expect(getCurrentLetter(mockImageData, mockAbc, 0)).toEqual(expected);
+    expect(getCurrentLetter(mockImageData, mockAbc, 0.01)).toEqual(expected);
+    expect(getCurrentLetter(mockImageData, mockAbc, 0.85)).toEqual(expected);
+    expect(getCurrentLetter(mockImageData, mockAbc, 1.599)).toEqual(expected);
+  });
+
+  it('should recognize step B', () => {
+    expected = 'B';
+
+    expect(getCurrentLetter(mockImageData, mockAbc, 1.6)).toEqual(expected);
+    expect(getCurrentLetter(mockImageData, mockAbc, 2)).toEqual(expected);
+    expect(getCurrentLetter(mockImageData, mockAbc, 3)).toEqual(expected);
+    expect(getCurrentLetter(mockImageData, mockAbc, 3.19)).toEqual(expected);
+  });
+
+  it('should recognize step E', () => {
+    expected = 'E';
+
+    expect(getCurrentLetter(mockImageData, mockAbc, 7.9)).toEqual(expected);
   });
 });

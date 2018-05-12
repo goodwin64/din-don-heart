@@ -35,3 +35,17 @@ export const getImagePixelsMatrix = (flatArr = [], rowWidth) => (
     ? flatArr.chunk(rowWidth)
     : flatArr
 );
+
+export const getCurrentLetter = (imageData, alphabet, yCoord) => {
+  const alphabetSize = alphabet.length;
+  const cardioStepSize = imageData.height / alphabetSize;
+  const currentStep = Math.floor(yCoord / cardioStepSize);
+
+  if (currentStep < 0) {
+    return alphabet[0];
+  } else if (currentStep >= alphabetSize) {
+    return alphabet[alphabetSize - 1];
+  }
+
+  return alphabet[currentStep];
+};
