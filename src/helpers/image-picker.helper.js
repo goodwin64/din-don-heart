@@ -1,9 +1,12 @@
 // import getDisease from './disease.helper';
-import { onImageError } from './error-handlers.helper';
-import { getImageData, mapRgbaToCustomPixels } from './canvas.helper';
+import { ERROR_IMAGE_SIZE, onImageError } from './error-handlers.helper';
+import { getImageData, getImagePixelsMatrix, mapRgbaToCustomPixels } from './canvas.helper';
 
 const myWorker = new Worker('image-worker.js');
 const defaultFile = {};
+
+const MAX_IMAGE_WIDTH = 4000;
+const MAX_IMAGE_HEIGHT = 3000;
 
 export default function initImagePicker(outCanvas, filepicker) {
   myWorker.onmessage = (e) => {
@@ -14,10 +17,16 @@ export default function initImagePicker(outCanvas, filepicker) {
     }
 
     const imageData = getImageData(response);
-    const imagePixelsUInt8ClampedArray = [].slice.call(imageData.data);
+    if (imageData.height > MAX_IMAGE_HEIGHT || imageData.width > MAX_IMAGE_WIDTH) {
+      onImageError({
+        errorMessage: ERROR_IMAGE_SIZE,
+      });
+      return;
+    }
 
-    const imagePixels = mapRgbaToCustomPixels(imagePixelsUInt8ClampedArray);
-    console.log(imagePixels);
+    const imagePixels = mapRgbaToCustomPixels(imageData.data);
+    const imagePixelsMatrix = getImagePixelsMatrix(imagePixels, imageData.width);
+    console.log(imagePixelsMatrix);
   };
 
   filepicker.addEventListener('change', () => {

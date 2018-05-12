@@ -21,7 +21,7 @@ Array.prototype.chunk = Array.prototype.chunk || function (n) {
   return Array.range(Math.ceil(this.length / n)).map((x, i) => this.slice(i * n, (i * n) + n));
 };
 
-export const mapRgbaToCustomPixels = rgbaPixels => rgbaPixels
+export const mapRgbaToCustomPixels = rgbaPixels => [].slice.call(rgbaPixels)
   .chunk(4)
   .map(arr => ({
     r: arr[0],
@@ -29,3 +29,9 @@ export const mapRgbaToCustomPixels = rgbaPixels => rgbaPixels
     b: arr[2],
     a: arr[3],
   }));
+
+export const getImagePixelsMatrix = (flatArr = [], rowWidth) => (
+  flatArr.length
+    ? flatArr.chunk(rowWidth)
+    : flatArr
+);
