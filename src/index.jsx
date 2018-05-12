@@ -2,12 +2,14 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 
 import './index.css';
-import { App } from './App';
+import AppComponent from './App';
 import registerServiceWorker from './registerServiceWorker';
 import initImagePicker from './utils/image-picker';
 
-ReactDOM.render(<App />, document.getElementById('root'));
+ReactDOM.render(<AppComponent />, document.getElementById('root'));
+
 registerServiceWorker();
+
 initImagePicker(
   document.getElementById('outCanvas'),
   document.getElementById('filepicker'),

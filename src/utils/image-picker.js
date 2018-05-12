@@ -1,19 +1,32 @@
-import workerScript from './image-worker';
+import getDisease from './disease-service';
 
-const myWorker = new Worker(workerScript);
+const myWorker = new Worker('image-worker.js');
+const defaultFile = {};
 
 export default function initImagePicker(outCanvas, filepicker) {
   myWorker.onmessage = (e) => {
     const response = e.data;
+    if (response.error) {
+      console.log(response.errorMessage);
+      return;
+    }
+
     /* eslint-disable no-param-reassign */
-    outCanvas.width = response.width;
-    outCanvas.height = response.height;
+    outCanvas.width = 240;
+    outCanvas.height = 180;
     /* eslint-enable no-param-reassign */
     const ctx = outCanvas.getContext('2d');
-    ctx.drawImage(response, 0, 0);
+    ctx.font = '18px Arial';
+
+    if (getDisease(response)) {
+      ctx.fillText('You are ill', 10, 50);
+    } else {
+      ctx.fillText('You are healthy', 10, 50);
+    }
   };
 
   filepicker.addEventListener('change', () => {
-    myWorker.postMessage({ file: filepicker.files[0] });
+    const file = filepicker.files[0] || defaultFile;
+    myWorker.postMessage({ file });
   });
 }
