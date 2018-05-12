@@ -1,4 +1,7 @@
-import { getCurrentLetter, getPixelsByLetters, getPixelsByTime, mapRgbaToCustomPixels } from './canvas.helper';
+import {
+  findTheMostDarkPixel, getCurrentLetter, getPixelsByLetters, getPixelsByTime,
+  mapRgbaToCustomPixels,
+} from './canvas.helper';
 
 describe('mapRgbaToCustomPixels method', () => {
   it('should map 1-pixel array', () => {
@@ -121,5 +124,34 @@ describe('getCurrentLetter method', () => {
     expected = 'E';
 
     expect(getCurrentLetter(mockImageData, mockAbc, 7.9)).toEqual(expected);
+  });
+});
+
+describe('findTheMostDarkPixel method', () => {
+  it('should return 0 index by default', () => {
+    expect(findTheMostDarkPixel([]).index).toEqual(0);
+  });
+
+  it('should return white color by default', () => {
+    expect(findTheMostDarkPixel([]).color).toEqual(255 * 3);
+  });
+
+  it('should find the most dark pixel among white ones', () => {
+    const column = [
+      {
+        r: 255, g: 250, b: 190, a: 0,
+      },
+      {
+        r: 120, g: 130, b: 119, a: 255, // the most dark
+      },
+      {
+        r: 255, g: 255, b: 229, a: 0,
+      },
+      {
+        r: 255, g: 245, b: 255, a: 0,
+      },
+    ];
+
+    expect(findTheMostDarkPixel(column).index).toEqual(1);
   });
 });

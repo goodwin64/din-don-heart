@@ -1,12 +1,16 @@
 // import getDisease from './disease.helper';
 import { ERROR_IMAGE_SIZE, onImageError } from './error-handlers.helper';
-import { getImageData, getPixelsByTime, mapRgbaToCustomPixels } from './canvas.helper';
+import {
+  findTheMostDarkPixel, getCurrentLetter, getImageData, getPixelsByTime,
+  mapRgbaToCustomPixels,
+} from './canvas.helper';
 
 const myWorker = new Worker('image-worker.js');
 const defaultFile = {};
 
 const MAX_IMAGE_WIDTH = 4000;
 const MAX_IMAGE_HEIGHT = 3000;
+const alphabet = 'ABCDEFGHIKLMNOPQRSTVXYZ'.split('');
 
 export default function initImagePicker(outCanvas, filepicker) {
   myWorker.onmessage = (e) => {
@@ -26,7 +30,11 @@ export default function initImagePicker(outCanvas, filepicker) {
 
     const imagePixels = mapRgbaToCustomPixels(imageData.data);
     const imagePixelsMatrix = getPixelsByTime(imagePixels, imageData.width);
-    console.log(imagePixelsMatrix);
+    const letters = imagePixelsMatrix.map((column) => {
+      const theMostDarkPixelIndex = findTheMostDarkPixel(column).index;
+      return getCurrentLetter(imageData, alphabet, theMostDarkPixelIndex);
+    });
+    console.log(letters);
   };
 
   filepicker.addEventListener('change', () => {

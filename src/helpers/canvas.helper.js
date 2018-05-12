@@ -70,3 +70,20 @@ export const getCurrentLetter = (imageData, alphabet, yCoord) => {
 
   return alphabet[currentStep];
 };
+
+export const findTheMostDarkPixel = (column = []) => column.reduce(
+  (theMostBlackPixel, currPixel, currIndex) => {
+    const currColor = currPixel.r + currPixel.g + currPixel.b;
+    if (currColor < theMostBlackPixel.color) {
+      return {
+        color: currColor,
+        index: currIndex,
+      };
+    }
+    return theMostBlackPixel;
+  },
+  {
+    color: 255 * 3,
+    index: 0,
+  },
+);
