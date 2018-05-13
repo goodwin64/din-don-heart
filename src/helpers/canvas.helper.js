@@ -82,3 +82,21 @@ export const findTheMostDarkPixel = (column = []) => column.reduce(
     index: 0,
   },
 );
+
+const MAX_COLOR_VALUE = 256;
+export const arePixelsSimilarByColor = (pixel1, pixel2, maxDeviationInPercent = 5) => {
+  const { r: r1, g: g1, b: b1 } = pixel1;
+  const { r: r2, g: g2, b: b2 } = pixel2;
+
+  const rSimilarity = Math.abs(r1 - r2) / MAX_COLOR_VALUE;
+  const gSimilarity = Math.abs(g1 - g2) / MAX_COLOR_VALUE;
+  const bSimilarity = Math.abs(b1 - b2) / MAX_COLOR_VALUE;
+
+  const averageColorSimilarity = (rSimilarity + gSimilarity + bSimilarity) / 3;
+  const actualSimilarityPercent = averageColorSimilarity * 100;
+  return actualSimilarityPercent <= maxDeviationInPercent;
+};
+
+export const getCellsInfo = (flatArr = []) => {
+
+};

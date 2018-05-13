@@ -1,5 +1,6 @@
 import {
-  findTheMostDarkPixel, getCurrentLetter, getPixelsByLetters, getPixelsByTime,
+  arePixelsSimilarByColor,
+  findTheMostDarkPixel, getCellsInfo, getCurrentLetter, getPixelsByLetters, getPixelsByTime,
   mapRgbaToCustomPixels,
 } from './canvas.helper';
 
@@ -153,5 +154,37 @@ describe('findTheMostDarkPixel method', () => {
     ];
 
     expect(findTheMostDarkPixel(column).index).toEqual(1);
+  });
+});
+
+describe('arePixelsSimilarByColor method', () => {
+  it('pixel is similar to itself regardless deviation %', () => {
+    const pixel = { r: 0, g: 128, b: 255 };
+    expect(arePixelsSimilarByColor(pixel, pixel)).toEqual(true);
+  });
+
+  it('black and white pixels are similar only when 100% deviation', () => {
+    const black = { r: 0, g: 0, b: 0 };
+    const white = { r: 255, g: 255, b: 255 };
+    expect(arePixelsSimilarByColor(black, white, 0)).toEqual(false);
+    expect(arePixelsSimilarByColor(black, white, 99)).toEqual(false);
+    expect(arePixelsSimilarByColor(black, white, 100)).toEqual(true);
+  });
+
+  it('50% and 75% grey are similar if 25% similarity deviation', () => {
+    const grey50 = { r: 128, g: 128, b: 128 };
+    const grey75 = { r: 192, g: 192, b: 192 };
+    expect(arePixelsSimilarByColor(grey50, grey75, 10)).toEqual(false);
+    expect(arePixelsSimilarByColor(grey50, grey75, 20)).toEqual(false);
+    expect(arePixelsSimilarByColor(grey50, grey75, 25)).toEqual(true);
+  });
+});
+
+describe('getCellsInfo method', () => {
+  it('should calculate average cell and square (5x5 cells) size', () => {
+    expect(getCellsInfo([])).toEqual({
+      cellSize: 0,
+      squareSize: 0,
+    });
   });
 });
