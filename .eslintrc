@@ -4,7 +4,6 @@
     "func-names": ["error", "never"],
     "react/prefer-stateless-function": 0,
     "linebreak-style": 0,
-    "no-extend-native": 0,
     "no-console": 0
   },
   "env": {
