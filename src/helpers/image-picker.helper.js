@@ -10,15 +10,14 @@ import {
   mapRgbaToCustomPixels,
 } from './canvas.helper';
 
-const myWorker = new Worker('image-worker.js');
-const defaultFile = {};
+const imageParsingWorker = new Worker('image-worker.js');
 
 const MAX_IMAGE_WIDTH = 4000;
 const MAX_IMAGE_HEIGHT = 3000;
 const alphabet = 'ABCDEFGHIKLMNOPQRSTVXYZ'.split('');
 
-export default function initImagePicker(outCanvas, filepicker) {
-  myWorker.onmessage = (e) => {
+export default function initImagePicker() {
+  imageParsingWorker.onmessage = (e) => {
     const response = e.data;
     if (response.error) {
       onImageError(response);
@@ -48,8 +47,7 @@ export default function initImagePicker(outCanvas, filepicker) {
     console.log(baseLineY, cellsSize);
   };
 
-  filepicker.addEventListener('change', () => {
-    const file = filepicker.files[0] || defaultFile;
-    myWorker.postMessage({ file });
-  });
+  return {
+    imageParsingWorker,
+  };
 }

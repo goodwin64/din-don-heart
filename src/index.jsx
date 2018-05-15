@@ -6,11 +6,14 @@ import AppComponent from './App';
 import registerServiceWorker from './registerServiceWorker';
 import initImagePicker from './helpers/image-picker.helper';
 
-ReactDOM.render(<AppComponent />, document.getElementById('root'));
-
 registerServiceWorker();
 
-initImagePicker(
+const { imageParsingWorker } = initImagePicker(
   document.getElementById('outCanvas'),
   document.getElementById('filepicker'),
+);
+
+ReactDOM.render(
+  <AppComponent imageParsingWorker={imageParsingWorker} />,
+  document.getElementById('root'),
 );
