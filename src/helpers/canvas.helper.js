@@ -1,5 +1,10 @@
 import chunk from 'lodash.chunk';
 
+export const WHITE_PIXEL = { r: 255, g: 255, b: 255 };
+export const GREY_PIXEL = { r: 128, g: 128, b: 128 };
+export const DARK_GREY_PIXEL = { r: 64, g: 64, b: 64 };
+export const BLACK_PIXEL = { r: 0, g: 0, b: 0 };
+
 export const getCanvas = function (w, h) {
   const c = document.createElement('canvas');
   c.width = w;
@@ -85,6 +90,10 @@ export const findTheMostDarkPixel = (column = []) => column.reduce(
 
 const MAX_COLOR_VALUE = 256;
 export const arePixelsSimilarByColor = (pixel1, pixel2, maxDeviationInPercent = 5) => {
+  if (typeof pixel1 !== 'object' || typeof pixel2 !== 'object') {
+    return false;
+  }
+
   const { r: r1, g: g1, b: b1 } = pixel1;
   const { r: r2, g: g2, b: b2 } = pixel2;
 
@@ -97,6 +106,29 @@ export const arePixelsSimilarByColor = (pixel1, pixel2, maxDeviationInPercent = 
   return actualSimilarityPercent <= maxDeviationInPercent;
 };
 
-export const getCellsInfo = (flatArr = []) => {
+/**
+ * Calculates average cell size in pixels
+ */
+export const getCellsSize = (
+  row = [],
+  minWhiteSliceLength = 8,
+  cellBackgroundColor = WHITE_PIXEL,
+  wallBackgroundColor = DARK_GREY_PIXEL,
+) => {
+  const cellsCount = row.filter((pixel, index) => {
+    const isNotInTheEnd = index < row.length - minWhiteSliceLength;
+    const isFirstWhite = arePixelsSimilarByColor(row[index - 1], wallBackgroundColor, 50)
+      && arePixelsSimilarByColor(pixel, cellBackgroundColor);
+    const areNextNeigboursWhite = row
+      .slice(index + 1, index + minWhiteSliceLength)
+      .every(neighbourPixel => arePixelsSimilarByColor(neighbourPixel, cellBackgroundColor));
 
+    return isFirstWhite && isNotInTheEnd && areNextNeigboursWhite;
+  }).length;
+
+  if (cellsCount === 0) {
+    return 0;
+  }
+
+  return Math.round(row.length / cellsCount);
 };

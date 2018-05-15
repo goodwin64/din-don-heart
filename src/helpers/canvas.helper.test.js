@@ -1,7 +1,7 @@
 import {
-  arePixelsSimilarByColor,
-  findTheMostDarkPixel, getCellsInfo, getCurrentLetter, getPixelsByLetters, getPixelsByTime,
-  mapRgbaToCustomPixels,
+  arePixelsSimilarByColor, BLACK_PIXEL,
+  findTheMostDarkPixel, getCellsSize, getCurrentLetter, getPixelsByLetters, getPixelsByTime, GREY_PIXEL,
+  mapRgbaToCustomPixels, WHITE_PIXEL,
 } from './canvas.helper';
 
 describe('mapRgbaToCustomPixels method', () => {
@@ -180,11 +180,30 @@ describe('arePixelsSimilarByColor method', () => {
   });
 });
 
-describe('getCellsInfo method', () => {
-  it('should calculate average cell and square (5x5 cells) size', () => {
-    expect(getCellsInfo([])).toEqual({
-      cellSize: 0,
-      squareSize: 0,
-    });
+describe('getCellsSize method', () => {
+  it('0 when empty array', () => {
+    expect(getCellsSize([])).toEqual(0);
+  });
+
+  /**
+   *  ------- ceil row, no white pixels
+   *  |12345|     row with walls and 1 cell, 5 white pixels
+   *  |1234||     row with walls and 1 cell, 4 white pixels
+   *  |1234||123| row with walls and 2 cells, 4 white pixels
+   *  ------- floor row
+   */
+  it('row with walls', () => {
+    const pixels = [
+      BLACK_PIXEL, GREY_PIXEL,
+      WHITE_PIXEL, WHITE_PIXEL, WHITE_PIXEL,
+      BLACK_PIXEL,
+      WHITE_PIXEL, WHITE_PIXEL, WHITE_PIXEL, WHITE_PIXEL,
+    ];
+    expect(getCellsSize(pixels, 3)).toEqual(5);
+  });
+
+  it('0 cells in ceil or floor row', () => {
+    const pixels = [BLACK_PIXEL, GREY_PIXEL, BLACK_PIXEL];
+    expect(getCellsSize(pixels)).toEqual(0);
   });
 });

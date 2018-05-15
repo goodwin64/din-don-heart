@@ -1,7 +1,12 @@
 // import getDisease from './disease.helper';
 import { ERROR_IMAGE_SIZE, onImageError } from './error-handlers.helper';
 import {
-  findTheMostDarkPixel, getCurrentLetter, getImageData, getPixelsByTime,
+  findTheMostDarkPixel,
+  getCellsSize,
+  getCurrentLetter,
+  getImageData,
+  getPixelsByLetters,
+  getPixelsByTime,
   mapRgbaToCustomPixels,
 } from './canvas.helper';
 
@@ -29,12 +34,18 @@ export default function initImagePicker(outCanvas, filepicker) {
     }
 
     const imagePixels = mapRgbaToCustomPixels(imageData.data);
-    const imagePixelsMatrix = getPixelsByTime(imagePixels, imageData.width);
-    const letters = imagePixelsMatrix.map((column) => {
-      const theMostDarkPixelIndex = findTheMostDarkPixel(column).index;
-      return getCurrentLetter(imageData, alphabet, theMostDarkPixelIndex);
+    const pixelsByRows = getPixelsByLetters(imagePixels, imageData.width);
+    const cellsSize = getCellsSize(pixelsByRows);
+    const pixelsByColumns = getPixelsByTime(imagePixels, imageData.width);
+    const ecg = pixelsByColumns.map((column) => {
+      const theMostDarkPixel = findTheMostDarkPixel(column);
+      return {
+        pixel: theMostDarkPixel,
+        letter: getCurrentLetter(imageData, alphabet, theMostDarkPixel.index),
+      };
     });
-    console.log(letters);
+    const baseLineY = ecg.reduce((acc, curr) => acc + curr.pixel.index, 0) / ecg.length;
+    console.log(baseLineY, cellsSize);
   };
 
   filepicker.addEventListener('change', () => {
