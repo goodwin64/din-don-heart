@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { shallow } from 'enzyme';
+import { mount, shallow } from 'enzyme';
 
 import { App } from './App';
 
@@ -17,4 +17,16 @@ it('renders without crashing', () => {
 it('enzyme should work properly', () => {
   const wrapper = shallow(<p>Motto (slogan)</p>);
   expect(wrapper.text()).toEqual('Motto (slogan)');
+});
+
+it('should test file input handler', () => {
+  const componentWrapper = mount(<App imageParsingWorker={mockWorker} />);
+  const fileContents = 'file contents';
+  const textFile = new Blob([fileContents], { type: 'text/plain' });
+  const readAsText = jest.spyOn(mockWorker, 'postMessage');
+
+  componentWrapper.find('input').simulate('change', { target: { files: [textFile] } });
+  expect(readAsText).toHaveBeenCalledWith({ file: textFile });
+  componentWrapper.find('input').simulate('change', { target: { files: [] } });
+  expect(readAsText).toHaveBeenCalledWith({ file: {} });
 });
