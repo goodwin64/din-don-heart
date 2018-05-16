@@ -1,4 +1,15 @@
 {
   "plugins": ["transform-class-properties"],
-  "presets": ["react"]
+  "presets": ["react"],
+  "env": {
+    "production": {
+      "plugins": ["transform-es2015-modules-commonjs"]
+    },
+    "development": {
+      "plugins": ["transform-es2015-modules-commonjs"]
+    },
+    "test": {
+      "plugins": ["transform-es2015-modules-commonjs"]
+    }
+  }
 }

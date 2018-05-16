@@ -4,9 +4,13 @@ import { shallow } from 'enzyme';
 
 import { App } from './App';
 
+const mockWorker = {
+  postMessage: () => {},
+};
+
 it('renders without crashing', () => {
   const div = document.createElement('div');
-  ReactDOM.render(<App />, div);
+  ReactDOM.render(<App imageParsingWorker={mockWorker} />, div);
   ReactDOM.unmountComponentAtNode(div);
 });
 
