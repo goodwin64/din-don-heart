@@ -1,4 +1,5 @@
 'use strict';
+import mockWorker from '../src/mocks/worker';
 /* eslint-disable */
 
 if (typeof Promise === 'undefined') {
@@ -32,4 +33,8 @@ if (typeof URL === 'undefined' || typeof URL.createObjectURL !== 'function') {
   global.URL = {
     createObjectURL: function () {}
   };
+}
+
+if (typeof Worker === 'undefined') {
+  global.Worker = mockWorker;
 }

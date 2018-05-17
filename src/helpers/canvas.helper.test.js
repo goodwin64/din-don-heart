@@ -1,7 +1,15 @@
 import {
-  arePixelsSimilarByColor, BLACK_PIXEL,
-  findTheMostDarkPixel, getCellsSize, getCurrentLetter, getPixelsByLetters, getPixelsByTime, GREY_PIXEL,
-  mapRgbaToCustomPixels, WHITE_PIXEL,
+  arePixelsSimilarByColor,
+  BLACK_PIXEL,
+  DARK_GREY_PIXEL,
+  findTheMostDarkPixel,
+  getCellsSize,
+  getCurrentLetter,
+  getPixelsByLetters,
+  getPixelsByTime,
+  GREY_PIXEL,
+  mapRgbaToCustomPixels,
+  WHITE_PIXEL,
 } from './canvas.helper';
 
 describe('mapRgbaToCustomPixels method', () => {
@@ -177,6 +185,14 @@ describe('arePixelsSimilarByColor method', () => {
     expect(arePixelsSimilarByColor(grey50, grey75, 10)).toEqual(false);
     expect(arePixelsSimilarByColor(grey50, grey75, 20)).toEqual(false);
     expect(arePixelsSimilarByColor(grey50, grey75, 25)).toEqual(true);
+  });
+
+  it('light red and cell wall color are similar if 70% similarity deviation', () => {
+    const lightRed = { r: 242, g: 193, b: 212 };
+    expect(arePixelsSimilarByColor(lightRed, DARK_GREY_PIXEL, 10)).toEqual(false);
+    expect(arePixelsSimilarByColor(lightRed, DARK_GREY_PIXEL, 20)).toEqual(false);
+    expect(arePixelsSimilarByColor(lightRed, DARK_GREY_PIXEL, 50)).toEqual(false);
+    expect(arePixelsSimilarByColor(lightRed, DARK_GREY_PIXEL, 70)).toEqual(true);
   });
 });
 

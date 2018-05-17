@@ -8,7 +8,7 @@ import initImagePicker from './helpers/image-picker.helper';
 
 registerServiceWorker();
 
-const { imageParsingWorker } = initImagePicker(
+const imageParsingWorker = initImagePicker(
   document.getElementById('outCanvas'),
   document.getElementById('filepicker'),
 );

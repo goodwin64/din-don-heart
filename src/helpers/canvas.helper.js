@@ -117,7 +117,7 @@ export const getCellsSize = (
 ) => {
   const cellsCount = row.filter((pixel, index) => {
     const isNotInTheEnd = index < row.length - minWhiteSliceLength;
-    const isFirstWhite = arePixelsSimilarByColor(row[index - 1], wallBackgroundColor, 50)
+    const isFirstWhite = arePixelsSimilarByColor(row[index - 1], wallBackgroundColor, 70)
       && arePixelsSimilarByColor(pixel, cellBackgroundColor);
     const areNextNeigboursWhite = row
       .slice(index + 1, index + minWhiteSliceLength)
