@@ -4,7 +4,7 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import AppComponent from './App';
 import registerServiceWorker from './registerServiceWorker';
-import initImageParsingWorker from './helpers/image-picker.helper';
+import initImageParsingWorker from './helpers/image-parsing.helper';
 
 registerServiceWorker();
 

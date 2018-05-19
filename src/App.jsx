@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 import logo from './logo.svg';
 import './App.css';
-import { getEcgResult } from './helpers/image-picker.helper';
+import { getEcgResult } from './helpers/image-parsing.helper';
 
 const defaultFile = {};
 
