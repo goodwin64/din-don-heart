@@ -35,7 +35,6 @@ export class App extends Component {
       this.setState({ ecgResult });
       if (workerResponse.constructor === ImageBitmap) {
         this.renderEcgImageResult(workerResponse);
-        this.renderEcgImageLetters(workerResponse);
       }
     };
     this.props.imageParsingWorker.setOnMessageHandler(onMessageWorkerHandler);
@@ -43,7 +42,6 @@ export class App extends Component {
 
   onFileChange = (inputEvent) => {
     const file = inputEvent.target.files[0] || defaultFile;
-    this.ecgImageIn = file;
     this.props.imageParsingWorker.postMessage({ file });
   };
 
@@ -53,6 +51,7 @@ export class App extends Component {
    * Centers image inside canvas.
    */
   renderEcgImageResult(image) {
+    const { plotPoints, cellsSize } = this.state.ecgResult;
     const canvas = this.ecgCanvasOut;
     const ctx = canvas.getContext('2d');
     const hRatio = canvas.width / image.width;
@@ -65,18 +64,15 @@ export class App extends Component {
       image, 0, 0, image.width, image.height,
       centerShiftX, centerShiftY, image.width * ratio, image.height * ratio,
     );
-  }
 
-  renderEcgImageLetters() {
-    const { plotPoints, cellsSize } = this.state.ecgResult;
-    const canvas = this.ecgCanvasOut;
-    const ctx = canvas.getContext('2d');
     ctx.font = '18px Georgia';
     ctx.shadowColor = '#c20001';
     ctx.shadowBlur = 10;
     ctx.fillStyle = '#fff';
     plotPoints.forEach((plotPoint, xIndex) => {
-      ctx.fillText(plotPoint.letter, xIndex * cellsSize, plotPoint.index);
+      const x = (xIndex * cellsSize * ratio) + centerShiftX;
+      const y = (plotPoint.index * ratio) + centerShiftY;
+      ctx.fillText(plotPoint.letter, x, y);
     });
   }
 
