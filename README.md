@@ -22,7 +22,7 @@ Must-have widgets:
 
 Optional nice features:
 - [ ] Error handling (UI part)
-- [ ] Animated logo
+- [x] Animated logo
 - [ ] Feedback
 - [ ] User actions analytics (with GDPR)
 - [ ] Localization (EN, RU)

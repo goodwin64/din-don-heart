@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
-import logo from './logo.svg';
 import './App.css';
 import { getEcgResult } from './helpers/image-parsing.helper';
 
@@ -99,8 +98,10 @@ export class App extends Component {
     return (
       <div className="App">
         <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <h1 className="App-title">Din-Don ❤</h1>
+          <h1 className="App-title">
+            Din-Don
+            <span className="App-logo">❤</span>
+          </h1>
         </header>
         <p className="motto">
           Everything you should know about your heart
