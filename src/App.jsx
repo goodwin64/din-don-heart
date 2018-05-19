@@ -18,8 +18,14 @@ export class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      ecgResult: '',
+      ecgResult: {
+        baseLineY: 0,
+        cellsSize: 0,
+        ecgLetters: [],
+        plotPoints: [],
+      },
     };
+    this.ecgCanvasOut = null;
   }
 
   componentDidMount() {
@@ -27,16 +33,54 @@ export class App extends Component {
       const workerResponse = workerEvent.data;
       const ecgResult = getEcgResult(workerResponse);
       this.setState({ ecgResult });
+      if (workerResponse.constructor === ImageBitmap) {
+        this.renderEcgImageResult(workerResponse);
+        this.renderEcgImageLetters(workerResponse);
+      }
     };
     this.props.imageParsingWorker.setOnMessageHandler(onMessageWorkerHandler);
   }
 
   onFileChange = (inputEvent) => {
     const file = inputEvent.target.files[0] || defaultFile;
+    this.ecgImageIn = file;
     this.props.imageParsingWorker.postMessage({ file });
   };
 
-  renderEcgResult() {
+  /**
+   * Renders a copy of image into canvas.
+   * Keeps original aspect ratio.
+   * Centers image inside canvas.
+   */
+  renderEcgImageResult(image) {
+    const canvas = this.ecgCanvasOut;
+    const ctx = canvas.getContext('2d');
+    const hRatio = canvas.width / image.width;
+    const vRatio = canvas.height / image.height;
+    const ratio = Math.min(hRatio, vRatio);
+    const centerShiftX = (canvas.width - (image.width * ratio)) / 2;
+    const centerShiftY = (canvas.height - (image.height * ratio)) / 2;
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.drawImage(
+      image, 0, 0, image.width, image.height,
+      centerShiftX, centerShiftY, image.width * ratio, image.height * ratio,
+    );
+  }
+
+  renderEcgImageLetters() {
+    const { plotPoints, cellsSize } = this.state.ecgResult;
+    const canvas = this.ecgCanvasOut;
+    const ctx = canvas.getContext('2d');
+    ctx.font = '18px Georgia';
+    ctx.shadowColor = '#c20001';
+    ctx.shadowBlur = 10;
+    ctx.fillStyle = '#fff';
+    plotPoints.forEach((plotPoint, xIndex) => {
+      ctx.fillText(plotPoint.letter, xIndex * cellsSize, plotPoint.index);
+    });
+  }
+
+  renderEcgTextResult() {
     const {
       baseLineY,
       cellsSize,
@@ -46,7 +90,7 @@ export class App extends Component {
     if (!baseLineY || !cellsSize || !ecgLetters) { return null; }
 
     return (
-      <div style={{ wordBreak: 'break-word', textAlign: 'left' }}>
+      <div className="ecg-result">
         <p>Your ECG result:</p>
         <p>ECG base line (px): { baseLineY }</p>
         <p>Cells size (px): { cellsSize }</p>
@@ -66,8 +110,13 @@ export class App extends Component {
           Everything you should know about your heart
         </p>
         <input type="file" id="filepicker" onChange={this.onFileChange} />
-        {/* <canvas id="outCanvas" /> */}
-        { this.renderEcgResult() }
+        <canvas
+          height={240}
+          width={720}
+          id="outCanvas"
+          ref={(node) => { this.ecgCanvasOut = node; }}
+        />
+        { this.renderEcgTextResult() }
       </div>
     );
   }

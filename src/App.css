@@ -26,3 +26,12 @@
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
 }
+
+#outCanvas {
+  margin: 15px;
+}
+
+.ecg-result {
+  word-break: break-all;
+  text-align: left;
+}

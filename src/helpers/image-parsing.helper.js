@@ -138,11 +138,11 @@ export function calculateCellsSizeInECG(pixelsByRows) {
 
 function calculateEcgLetters(pixelsByColumns, imageData, shrinkFactor = 1) {
   return chunk(pixelsByColumns, shrinkFactor).map((columnsChunk) => {
-    const p = columnsChunk.reduce((plotPointsInChunk, currentColumn) => {
+    const pixelIndicesInChunk = columnsChunk.reduce((plotPointsInChunk, currentColumn) => {
       const theMostDarkPixel = findTheMostDarkPixel(currentColumn);
       return plotPointsInChunk.concat(theMostDarkPixel.index);
     }, []);
-    const averageIndexInChunk = Math.round(mean(p));
+    const averageIndexInChunk = Math.round(mean(pixelIndicesInChunk));
     const letter = getCurrentLetter(imageData, abc, averageIndexInChunk);
     return {
       letter,
@@ -182,5 +182,6 @@ export const getEcgResult = (workerResponse) => {
     baseLineY,
     cellsSize,
     ecgLetters,
+    plotPoints,
   };
 };
