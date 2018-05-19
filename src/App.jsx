@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
 import logo from './logo.svg';
@@ -7,11 +7,11 @@ import { getEcgResult } from './helpers/image-picker.helper';
 
 const defaultFile = {};
 
-export class App extends React.PureComponent {
+export class App extends Component {
   static propTypes = {
     imageParsingWorker: PropTypes.shape({
-      onmessage: PropTypes.func,
-      postMessage: PropTypes.func,
+      setOnMessageHandler: PropTypes.func.isRequired,
+      postMessage: PropTypes.func.isRequired,
     }).isRequired,
   };
 
@@ -22,14 +22,18 @@ export class App extends React.PureComponent {
     };
   }
 
-  onFileChange = (inputEvent) => {
-    const file = inputEvent.target.files[0] || defaultFile;
-    this.props.imageParsingWorker.postMessage({ file });
-    this.props.imageParsingWorker.onmessage = (workerEvent) => {
+  componentDidMount() {
+    const onMessageWorkerHandler = (workerEvent) => {
       const workerResponse = workerEvent.data;
       const ecgResult = getEcgResult(workerResponse);
       this.setState({ ecgResult });
     };
+    this.props.imageParsingWorker.setOnMessageHandler(onMessageWorkerHandler);
+  }
+
+  onFileChange = (inputEvent) => {
+    const file = inputEvent.target.files[0] || defaultFile;
+    this.props.imageParsingWorker.postMessage({ file });
   };
 
   renderEcgResult() {
@@ -51,7 +55,7 @@ export class App extends React.PureComponent {
           Everything you should know about your heart
         </p>
         <input type="file" id="filepicker" onChange={this.onFileChange} />
-        <canvas id="outCanvas" />
+        {/* <canvas id="outCanvas" /> */}
         <p>{ this.renderEcgResult() }</p>
       </div>
     );

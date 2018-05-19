@@ -4,6 +4,9 @@ export const WHITE_PIXEL = { r: 255, g: 255, b: 255 };
 export const GREY_PIXEL = { r: 128, g: 128, b: 128 };
 export const DARK_GREY_PIXEL = { r: 64, g: 64, b: 64 };
 export const BLACK_PIXEL = { r: 0, g: 0, b: 0 };
+export const RED_PIXEL = { r: 255, g: 0, b: 0 };
+export const GREEN_PIXEL = { r: 0, g: 255, b: 0 };
+export const BLUE_PIXEL = { r: 0, g: 0, b: 255 };
 
 export const getCanvas = function (w, h) {
   const c = document.createElement('canvas');
@@ -111,14 +114,14 @@ export const arePixelsSimilarByColor = (pixel1, pixel2, maxDeviationInPercent = 
  */
 export const getCellsSize = (
   row = [],
-  minWhiteSliceLength = 8,
+  minWhiteSliceLength = 6,
   cellBackgroundColor = WHITE_PIXEL,
-  wallBackgroundColor = DARK_GREY_PIXEL,
+  wallColor = BLACK_PIXEL,
 ) => {
   const cellsCount = row.filter((pixel, index) => {
     const isNotInTheEnd = index < row.length - minWhiteSliceLength;
-    const isFirstWhite = arePixelsSimilarByColor(row[index - 1], wallBackgroundColor, 70)
-      && arePixelsSimilarByColor(pixel, cellBackgroundColor);
+    const isFirstWhite = arePixelsSimilarByColor(row[index - 1], wallColor, 90)
+      && arePixelsSimilarByColor(pixel, cellBackgroundColor, 10);
     const areNextNeigboursWhite = row
       .slice(index + 1, index + minWhiteSliceLength)
       .every(neighbourPixel => arePixelsSimilarByColor(neighbourPixel, cellBackgroundColor));

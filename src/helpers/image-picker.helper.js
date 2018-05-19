@@ -12,13 +12,17 @@ import {
   mapRgbaToCustomPixels,
 } from './canvas.helper';
 
-const imageParsingWorker = new Worker('image-worker.js');
-
 const MAX_IMAGE_WIDTH = 4000;
 const MAX_IMAGE_HEIGHT = 3000;
 const alphabet = 'ABCDEFGHIKLMNOPQRSTVXYZ'.split('');
 
-export default function initImagePicker() {
+export default function initImageParsingWorker() {
+  const imageParsingWorker = new Worker('image-worker.js');
+
+  imageParsingWorker.setOnMessageHandler = (onMessageHandler) => {
+    imageParsingWorker.onmessage = onMessageHandler;
+  };
+
   return imageParsingWorker;
 }
 
@@ -42,8 +46,8 @@ export const getEcgResult = (workerResponse) => {
     const cellsSizesByRows = pixelsByRows.map(row => getCellsSize(row));
     const averageCellSize = mean(cellsSizesByRows);
     const withoutFloorAndCeilRows = cellsSizesByRows.filter(cellSizeInRow =>
-      cellSizeInRow > (averageCellSize * 0.9) &&
-      cellSizeInRow < (averageCellSize * 1.1));
+      cellSizeInRow > (averageCellSize * 0.5) &&
+      cellSizeInRow < (averageCellSize * 1.5));
     return Math.round(mean(withoutFloorAndCeilRows));
   })();
   const pixelsByColumns = getPixelsByTime(imagePixels, imageData.width);

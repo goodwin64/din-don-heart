@@ -1,15 +1,18 @@
 import {
-  arePixelsSimilarByColor,
   BLACK_PIXEL,
+  BLUE_PIXEL,
   DARK_GREY_PIXEL,
+  GREEN_PIXEL,
+  GREY_PIXEL,
+  RED_PIXEL,
+  WHITE_PIXEL,
+  arePixelsSimilarByColor,
   findTheMostDarkPixel,
   getCellsSize,
   getCurrentLetter,
   getPixelsByLetters,
   getPixelsByTime,
-  GREY_PIXEL,
   mapRgbaToCustomPixels,
-  WHITE_PIXEL,
 } from './canvas.helper';
 
 describe('mapRgbaToCustomPixels method', () => {
@@ -187,12 +190,34 @@ describe('arePixelsSimilarByColor method', () => {
     expect(arePixelsSimilarByColor(grey50, grey75, 25)).toEqual(true);
   });
 
-  it('light red and cell wall color are similar if 70% similarity deviation', () => {
+  it('light red and cell wall color are similar if 90% similarity deviation', () => {
     const lightRed = { r: 242, g: 193, b: 212 };
-    expect(arePixelsSimilarByColor(lightRed, DARK_GREY_PIXEL, 10)).toEqual(false);
-    expect(arePixelsSimilarByColor(lightRed, DARK_GREY_PIXEL, 20)).toEqual(false);
-    expect(arePixelsSimilarByColor(lightRed, DARK_GREY_PIXEL, 50)).toEqual(false);
-    expect(arePixelsSimilarByColor(lightRed, DARK_GREY_PIXEL, 70)).toEqual(true);
+    expect(arePixelsSimilarByColor(lightRed, BLACK_PIXEL, 10)).toEqual(false);
+    expect(arePixelsSimilarByColor(lightRed, BLACK_PIXEL, 20)).toEqual(false);
+    expect(arePixelsSimilarByColor(lightRed, BLACK_PIXEL, 80)).toEqual(false);
+    expect(arePixelsSimilarByColor(lightRed, BLACK_PIXEL, 90)).toEqual(true);
+  });
+
+  it('should have black-color deviation opposite to white-color deviation', () => {
+    const pixels = [
+      BLACK_PIXEL,
+      DARK_GREY_PIXEL,
+      GREY_PIXEL,
+      WHITE_PIXEL,
+      RED_PIXEL,
+      GREEN_PIXEL,
+      BLUE_PIXEL,
+    ];
+    expect(pixels.every((pixel) => {
+      // random number, just to check opposite
+      const deviationFromBlack = 35;
+      const deviationFromWhite = 100 - deviationFromBlack;
+
+      const isSimilarToBlack = arePixelsSimilarByColor(BLACK_PIXEL, pixel, deviationFromBlack);
+      const isSimilarToWhite = arePixelsSimilarByColor(WHITE_PIXEL, pixel, deviationFromWhite);
+
+      return isSimilarToBlack !== isSimilarToWhite;
+    })).toEqual(true);
   });
 });
 
