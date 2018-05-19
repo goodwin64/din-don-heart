@@ -1,5 +1,6 @@
 import chunk from 'lodash.chunk';
 import mean from 'lodash.mean';
+
 // import getDisease from './disease.helper';
 import { ERROR_IMAGE_SIZE, onImageError } from './error-handlers.helper';
 import { getImageData, mapRgbaToCustomPixels } from './canvas.helper';
@@ -126,7 +127,7 @@ export const getCellsSizeInRow = (
   return Math.round(row.length / cellsCount);
 };
 
-export function getCellsSizeInECG(pixelsByRows) {
+export function calculateCellsSizeInECG(pixelsByRows) {
   const cellsSizesByRows = pixelsByRows.map(row => getCellsSizeInRow(row));
   const averageCellSize = mean(cellsSizesByRows);
   const withoutFloorAndCeilRows = cellsSizesByRows.filter(cellSizeInRow =>
@@ -135,14 +136,23 @@ export function getCellsSizeInECG(pixelsByRows) {
   return Math.round(mean(withoutFloorAndCeilRows));
 }
 
-function calculateEcg(pixelsByColumns, imageData) {
-  return pixelsByColumns.map((column) => {
-    const theMostDarkPixel = findTheMostDarkPixel(column);
+function calculateEcgLetters(pixelsByColumns, imageData, shrinkFactor = 1) {
+  return chunk(pixelsByColumns, shrinkFactor).map((columnsChunk) => {
+    const p = columnsChunk.reduce((plotPointsInChunk, currentColumn) => {
+      const theMostDarkPixel = findTheMostDarkPixel(currentColumn);
+      return plotPointsInChunk.concat(theMostDarkPixel.index);
+    }, []);
+    const averageIndexInChunk = Math.round(mean(p));
+    const letter = getCurrentLetter(imageData, abc, averageIndexInChunk);
     return {
-      pixel: theMostDarkPixel,
-      letter: getCurrentLetter(imageData, abc, theMostDarkPixel.index),
+      letter,
+      index: averageIndexInChunk,
     };
   });
+}
+
+function calculateBaseLineEcg(pixelsList) {
+  return Math.round(pixelsList.reduce((acc, curr) => acc + curr.index, 0) / pixelsList.length);
 }
 
 export const getEcgResult = (workerResponse) => {
@@ -163,10 +173,14 @@ export const getEcgResult = (workerResponse) => {
   const pixelsByRows = getPixelsByLetters(imagePixels, imageData.width);
   const pixelsByColumns = getPixelsByTime(imagePixels, imageData.width);
 
-  const ecg = calculateEcg(pixelsByColumns, imageData);
+  const cellsSize = calculateCellsSizeInECG(pixelsByRows);
+  const plotPoints = calculateEcgLetters(pixelsByColumns, imageData, cellsSize);
+  const ecgLetters = plotPoints.map(plotPoint => plotPoint.letter);
+  const baseLineY = calculateBaseLineEcg(plotPoints);
 
-  const cellsSize = getCellsSizeInECG(pixelsByRows);
-  const baseLineY = ecg.reduce((acc, curr) => acc + curr.pixel.index, 0) / ecg.length;
-
-  return `ECG baseline: ${baseLineY}, cells size in px: ${cellsSize}`;
+  return {
+    baseLineY,
+    cellsSize,
+    ecgLetters,
+  };
 };

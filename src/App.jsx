@@ -37,10 +37,21 @@ export class App extends Component {
   };
 
   renderEcgResult() {
+    const {
+      baseLineY,
+      cellsSize,
+      ecgLetters,
+    } = this.state.ecgResult;
+
+    if (!baseLineY || !cellsSize || !ecgLetters) { return null; }
+
     return (
-      this.state.ecgResult
-        ? `Your ECG result: ${this.state.ecgResult}`
-        : ''
+      <div style={{ wordBreak: 'break-word', textAlign: 'left' }}>
+        <p>Your ECG result:</p>
+        <p>ECG base line (px): { baseLineY }</p>
+        <p>Cells size (px): { cellsSize }</p>
+        <p>ECG letters: { ecgLetters }</p>
+      </div>
     );
   }
 
@@ -56,7 +67,7 @@ export class App extends Component {
         </p>
         <input type="file" id="filepicker" onChange={this.onFileChange} />
         {/* <canvas id="outCanvas" /> */}
-        <p>{ this.renderEcgResult() }</p>
+        { this.renderEcgResult() }
       </div>
     );
   }
