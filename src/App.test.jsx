@@ -1,8 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { shallow } from 'enzyme';
+import { mount, shallow } from 'enzyme';
 
 import { App } from './App';
+import { FilePickerInput } from './App.styled';
 
 describe('App component', () => {
   let mockWorker;
@@ -20,22 +21,18 @@ describe('App component', () => {
     ReactDOM.unmountComponentAtNode(div);
   });
 
-  it('enzyme should work properly', () => {
-    const wrapper = shallow(<p>Motto (slogan)</p>);
-    expect(wrapper.text()).toEqual('Motto (slogan)');
-  });
-
   it('should test file input handler', () => {
-    const AppWrapper = shallow(<App imageParsingWorker={mockWorker} />);
+    const AppWrapper = mount(<App imageParsingWorker={mockWorker} />);
+    const filePickerInput = AppWrapper.find(FilePickerInput);
     const fileContents = 'file contents';
     const textFile = new Blob([fileContents], { type: 'text/plain' });
     const imageWorkerPostMessageSpy = jest.spyOn(mockWorker, 'postMessage');
 
-    AppWrapper.find('input').simulate('change', { target: { files: [textFile] } });
+    filePickerInput.simulate('change', { target: { files: [textFile] } });
     expect(imageWorkerPostMessageSpy).toHaveBeenCalledTimes(1);
     expect(imageWorkerPostMessageSpy).toHaveBeenCalledWith({ file: textFile });
 
-    AppWrapper.find('input').simulate('change', { target: { files: [] } });
+    filePickerInput.simulate('change', { target: { files: [] } });
     expect(imageWorkerPostMessageSpy).toHaveBeenCalledTimes(2);
     expect(imageWorkerPostMessageSpy).toHaveBeenCalledWith({ file: {} });
   });
