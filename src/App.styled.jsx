@@ -74,3 +74,5 @@ export const FilePickerLabel = Button.extend`
 `.withComponent('label');
 
 export const FilePickerContainer = styled.div``;
+
+export const AppDescription = styled.p``;

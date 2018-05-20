@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import './App.css';
 import { getEcgResult } from './helpers/image-parsing.helper';
 import {
+  AppDescription,
   CanvasContainer,
   ClearCanvasButton,
   FilePickerContainer,
@@ -12,8 +13,10 @@ import {
   ImageOutCanvas,
 } from './App.styled';
 import { CLOSE_CHARACTER } from './constants';
+import strings, { CODE_ENG, CODE_RUS } from './localization';
 
 const defaultFile = {};
+const defaultLanguage = 'ENG';
 
 export class App extends Component {
   static propTypes = {
@@ -32,6 +35,7 @@ export class App extends Component {
         ecgLetters: [],
         plotPoints: [],
       },
+      currentLanguage: strings.getLanguage() || defaultLanguage,
     };
     this.ecgCanvasOut = null;
   }
@@ -51,6 +55,12 @@ export class App extends Component {
   onFileChange = (inputEvent) => {
     const file = inputEvent.target.files[0] || defaultFile;
     this.props.imageParsingWorker.postMessage({ file });
+  };
+
+  onLanguageChange = (event) => {
+    const languageCode = event.target.value;
+    this.setState({ currentLanguage: languageCode });
+    strings.setLanguage(languageCode);
   };
 
   clearCanvas = () => {
@@ -113,10 +123,10 @@ export class App extends Component {
 
     return (
       <div className="ecg-result">
-        <p>Your ECG result:</p>
-        <p>ECG base line (px): {this.state.ecgResult.baseLineY}</p>
-        <p>Cells size (px): {this.state.ecgResult.cellsSize}</p>
-        <p>ECG letters: {this.state.ecgResult.ecgLetters}</p>
+        <p>{ strings.ecgResultTitle }:</p>
+        <p>{ strings.baseLineY }: {this.state.ecgResult.baseLineY}</p>
+        <p>{ strings.cellsSize }: {this.state.ecgResult.cellsSize}</p>
+        <p>{ strings.ecgLetters }: {this.state.ecgResult.ecgLetters}</p>
       </div>
     );
   }
@@ -129,10 +139,17 @@ export class App extends Component {
             Din-Don
             <span className="App-logo">❤</span>
           </h1>
+          <select
+            name="language"
+            id="select-language"
+            value={this.state.currentLanguage}
+            onChange={this.onLanguageChange}
+          >
+            <option value={CODE_ENG}>English</option>
+            <option value={CODE_RUS}>Русский</option>
+          </select>
         </header>
-        <p className="motto">
-          Everything you should know about your heart
-        </p>
+        <AppDescription>{strings.appDescription}</AppDescription>
         <FilePickerContainer>
           <FilePickerInput
             type="file"
@@ -143,8 +160,8 @@ export class App extends Component {
             }}
           />
           <FilePickerLabel htmlFor="file-picker">
-            <span role="img" aria-label="Choose a file">📁</span>
-            Choose a file
+            <span role="img" aria-label={strings.chooseFile}>📁</span>
+            {strings.chooseFile}
           </FilePickerLabel>
         </FilePickerContainer>
         <CanvasContainer>
@@ -160,7 +177,7 @@ export class App extends Component {
             <ClearCanvasButton
               onClick={this.clearEcgResults}
             >
-              { CLOSE_CHARACTER }
+              {CLOSE_CHARACTER}
             </ClearCanvasButton>
           }
         </CanvasContainer>
