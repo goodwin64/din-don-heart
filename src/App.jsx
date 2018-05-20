@@ -3,7 +3,13 @@ import PropTypes from 'prop-types';
 
 import './App.css';
 import { getEcgResult } from './helpers/image-parsing.helper';
-import { CanvasContainer, ClearCanvasButton } from './App.styled';
+import {
+  CanvasContainer,
+  ClearCanvasButton,
+  FilePickerContainer,
+  FilePickerInput,
+  FilePickerLabel,
+} from './App.styled';
 
 const defaultFile = {};
 
@@ -94,14 +100,16 @@ export class App extends Component {
   }
 
   renderEcgTextResult() {
-    if (!this.isEcgResultVisible()) { return null; }
+    if (!this.isEcgResultVisible()) {
+      return null;
+    }
 
     return (
       <div className="ecg-result">
         <p>Your ECG result:</p>
-        <p>ECG base line (px): { this.state.ecgResult.baseLineY }</p>
-        <p>Cells size (px): { this.state.ecgResult.cellsSize }</p>
-        <p>ECG letters: { this.state.ecgResult.ecgLetters }</p>
+        <p>ECG base line (px): {this.state.ecgResult.baseLineY}</p>
+        <p>Cells size (px): {this.state.ecgResult.cellsSize}</p>
+        <p>ECG letters: {this.state.ecgResult.ecgLetters}</p>
       </div>
     );
   }
@@ -118,25 +126,35 @@ export class App extends Component {
         <p className="motto">
           Everything you should know about your heart
         </p>
-        <input
-          type="file"
-          className="filepicker"
-          onChange={this.onFileChange}
-          ref={(node) => { this.filePicker = node; }}
-        />
+        <FilePickerContainer>
+          <FilePickerInput
+            type="file"
+            id="file-picker"
+            onChange={this.onFileChange}
+            ref={(node) => {
+              this.filePicker = node;
+            }}
+          />
+          <FilePickerLabel htmlFor="file-picker">
+            <span role="img" aria-label="Choose a file">📁</span>
+            Choose a file
+          </FilePickerLabel>
+        </FilePickerContainer>
         <CanvasContainer>
           <canvas
             height={240}
             width={720}
             id="outCanvas"
-            ref={(node) => { this.ecgCanvasOut = node; }}
+            ref={(node) => {
+              this.ecgCanvasOut = node;
+            }}
           />
           {
             this.isEcgResultVisible()
             && <ClearCanvasButton onClick={this.clearEcgResults}>X</ClearCanvasButton>
           }
         </CanvasContainer>
-        { this.renderEcgTextResult() }
+        {this.renderEcgTextResult()}
       </div>
     );
   }
