@@ -1,39 +1,50 @@
 @import url('https://fonts.googleapis.com/css?family=Tajawal');
 
 * {
-  font-family: 'Tajawal', sans-serif;
+    font-family: 'Tajawal', sans-serif;
 }
 
 .App {
-  text-align: center;
+    text-align: center;
 }
 
 .App-logo {
-  animation: App-logo-heart-bit infinite 2s ease-in;
-  color: #df3937;
-}
-
-.App-header {
-  background-color: #222;
-  padding: 20px;
-  color: white;
-}
-
-.App-title {}
-
-.App-intro {
-  font-size: large;
+    animation: App-logo-heart-bit infinite 3s ease-in-out;
+    color: #dc5759;
 }
 
 @keyframes App-logo-heart-bit {
-  50% { color: #ff6264; }
+    50% {
+        color: #df3937;
+    }
+}
+
+.App-header {
+    background-color: #222;
+    padding: 20px;
+    color: white;
+}
+
+.App-title {
+}
+
+.App-intro {
+    font-size: large;
 }
 
 #outCanvas {
-  margin: 15px;
+    margin: 0 auto;
+    display: block;
 }
 
 .ecg-result {
-  word-break: break-all;
-  text-align: left;
+    word-break: break-all;
+    text-align: left;
+}
+
+@media only screen and (max-width: 720px) {
+    #outCanvas {
+        width: 480px;
+        height: 160px;
+    }
 }

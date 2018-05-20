@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 
 import './App.css';
 import { getEcgResult } from './helpers/image-parsing.helper';
+import { CanvasContainer, ClearCanvasButton } from './App.styled';
 
 const defaultFile = {};
 
@@ -31,8 +32,8 @@ export class App extends Component {
     const onMessageWorkerHandler = (workerEvent) => {
       const workerResponse = workerEvent.data;
       const ecgResult = getEcgResult(workerResponse);
-      this.setState({ ecgResult });
       if (workerResponse.constructor === ImageBitmap) {
+        this.setState({ ecgResult });
         this.renderEcgImageResult(workerResponse);
       }
     };
@@ -42,6 +43,24 @@ export class App extends Component {
   onFileChange = (inputEvent) => {
     const file = inputEvent.target.files[0] || defaultFile;
     this.props.imageParsingWorker.postMessage({ file });
+  };
+
+  clearEcgResults = () => {
+    const canvas = this.ecgCanvasOut;
+    const ctx = canvas.getContext('2d');
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    this.setState({ ecgResult: {} });
+    this.filePicker.value = '';
+  };
+
+  isEcgResultVisible = () => {
+    const {
+      baseLineY,
+      cellsSize,
+      ecgLetters,
+    } = this.state.ecgResult;
+
+    return Boolean(baseLineY && cellsSize && ecgLetters);
   };
 
   /**
@@ -58,7 +77,6 @@ export class App extends Component {
     const ratio = Math.min(hRatio, vRatio);
     const centerShiftX = (canvas.width - (image.width * ratio)) / 2;
     const centerShiftY = (canvas.height - (image.height * ratio)) / 2;
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.drawImage(
       image, 0, 0, image.width, image.height,
       centerShiftX, centerShiftY, image.width * ratio, image.height * ratio,
@@ -76,20 +94,14 @@ export class App extends Component {
   }
 
   renderEcgTextResult() {
-    const {
-      baseLineY,
-      cellsSize,
-      ecgLetters,
-    } = this.state.ecgResult;
-
-    if (!baseLineY || !cellsSize || !ecgLetters) { return null; }
+    if (!this.isEcgResultVisible()) { return null; }
 
     return (
       <div className="ecg-result">
         <p>Your ECG result:</p>
-        <p>ECG base line (px): { baseLineY }</p>
-        <p>Cells size (px): { cellsSize }</p>
-        <p>ECG letters: { ecgLetters }</p>
+        <p>ECG base line (px): { this.state.ecgResult.baseLineY }</p>
+        <p>Cells size (px): { this.state.ecgResult.cellsSize }</p>
+        <p>ECG letters: { this.state.ecgResult.ecgLetters }</p>
       </div>
     );
   }
@@ -106,13 +118,24 @@ export class App extends Component {
         <p className="motto">
           Everything you should know about your heart
         </p>
-        <input type="file" id="filepicker" onChange={this.onFileChange} />
-        <canvas
-          height={240}
-          width={720}
-          id="outCanvas"
-          ref={(node) => { this.ecgCanvasOut = node; }}
+        <input
+          type="file"
+          className="filepicker"
+          onChange={this.onFileChange}
+          ref={(node) => { this.filePicker = node; }}
         />
+        <CanvasContainer>
+          <canvas
+            height={240}
+            width={720}
+            id="outCanvas"
+            ref={(node) => { this.ecgCanvasOut = node; }}
+          />
+          {
+            this.isEcgResultVisible()
+            && <ClearCanvasButton onClick={this.clearEcgResults}>X</ClearCanvasButton>
+          }
+        </CanvasContainer>
         { this.renderEcgTextResult() }
       </div>
     );
