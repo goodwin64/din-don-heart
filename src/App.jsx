@@ -9,6 +9,7 @@ import {
   FilePickerContainer,
   FilePickerInput,
   FilePickerLabel,
+  ImageOutCanvas,
 } from './App.styled';
 import { CLOSE_CHARACTER } from './constants';
 
@@ -52,10 +53,14 @@ export class App extends Component {
     this.props.imageParsingWorker.postMessage({ file });
   };
 
-  clearEcgResults = () => {
+  clearCanvas = () => {
     const canvas = this.ecgCanvasOut;
     const ctx = canvas.getContext('2d');
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+  };
+
+  clearEcgResults = () => {
+    this.clearCanvas();
     this.setState({ ecgResult: {} });
     this.filePicker.value = '';
   };
@@ -77,6 +82,7 @@ export class App extends Component {
    */
   renderEcgImageResult(image) {
     const { plotPoints, cellsSize } = this.state.ecgResult;
+    this.clearCanvas();
     const canvas = this.ecgCanvasOut;
     const ctx = canvas.getContext('2d');
     const hRatio = canvas.width / image.width;
@@ -142,11 +148,10 @@ export class App extends Component {
           </FilePickerLabel>
         </FilePickerContainer>
         <CanvasContainer>
-          <canvas
+          <ImageOutCanvas
             height={240}
             width={720}
-            id="outCanvas"
-            ref={(node) => {
+            innerRef={(node) => {
               this.ecgCanvasOut = node;
             }}
           />

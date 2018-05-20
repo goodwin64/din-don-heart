@@ -41,10 +41,3 @@
     word-break: break-all;
     text-align: left;
 }
-
-@media only screen and (max-width: 720px) {
-    #outCanvas {
-        width: 480px;
-        height: 160px;
-    }
-}
