@@ -4,9 +4,8 @@ import mean from 'lodash.mean';
 // import getDisease from './disease.helper';
 import { ERROR_IMAGE_SIZE, onImageError } from './error-handlers.helper';
 import { getImageData, mapRgbaToCustomPixels } from './canvas.helper';
+import { MAX_IMAGE_HEIGHT, MAX_IMAGE_WIDTH } from '../constants';
 
-const MAX_IMAGE_WIDTH = 4000;
-const MAX_IMAGE_HEIGHT = 3000;
 const abc = 'ABCDEFGHIKLMNOPQRSTVXYZ'.split('');
 
 export const WHITE_PIXEL = { r: 255, g: 255, b: 255 };

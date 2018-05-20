@@ -10,6 +10,7 @@ import {
   FilePickerInput,
   FilePickerLabel,
 } from './App.styled';
+import { CLOSE_CHARACTER } from './constants';
 
 const defaultFile = {};
 
@@ -131,7 +132,7 @@ export class App extends Component {
             type="file"
             id="file-picker"
             onChange={this.onFileChange}
-            ref={(node) => {
+            innerRef={(node) => {
               this.filePicker = node;
             }}
           />
@@ -150,8 +151,12 @@ export class App extends Component {
             }}
           />
           {
-            this.isEcgResultVisible()
-            && <ClearCanvasButton onClick={this.clearEcgResults}>X</ClearCanvasButton>
+            this.isEcgResultVisible() &&
+            <ClearCanvasButton
+              onClick={this.clearEcgResults}
+            >
+              { CLOSE_CHARACTER }
+            </ClearCanvasButton>
           }
         </CanvasContainer>
         {this.renderEcgTextResult()}
