@@ -30,6 +30,7 @@ export const LanguageOptionContainer = styled.div`
   cursor: pointer;
 
   &:hover {
+    color: ${colors.white};
     background-color: ${colors.dark};
   }
 `;

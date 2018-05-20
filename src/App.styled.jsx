@@ -25,12 +25,12 @@ const CANVAS_HEIGHT_PC = CANVAS_WIDTH_PC / 3;
 const CANVAS_WIDTH_MOBILE = 480;
 const CANVAS_HEIGHT_MOBILE = CANVAS_WIDTH_MOBILE / 3;
 
-export const ImageOutCanvas = styled.canvas`
+export const EcgResultCanvas = styled.canvas`
   width: ${CANVAS_WIDTH_PC}px;
   height: ${CANVAS_HEIGHT_PC}px;
 `;
 
-export const CanvasContainer = styled.div`
+export const EcgResultContainer = styled.div`
   position: relative;
   margin: 20px auto;
   width: ${CANVAS_WIDTH_PC}px;
@@ -40,7 +40,7 @@ export const CanvasContainer = styled.div`
     width: ${CANVAS_WIDTH_MOBILE}px;
     height: ${CANVAS_HEIGHT_MOBILE}px;
 
-    ${ImageOutCanvas} {
+    ${EcgResultCanvas} {
       width: ${CANVAS_WIDTH_MOBILE}px;
       height: ${CANVAS_HEIGHT_MOBILE}px;
     }

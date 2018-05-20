@@ -3,20 +3,23 @@ import PropTypes from 'prop-types';
 
 import './App.css';
 import { getEcgResult } from './helpers/image-parsing.helper';
-import {
-  AppDescription,
-  CanvasContainer,
-  ClearCanvasButton,
-  FilePickerContainer,
-  FilePickerInput,
-  FilePickerLabel,
-  ImageOutCanvas,
-} from './App.styled';
-import { CLOSE_CHARACTER } from './constants';
+import { AppDescription } from './App.styled';
 import LanguageSelector from './components/LanguageSelector/LanguageSelector';
 import strings, { defaultLanguage } from './localization';
+import Header from './components/Header/Header';
+import FilePicker from './components/FilePicker/FilePicker';
+import EcgResults from './components/EcgResults/EcgResults';
 
-const defaultFile = {};
+// export const noop = () => {};
+
+const initialEcgLetters = [];
+const initialPlotPoints = [];
+const initialEcgResult = {
+  baseLineY: 0,
+  cellsSize: 0,
+  ecgLetters: initialEcgLetters,
+  plotPoints: initialPlotPoints,
+};
 
 export class App extends Component {
   static propTypes = {
@@ -29,32 +32,32 @@ export class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      ecgResult: {
-        baseLineY: 0,
-        cellsSize: 0,
-        ecgLetters: [],
-        plotPoints: [],
-      },
+      ecgResult: initialEcgResult,
+      shouldCurrentFileBeCleared: false,
+      currentImage: null,
       currentLanguage: strings.getLanguage() || defaultLanguage,
+      isEcgResultVisible: false,
     };
-    this.ecgCanvasOut = null;
   }
 
   componentDidMount() {
     const onMessageWorkerHandler = (workerEvent) => {
       const workerResponse = workerEvent.data;
-      const ecgResult = getEcgResult(workerResponse);
       if (workerResponse.constructor === ImageBitmap) {
-        this.setState({ ecgResult });
-        this.renderEcgImageResult(workerResponse);
+        const ecgResult = getEcgResult(workerResponse);
+        this.setState({
+          isEcgResultVisible: true,
+          currentImage: workerResponse,
+          ecgResult,
+        });
       }
     };
     this.props.imageParsingWorker.setOnMessageHandler(onMessageWorkerHandler);
   }
 
-  onFileChange = (inputEvent) => {
-    const file = inputEvent.target.files[0] || defaultFile;
+  onFileChange = (file) => {
     this.props.imageParsingWorker.postMessage({ file });
+    this.setState({ shouldCurrentFileBeCleared: true });
   };
 
   onLanguageChange = (languageCode) => {
@@ -63,122 +66,56 @@ export class App extends Component {
     this.setState({ currentLanguage });
   };
 
-  clearCanvas = () => {
-    const canvas = this.ecgCanvasOut;
-    const ctx = canvas.getContext('2d');
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+  clearEcgResult = () => {
+    this.setState({ isEcgResultVisible: false });
   };
 
-  clearEcgResults = () => {
-    this.clearCanvas();
-    this.setState({ ecgResult: {} });
-    this.filePicker.value = '';
+  beforeCurrentFileReset = () => {
+    this.setState({ shouldCurrentFileBeCleared: true });
   };
 
-  isEcgResultVisible = () => {
-    const {
-      baseLineY,
-      cellsSize,
-      ecgLetters,
-    } = this.state.ecgResult;
-
-    return Boolean(baseLineY && cellsSize && ecgLetters);
+  afterCurrentFileReset = () => {
+    this.setState({ shouldCurrentFileBeCleared: false });
   };
-
-  /**
-   * Renders a copy of image into canvas.
-   * Keeps original aspect ratio.
-   * Centers image inside canvas.
-   */
-  renderEcgImageResult(image) {
-    const { plotPoints, cellsSize } = this.state.ecgResult;
-    this.clearCanvas();
-    const canvas = this.ecgCanvasOut;
-    const ctx = canvas.getContext('2d');
-    const hRatio = canvas.width / image.width;
-    const vRatio = canvas.height / image.height;
-    const ratio = Math.min(hRatio, vRatio);
-    const centerShiftX = (canvas.width - (image.width * ratio)) / 2;
-    const centerShiftY = (canvas.height - (image.height * ratio)) / 2;
-    ctx.drawImage(
-      image, 0, 0, image.width, image.height,
-      centerShiftX, centerShiftY, image.width * ratio, image.height * ratio,
-    );
-
-    ctx.font = `${cellsSize}px Georgia`;
-    ctx.shadowColor = '#c20001';
-    ctx.shadowBlur = 10;
-    ctx.fillStyle = '#fff';
-    plotPoints.forEach((plotPoint, xIndex) => {
-      const x = (xIndex * cellsSize * ratio) + centerShiftX;
-      const y = (plotPoint.index * ratio) + centerShiftY;
-      ctx.fillText(plotPoint.letter, x, y);
-    });
-  }
-
-  renderEcgTextResult() {
-    if (!this.isEcgResultVisible()) {
-      return null;
-    }
-
-    return (
-      <div className="ecg-result">
-        <p>{ strings.ecgResultTitle }:</p>
-        <p>{ strings.baseLineY }: {this.state.ecgResult.baseLineY}</p>
-        <p>{ strings.cellsSize }: {this.state.ecgResult.cellsSize}</p>
-        <p>{ strings.ecgLetters }: {this.state.ecgResult.ecgLetters}</p>
-      </div>
-    );
-  }
 
   render() {
-    const { currentLanguage } = this.state;
+    const {
+      currentImage,
+      currentLanguage,
+      isEcgResultVisible,
+      shouldCurrentFileBeCleared,
+      ecgResult: {
+        baseLineY,
+        cellsSize,
+        ecgLetters,
+        plotPoints,
+      },
+    } = this.state;
 
     return (
       <div className="App">
-        <header className="App-header">
-          <h1 className="App-title">
-            Din-Don
-            <span className="App-logo">❤</span>
-          </h1>
-          <LanguageSelector
-            currentLanguage={currentLanguage}
-            onLanguageChange={this.onLanguageChange}
-          />
-        </header>
+        <Header />
+        <LanguageSelector
+          currentLanguage={currentLanguage}
+          onLanguageChange={this.onLanguageChange}
+        />
         <AppDescription>{strings.appDescription}</AppDescription>
-        <FilePickerContainer>
-          <FilePickerInput
-            type="file"
-            id="file-picker"
-            onChange={this.onFileChange}
-            innerRef={(node) => {
-              this.filePicker = node;
-            }}
+        <FilePicker
+          afterCurrentFileReset={this.afterCurrentFileReset}
+          onFileChange={this.onFileChange}
+          shouldCurrentFileBeCleared={shouldCurrentFileBeCleared}
+        />
+        {isEcgResultVisible && (
+          <EcgResults
+            baseLineY={baseLineY}
+            cellsSize={cellsSize}
+            ecgLetters={ecgLetters}
+            plotPoints={plotPoints}
+            currentImage={currentImage}
+            clearEcgResult={this.clearEcgResult}
+            resetCurrentFile={this.beforeCurrentFileReset}
           />
-          <FilePickerLabel htmlFor="file-picker">
-            <span role="img" aria-label={strings.chooseFile}>📁</span>
-            {strings.chooseFile}
-          </FilePickerLabel>
-        </FilePickerContainer>
-        <CanvasContainer>
-          <ImageOutCanvas
-            height={240}
-            width={720}
-            innerRef={(node) => {
-              this.ecgCanvasOut = node;
-            }}
-          />
-          {
-            this.isEcgResultVisible() &&
-            <ClearCanvasButton
-              onClick={this.clearEcgResults}
-            >
-              {CLOSE_CHARACTER}
-            </ClearCanvasButton>
-          }
-        </CanvasContainer>
-        {this.renderEcgTextResult()}
+        )}
       </div>
     );
   }
