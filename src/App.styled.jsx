@@ -1,15 +1,16 @@
 import 'react';
 import styled from 'styled-components';
 
-const colors = {
-  black: '#444',
+export const colors = {
+  black: '#000',
+  dark: '#444',
   red: '#f50000',
   white: '#fff',
 };
 
 const Button = styled.button`
   border: 0;
-  background-color: ${colors.black};
+  background-color: ${colors.dark};
   cursor: pointer;
   user-select: none;
   

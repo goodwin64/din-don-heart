@@ -3,6 +3,8 @@ import LocalizedStrings from 'react-localization';
 export const CODE_ENG = 'ENG';
 export const CODE_RUS = 'RUS';
 
+export const defaultLanguage = CODE_ENG;
+
 const strings = new LocalizedStrings({
   [CODE_ENG]: {
     appDescription: 'Everything you should know about your heart',

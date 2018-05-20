@@ -25,7 +25,7 @@ Optional nice features:
 - [x] Animated logo
 - [ ] Feedback
 - [ ] User actions analytics (with GDPR)
-- [ ] Localization (EN, RU)
+- [x] Localization (EN, RU)
 
 Easy development:
 - [x] Travis CI configuration

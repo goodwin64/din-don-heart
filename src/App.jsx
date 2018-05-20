@@ -13,10 +13,10 @@ import {
   ImageOutCanvas,
 } from './App.styled';
 import { CLOSE_CHARACTER } from './constants';
-import strings, { CODE_ENG, CODE_RUS } from './localization';
+import LanguageSelector from './components/LanguageSelector/LanguageSelector';
+import strings, { defaultLanguage } from './localization';
 
 const defaultFile = {};
-const defaultLanguage = 'ENG';
 
 export class App extends Component {
   static propTypes = {
@@ -57,10 +57,10 @@ export class App extends Component {
     this.props.imageParsingWorker.postMessage({ file });
   };
 
-  onLanguageChange = (event) => {
-    const languageCode = event.target.value;
-    this.setState({ currentLanguage: languageCode });
-    strings.setLanguage(languageCode);
+  onLanguageChange = (languageCode) => {
+    const currentLanguage = languageCode || defaultLanguage;
+    strings.setLanguage(currentLanguage);
+    this.setState({ currentLanguage });
   };
 
   clearCanvas = () => {
@@ -105,7 +105,7 @@ export class App extends Component {
       centerShiftX, centerShiftY, image.width * ratio, image.height * ratio,
     );
 
-    ctx.font = '18px Georgia';
+    ctx.font = `${cellsSize}px Georgia`;
     ctx.shadowColor = '#c20001';
     ctx.shadowBlur = 10;
     ctx.fillStyle = '#fff';
@@ -132,6 +132,8 @@ export class App extends Component {
   }
 
   render() {
+    const { currentLanguage } = this.state;
+
     return (
       <div className="App">
         <header className="App-header">
@@ -139,15 +141,10 @@ export class App extends Component {
             Din-Don
             <span className="App-logo">❤</span>
           </h1>
-          <select
-            name="language"
-            id="select-language"
-            value={this.state.currentLanguage}
-            onChange={this.onLanguageChange}
-          >
-            <option value={CODE_ENG}>English</option>
-            <option value={CODE_RUS}>Русский</option>
-          </select>
+          <LanguageSelector
+            currentLanguage={currentLanguage}
+            onLanguageChange={this.onLanguageChange}
+          />
         </header>
         <AppDescription>{strings.appDescription}</AppDescription>
         <FilePickerContainer>
