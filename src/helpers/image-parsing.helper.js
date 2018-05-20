@@ -6,7 +6,11 @@ import { ERROR_IMAGE_SIZE, onImageError } from './error-handlers.helper';
 import { getImageData, mapRgbaToCustomPixels } from './canvas.helper';
 import { MAX_IMAGE_HEIGHT, MAX_IMAGE_WIDTH } from '../constants';
 
-const abc = 'ABCDEFGHIKLMNOPQRSTVXYZ'.split('');
+/**
+ * Reverse because server expects A to Z (bottom to top)
+ * But the image is parsed from top to bottom
+ */
+const abc = 'ABCDEFGHIKLMNOPQRSTVXYZ'.split('').reverse();
 
 export const WHITE_PIXEL = { r: 255, g: 255, b: 255 };
 export const GREY_PIXEL = { r: 128, g: 128, b: 128 };
