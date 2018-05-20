@@ -4,12 +4,12 @@ import PropTypes from 'prop-types';
 import { EcgResultContainer, EcgResultCanvas, ClearCanvasButton } from '../../App.styled';
 import { CLOSE_CHARACTER } from '../../constants';
 import strings from '../../localization';
+import { ecgLettersPT, diseaseResultPT } from '../../helpers/proptypes.helper';
 
 class EcgResults extends Component {
   static propTypes = {
     baseLineY: PropTypes.number.isRequired,
     cellsSize: PropTypes.number.isRequired,
-    ecgLetters: PropTypes.arrayOf(PropTypes.string).isRequired,
     plotPoints: PropTypes.arrayOf(PropTypes.shape({
       index: PropTypes.number,
       letter: PropTypes.string,
@@ -17,6 +17,8 @@ class EcgResults extends Component {
     clearEcgResult: PropTypes.func.isRequired,
     resetCurrentFile: PropTypes.func.isRequired,
     currentImage: PropTypes.shape({}).isRequired, // image bitmap
+    ecgLetters: ecgLettersPT.isRequired,
+    diseaseResult: diseaseResultPT.isRequired,
   };
 
   componentDidMount() {
@@ -77,6 +79,7 @@ class EcgResults extends Component {
         <p>{strings.baseLineY}: {this.props.baseLineY}</p>
         <p>{strings.cellsSize}: {this.props.cellsSize}</p>
         <p>{strings.ecgLetters}: {this.props.ecgLetters}</p>
+        <p>{strings.diseaseResult}: {this.props.diseaseResult}</p>
       </div>
     );
   }

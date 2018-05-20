@@ -4,11 +4,13 @@ import PropTypes from 'prop-types';
 import './App.css';
 import { getEcgResult } from './helpers/image-parsing.helper';
 import { AppDescription } from './App.styled';
-import LanguageSelector from './components/LanguageSelector/LanguageSelector';
 import strings, { defaultLanguage } from './localization';
+
+import LanguageSelector from './components/LanguageSelector/LanguageSelector';
 import Header from './components/Header/Header';
 import FilePicker from './components/FilePicker/FilePicker';
 import EcgResults from './components/EcgResults/EcgResults';
+import DiseaseDetector from './components/DiseaseDetector/DiseaseDetector';
 
 // export const noop = () => {};
 
@@ -37,6 +39,7 @@ export class App extends Component {
       currentImage: null,
       currentLanguage: strings.getLanguage() || defaultLanguage,
       isEcgResultVisible: false,
+      diseaseResult: '',
     };
   }
 
@@ -66,16 +69,24 @@ export class App extends Component {
     this.setState({ currentLanguage });
   };
 
-  clearEcgResult = () => {
-    this.setState({ isEcgResultVisible: false });
+  onDiseaseAnalysisResult = (diseaseResult) => {
+    this.setState({ diseaseResult });
+  };
+
+  afterCurrentFileReset = () => {
+    this.setState({ shouldCurrentFileBeCleared: false });
   };
 
   beforeCurrentFileReset = () => {
     this.setState({ shouldCurrentFileBeCleared: true });
   };
 
-  afterCurrentFileReset = () => {
-    this.setState({ shouldCurrentFileBeCleared: false });
+  clearEcgResult = () => {
+    this.setState({
+      isEcgResultVisible: false,
+      diseaseResult: '',
+      ecgResult: initialEcgResult,
+    });
   };
 
   render() {
@@ -90,6 +101,7 @@ export class App extends Component {
         ecgLetters,
         plotPoints,
       },
+      diseaseResult,
     } = this.state;
 
     return (
@@ -114,6 +126,13 @@ export class App extends Component {
             currentImage={currentImage}
             clearEcgResult={this.clearEcgResult}
             resetCurrentFile={this.beforeCurrentFileReset}
+            diseaseResult={diseaseResult}
+          />
+        )}
+        {ecgLetters.length > 0 && (
+          <DiseaseDetector
+            ecgLetters={ecgLetters}
+            onDiseaseResult={this.onDiseaseAnalysisResult}
           />
         )}
       </div>
