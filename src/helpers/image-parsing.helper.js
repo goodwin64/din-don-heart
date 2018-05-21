@@ -178,13 +178,16 @@ export const getEcgResult = (workerResponse) => {
 
   const cellsSize = calculateCellsSizeInECG(pixelsByRows);
   const plotPoints = calculateEcgLetters(pixelsByColumns, imageData, cellsSize);
+  const plotPointsDetailed = calculateEcgLetters(pixelsByColumns, imageData, 1);
   const ecgLetters = plotPoints.map(plotPoint => plotPoint.letter);
+  const ecgLettersDetailed = plotPointsDetailed.map(plotPoint => plotPoint.letter);
   const baseLineY = calculateBaseLineEcg(plotPoints);
 
   return {
     baseLineY,
     cellsSize,
     ecgLetters,
+    ecgLettersDetailed,
     plotPoints,
   };
 };

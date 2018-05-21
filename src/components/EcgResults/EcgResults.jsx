@@ -18,6 +18,7 @@ class EcgResults extends Component {
     resetCurrentFile: PropTypes.func.isRequired,
     currentImage: PropTypes.shape({}).isRequired, // image bitmap
     ecgLetters: ecgLettersPT.isRequired,
+    ecgLettersDetailed: ecgLettersPT.isRequired,
     diseaseResult: diseaseResultPT.isRequired,
   };
 
@@ -79,6 +80,7 @@ class EcgResults extends Component {
         <p>{strings.baseLineY}: {this.props.baseLineY}</p>
         <p>{strings.cellsSize}: {this.props.cellsSize}</p>
         <p>{strings.ecgLetters}: {this.props.ecgLetters}</p>
+        <p>{strings.ecgLettersDetailed}: {this.props.ecgLettersDetailed}</p>
         <p>{strings.diseaseResult}: {this.props.diseaseResult}</p>
       </div>
     );

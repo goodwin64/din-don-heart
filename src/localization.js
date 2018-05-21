@@ -13,6 +13,7 @@ const strings = new LocalizedStrings({
     baseLineY: 'ECG base line coordinates (px)',
     cellsSize: 'Cells size (px)',
     ecgLetters: 'ECG letters',
+    ecgLettersDetailed: 'ECG letters (full)',
     diseaseResult: 'Disease result',
   },
   [CODE_RUS]: {
@@ -22,6 +23,7 @@ const strings = new LocalizedStrings({
     baseLineY: 'Координаты базовой линии (пиксели)',
     cellsSize: 'Размер клеток (пиксели)',
     ecgLetters: 'Лексема ЭКГ',
+    ecgLettersDetailed: 'Расширенная лексема ЭКГ',
     diseaseResult: 'Результат анализа ЭКГ',
   },
 });

@@ -15,11 +15,13 @@ import DiseaseDetector from './components/DiseaseDetector/DiseaseDetector';
 // export const noop = () => {};
 
 const initialEcgLetters = [];
+const initialEcgLettersDetailed = [];
 const initialPlotPoints = [];
 const initialEcgResult = {
   baseLineY: 0,
   cellsSize: 0,
   ecgLetters: initialEcgLetters,
+  ecgLettersDetailed: initialEcgLettersDetailed,
   plotPoints: initialPlotPoints,
 };
 
@@ -99,6 +101,7 @@ export class App extends Component {
         baseLineY,
         cellsSize,
         ecgLetters,
+        ecgLettersDetailed,
         plotPoints,
       },
       diseaseResult,
@@ -122,6 +125,7 @@ export class App extends Component {
             baseLineY={baseLineY}
             cellsSize={cellsSize}
             ecgLetters={ecgLetters}
+            ecgLettersDetailed={ecgLettersDetailed}
             plotPoints={plotPoints}
             currentImage={currentImage}
             clearEcgResult={this.clearEcgResult}
