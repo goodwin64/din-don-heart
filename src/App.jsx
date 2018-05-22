@@ -11,6 +11,7 @@ import Header from './components/Header/Header';
 import FilePicker from './components/FilePicker/FilePicker';
 import EcgResults from './components/EcgResults/EcgResults';
 import DiseaseDetector from './components/DiseaseDetector/DiseaseDetector';
+import { ECG_RESULT_BENCHMARKING_LABEL } from './constants';
 
 // export const noop = () => {};
 
@@ -49,7 +50,10 @@ export class App extends Component {
     const onMessageWorkerHandler = (workerEvent) => {
       const workerResponse = workerEvent.data;
       if (workerResponse.constructor === ImageBitmap) {
+        console.time(ECG_RESULT_BENCHMARKING_LABEL);
         const ecgResult = getEcgResult(workerResponse);
+        console.timeEnd(ECG_RESULT_BENCHMARKING_LABEL);
+
         this.setState({
           isEcgResultVisible: true,
           currentImage: workerResponse,
