@@ -4,16 +4,13 @@ import PropTypes from 'prop-types';
 import { EcgResultContainer, EcgResultCanvas, ClearCanvasButton } from '../../App.styled';
 import { CLOSE_CHARACTER } from '../../constants';
 import strings from '../../localization';
-import { ecgLettersPT, diseaseResultPT } from '../../helpers/proptypes.helper';
+import { ecgLettersPT, diseaseResultPT, plotIndexPT } from '../../helpers/proptypes.helper';
 
 class EcgResults extends Component {
   static propTypes = {
     baseLineY: PropTypes.number.isRequired,
     cellsSize: PropTypes.number.isRequired,
-    plotPoints: PropTypes.arrayOf(PropTypes.shape({
-      index: PropTypes.number,
-      letter: PropTypes.string,
-    })).isRequired,
+    plotIndices: PropTypes.arrayOf(plotIndexPT).isRequired,
     clearEcgResult: PropTypes.func.isRequired,
     resetCurrentFile: PropTypes.func.isRequired,
     currentImage: PropTypes.shape({}).isRequired, // image bitmap
@@ -49,7 +46,13 @@ class EcgResults extends Component {
    * Centers image inside canvas.
    */
   renderEcgImageResult = (props) => {
-    const { currentImage: image, plotPoints, cellsSize } = props;
+    const {
+      currentImage: image,
+      plotIndices,
+      cellsSize,
+      ecgLetters,
+    } = props;
+
     const canvas = this.ecgCanvasOut;
     const ctx = canvas.getContext('2d');
     const hRatio = canvas.width / image.width;
@@ -66,10 +69,11 @@ class EcgResults extends Component {
     ctx.shadowColor = '#c20001';
     ctx.shadowBlur = 10;
     ctx.fillStyle = '#fff';
-    plotPoints.forEach((plotPoint, xIndex) => {
+    plotIndices.forEach((yIndex, xIndex) => {
+      const letter = ecgLetters[xIndex];
       const x = (xIndex * cellsSize * ratio) + centerShiftX;
-      const y = (plotPoint.index * ratio) + centerShiftY;
-      ctx.fillText(plotPoint.letter, x, y);
+      const y = (yIndex * ratio) + centerShiftY;
+      ctx.fillText(letter, x, y);
     });
   };
 

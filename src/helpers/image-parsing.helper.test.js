@@ -12,7 +12,7 @@ import {
   getCurrentLetter,
   getPixelsByLetters,
   getPixelsByTime,
-  getRgbSum,
+  calculateEcgLetters,
 } from './image-parsing.helper';
 
 describe('getPixelsByLetters method', () => {
@@ -80,39 +80,39 @@ describe('getPixelsByTime', () => {
 
 describe('getCurrentLetter method', () => {
   const mockAbc = ['A', 'B', 'C', 'D', 'E'];
-  const mockImageData = { height: 8 };
+  const mockImageHeight = 8;
   let expected;
 
   it('should recognize first letter if outside of boundary (left)', () => {
-    expect(getCurrentLetter(mockImageData, mockAbc, -20)).toEqual('A');
+    expect(getCurrentLetter(mockImageHeight, -20, mockAbc)).toEqual('A');
   });
 
   it('should recognize first letter if outside of boundary (right)', () => {
-    expect(getCurrentLetter(mockImageData, mockAbc, 20)).toEqual('E');
+    expect(getCurrentLetter(mockImageHeight, 20, mockAbc)).toEqual('E');
   });
 
   it('should recognize step A', () => {
     expected = 'A';
 
-    expect(getCurrentLetter(mockImageData, mockAbc, 0)).toEqual(expected);
-    expect(getCurrentLetter(mockImageData, mockAbc, 0.01)).toEqual(expected);
-    expect(getCurrentLetter(mockImageData, mockAbc, 0.85)).toEqual(expected);
-    expect(getCurrentLetter(mockImageData, mockAbc, 1.599)).toEqual(expected);
+    expect(getCurrentLetter(mockImageHeight, 0, mockAbc)).toEqual(expected);
+    expect(getCurrentLetter(mockImageHeight, 0.01, mockAbc)).toEqual(expected);
+    expect(getCurrentLetter(mockImageHeight, 0.85, mockAbc)).toEqual(expected);
+    expect(getCurrentLetter(mockImageHeight, 1.599, mockAbc)).toEqual(expected);
   });
 
   it('should recognize step B', () => {
     expected = 'B';
 
-    expect(getCurrentLetter(mockImageData, mockAbc, 1.6)).toEqual(expected);
-    expect(getCurrentLetter(mockImageData, mockAbc, 2)).toEqual(expected);
-    expect(getCurrentLetter(mockImageData, mockAbc, 3)).toEqual(expected);
-    expect(getCurrentLetter(mockImageData, mockAbc, 3.19)).toEqual(expected);
+    expect(getCurrentLetter(mockImageHeight, 1.6, mockAbc)).toEqual(expected);
+    expect(getCurrentLetter(mockImageHeight, 2, mockAbc)).toEqual(expected);
+    expect(getCurrentLetter(mockImageHeight, 3, mockAbc)).toEqual(expected);
+    expect(getCurrentLetter(mockImageHeight, 3.19, mockAbc)).toEqual(expected);
   });
 
   it('should recognize step E', () => {
     expected = 'E';
 
-    expect(getCurrentLetter(mockImageData, mockAbc, 7.9)).toEqual(expected);
+    expect(getCurrentLetter(mockImageHeight, 7.9, mockAbc)).toEqual(expected);
   });
 });
 
@@ -237,5 +237,17 @@ describe('getCellsSizeInRow method', () => {
   it('0 cells in ceil or floor row', () => {
     const pixels = [BLACK_PIXEL, GREY_PIXEL, BLACK_PIXEL];
     expect(getCellsSizeInRow(pixels)).toEqual(0);
+  });
+});
+
+describe('calculateEcgLetters method', () => {
+  it('should calculate letters based on difference between MAX and MIN indices', () => {
+    const indicesLow = [0, 1, 2, 3, 4, 5];
+    const indicesHigh = [500, 501, 502, 503, 504, 505];
+    const actualLow = calculateEcgLetters(indicesLow, 'ABC');
+    const actualHigh = calculateEcgLetters(indicesHigh, 'ABC');
+    const expected = 'AABBCC'.split('');
+    expect(actualLow).toEqual(expected);
+    expect(actualHigh).toEqual(expected);
   });
 });
