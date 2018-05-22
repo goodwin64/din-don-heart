@@ -12,6 +12,7 @@ import {
   getCurrentLetter,
   getPixelsByLetters,
   getPixelsByTime,
+  getRgbSum,
 } from './image-parsing.helper';
 
 describe('getPixelsByLetters method', () => {
@@ -121,7 +122,7 @@ describe('findTheMostDarkPixel method', () => {
   });
 
   it('should return white color by default', () => {
-    expect(findTheMostDarkPixel([]).color).toEqual(255 * 3);
+    expect(findTheMostDarkPixel([]).rgbSum).toEqual(255 * 3);
   });
 
   it('should find the most dark pixel among white ones', () => {
@@ -141,6 +142,20 @@ describe('findTheMostDarkPixel method', () => {
     ];
 
     expect(findTheMostDarkPixel(column).index).toEqual(1);
+  });
+
+  it('the index of the most dark pixel is average among all dark pixels', () => {
+    const column = [
+      BLACK_PIXEL, // the most dark 1
+      DARK_GREY_PIXEL,
+      DARK_GREY_PIXEL, // average index
+      DARK_GREY_PIXEL,
+      BLACK_PIXEL, // the most dark 2
+    ];
+
+    const theMostDark = findTheMostDarkPixel(column);
+    expect(theMostDark.index).toEqual(2);
+    expect(theMostDark.rgbSum).toEqual(0);
   });
 });
 

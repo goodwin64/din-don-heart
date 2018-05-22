@@ -20,6 +20,11 @@ export const RED_PIXEL = { r: 255, g: 0, b: 0 };
 export const GREEN_PIXEL = { r: 0, g: 255, b: 0 };
 export const BLUE_PIXEL = { r: 0, g: 0, b: 255 };
 
+export const getRgbSum = pixel => (pixel
+  ? pixel.r + pixel.g + pixel.b
+  : 0
+);
+
 export default function initImageParsingWorker() {
   const imageParsingWorker = new Worker('image-worker.js');
 
@@ -69,20 +74,30 @@ export const getCurrentLetter = (imageData, alphabet, yCoord) => {
 
   return alphabet[currentStep];
 };
+
 export const findTheMostDarkPixel = (column = []) => column.reduce(
-  (theMostBlackPixel, currPixel, currIndex) => {
-    const currColor = currPixel.r + currPixel.g + currPixel.b;
-    if (currColor < theMostBlackPixel.color) {
+  (accumulator, currPixel, currIndex) => {
+    const currColor = getRgbSum(currPixel);
+    if (currColor === accumulator.rgbSum) {
+      const theMostDarkPixelsIndices = accumulator.theMostDarkPixelsIndices.concat(currIndex);
       return {
-        color: currColor,
+        rgbSum: currColor,
+        index: Math.round(mean(theMostDarkPixelsIndices)),
+        theMostDarkPixelsIndices,
+      };
+    } else if (currColor < accumulator.rgbSum) {
+      return {
+        rgbSum: currColor,
         index: currIndex,
+        theMostDarkPixelsIndices: [currIndex],
       };
     }
-    return theMostBlackPixel;
+    return accumulator;
   },
   {
-    color: 255 * 3,
+    rgbSum: 255 * 3,
     index: 0,
+    theMostDarkPixelsIndices: [],
   },
 );
 const MAX_COLOR_VALUE = 256;
