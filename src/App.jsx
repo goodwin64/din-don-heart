@@ -12,8 +12,6 @@ import FilePicker from './components/FilePicker/FilePicker';
 import EcgResults from './components/EcgResults/EcgResults';
 import DiseaseDetector from './components/DiseaseDetector/DiseaseDetector';
 
-// export const noop = () => {};
-
 const initialEcgLetters = [];
 const initialEcgLettersDetailed = [];
 const initialPlotPoints = [];

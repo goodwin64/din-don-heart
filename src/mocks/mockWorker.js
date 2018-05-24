@@ -1,7 +1,9 @@
-class mockWorker {
+import { noop } from '../helpers/noop';
+
+class MockWorker {
   constructor(stringUrl) {
     this.url = stringUrl;
-    this.onmessage = () => {};
+    this.onmessage = noop;
   }
 
   postMessage(msg) {
@@ -9,4 +11,4 @@ class mockWorker {
   }
 }
 
-export default mockWorker;
+export default MockWorker;
