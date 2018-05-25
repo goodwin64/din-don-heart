@@ -10,22 +10,25 @@ import {
   findTheMostDarkPixel,
   getCellsSizeInRow,
   getCurrentLetter,
-  getPixelsByLetters,
-  getPixelsByTime,
-  getRgbSum,
+  getPixelsByRows,
+  getPixelsByColumns,
+  getEcgResult,
 } from './image-parsing.helper';
 
-describe('getPixelsByLetters method', () => {
+import mockImageData from '../mocks/mockImageData.json';
+import mockImageParsingResult from '../mocks/mockImageParsingResult.json';
+
+describe('getPixelsByRows method', () => {
   it('should return empty array if it passed, notwithstanding row width', () => {
     const emptyArray = [];
 
-    expect(getPixelsByLetters(emptyArray, 1)).toBe(emptyArray);
-    expect(getPixelsByLetters(emptyArray, 20)).toBe(emptyArray);
-    expect(getPixelsByLetters(emptyArray, 100)).toBe(emptyArray);
+    expect(getPixelsByRows(emptyArray, 1)).toBe(emptyArray);
+    expect(getPixelsByRows(emptyArray, 20)).toBe(emptyArray);
+    expect(getPixelsByRows(emptyArray, 100)).toBe(emptyArray);
   });
 
   it('should make 3 rows by 2 elements from flat 6-size array', () => {
-    const actual = getPixelsByLetters([1, 2, 3, 4, 5, 6], 2);
+    const actual = getPixelsByRows([1, 2, 3, 4, 5, 6], 2);
     const expected = [
       [1, 2],
       [3, 4],
@@ -36,7 +39,7 @@ describe('getPixelsByLetters method', () => {
   });
 
   it('should make 2 rows by 3 elements from flat 6-size array', () => {
-    const actual = getPixelsByLetters([1, 2, 3, 4, 5, 6], 3);
+    const actual = getPixelsByRows([1, 2, 3, 4, 5, 6], 3);
     const expected = [
       [1, 2, 3],
       [4, 5, 6],
@@ -46,16 +49,16 @@ describe('getPixelsByLetters method', () => {
   });
 });
 
-describe('getPixelsByTime', () => {
+describe('getPixelsByColumns', () => {
   let actual;
   let expected;
 
   it('should return empty array if such passed', () => {
-    expect(getPixelsByTime([])).toEqual([]);
+    expect(getPixelsByColumns([])).toEqual([]);
   });
 
   it('should make 2 columns from 6-size array', () => {
-    actual = getPixelsByTime([1, 2, 3, 4, 5, 6], 2);
+    actual = getPixelsByColumns([1, 2, 3, 4, 5, 6], 2);
     expected = [
       [1, 3, 5],
       [2, 4, 6],
@@ -66,7 +69,7 @@ describe('getPixelsByTime', () => {
 
   it('should make 4 columns from 16-size array', () => {
     const arrFrom1To16 = Array(16).fill(0).map((_, index) => index + 1);
-    actual = getPixelsByTime(arrFrom1To16, 4);
+    actual = getPixelsByColumns(arrFrom1To16, 4);
     expected = [
       [1, 5, 9, 13],
       [2, 6, 10, 14],
@@ -237,5 +240,26 @@ describe('getCellsSizeInRow method', () => {
   it('0 cells in ceil or floor row', () => {
     const pixels = [BLACK_PIXEL, GREY_PIXEL, BLACK_PIXEL];
     expect(getCellsSizeInRow(pixels)).toEqual(0);
+  });
+});
+
+describe('getEcgResult method', () => {
+  it('calculates ECG test data properly', () => {
+    /*
+     * 0 - black, 1 - white
+     *
+     * 0 00 0 00 0 0 00 0
+     * 0 11 0 11 0 0 11 0
+     * 0 11 0 11 0 0 11 0
+     * 0 00 0 00 0 0 00 0
+     * 0 11 0 11 0 0 11 0
+     * 0 11 0 11 0 0 11 0
+     * 0 00 0 00 0 0 00 0
+     * 0 11 0 11 0 0 11 0
+     * 0 11 0 11 0 0 11 0
+     * 0 00 0 00 0 0 00 0
+     */
+    const actual = getEcgResult(mockImageData);
+    expect(actual).toEqual(mockImageParsingResult);
   });
 });

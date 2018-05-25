@@ -3,7 +3,7 @@ import mean from 'lodash.mean';
 
 // import getDisease from './disease.helper';
 import { ERROR_IMAGE_SIZE, onImageError } from './error-handlers.helper';
-import { getImageData, mapRgbaToCustomPixels } from './canvas.helper';
+import { mapRgbaToCustomPixels } from './canvas.helper';
 import { MAX_IMAGE_HEIGHT, MAX_IMAGE_WIDTH } from '../constants';
 
 /**
@@ -20,10 +20,7 @@ export const RED_PIXEL = { r: 255, g: 0, b: 0 };
 export const GREEN_PIXEL = { r: 0, g: 255, b: 0 };
 export const BLUE_PIXEL = { r: 0, g: 0, b: 255 };
 
-export const getRgbSum = pixel => (pixel
-  ? pixel.r + pixel.g + pixel.b
-  : 0
-);
+export const getRgbSum = pixel => pixel.r + pixel.g + pixel.b;
 
 export default function initImageParsingWorker() {
   const imageParsingWorker = new Worker('image-worker.js');
@@ -38,7 +35,7 @@ export default function initImageParsingWorker() {
 /**
  * Groups flat Pixels array by Y coordinate (letters)
  */
-export const getPixelsByLetters = (flatArr = [], rowWidth) => (
+export const getPixelsByRows = (flatArr = [], rowWidth = 1) => (
   flatArr.length
     ? chunk(flatArr, rowWidth)
     : flatArr
@@ -46,7 +43,7 @@ export const getPixelsByLetters = (flatArr = [], rowWidth) => (
 /**
  * Groups flat Pixels array by X coordinate (time)
  */
-export const getPixelsByTime = (flatArr = [], columnsCount) =>
+export const getPixelsByColumns = (flatArr = [], columnsCount = 1) =>
   flatArr.reduce((acc, curr, index) => {
     if (index < columnsCount) {
       // container not yet exists
@@ -123,7 +120,7 @@ export const arePixelsSimilarByColor = (pixel1, pixel2, maxDeviationInPercent = 
  */
 export const getCellsSizeInRow = (
   row = [],
-  minWhiteSliceLength = 6,
+  minWhiteSliceLength = 2,
   cellBackgroundColor = WHITE_PIXEL,
   wallColor = BLACK_PIXEL,
 ) => {
@@ -145,8 +142,10 @@ export const getCellsSizeInRow = (
   return Math.round(row.length / cellsCount);
 };
 
-export function calculateCellsSizeInECG(pixelsByRows) {
-  const cellsSizesByRows = pixelsByRows.map(row => getCellsSizeInRow(row));
+export function calculateCellSizeInECG(pixelsByRows) {
+  const cellsSizesByRows = pixelsByRows
+    .map(row => getCellsSizeInRow(row))
+    .filter(cellsSize => cellsSize > 0);
   const averageCellSize = mean(cellsSizesByRows);
   const withoutFloorAndCeilRows = cellsSizesByRows.filter(cellSizeInRow =>
     cellSizeInRow > (averageCellSize * 0.5) &&
@@ -173,13 +172,7 @@ function calculateBaseLineEcg(pixelsList) {
   return Math.round(pixelsList.reduce((acc, curr) => acc + curr.index, 0) / pixelsList.length);
 }
 
-export const getEcgResult = (workerResponse) => {
-  if (workerResponse.error) {
-    onImageError(workerResponse);
-    return '';
-  }
-
-  const imageData = getImageData(workerResponse);
+export const getEcgResult = (imageData) => {
   if (imageData.height > MAX_IMAGE_HEIGHT || imageData.width > MAX_IMAGE_WIDTH) {
     onImageError({
       errorMessage: ERROR_IMAGE_SIZE,
@@ -188,10 +181,10 @@ export const getEcgResult = (workerResponse) => {
   }
 
   const imagePixels = mapRgbaToCustomPixels(imageData.data);
-  const pixelsByRows = getPixelsByLetters(imagePixels, imageData.width);
-  const pixelsByColumns = getPixelsByTime(imagePixels, imageData.width);
+  const pixelsByRows = getPixelsByRows(imagePixels, imageData.width);
+  const pixelsByColumns = getPixelsByColumns(imagePixels, imageData.width);
 
-  const cellsSize = calculateCellsSizeInECG(pixelsByRows);
+  const cellsSize = calculateCellSizeInECG(pixelsByRows);
   const plotPoints = calculateEcgLetters(pixelsByColumns, imageData, cellsSize);
   const plotPointsDetailed = calculateEcgLetters(pixelsByColumns, imageData, 1);
   const ecgLetters = plotPoints.map(plotPoint => plotPoint.letter);

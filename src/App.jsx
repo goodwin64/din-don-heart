@@ -11,6 +11,8 @@ import Header from './components/Header/Header';
 import FilePicker from './components/FilePicker/FilePicker';
 import EcgResults from './components/EcgResults/EcgResults';
 import DiseaseDetector from './components/DiseaseDetector/DiseaseDetector';
+import { onImageError } from './helpers/error-handlers.helper';
+import { getImageData } from './helpers/canvas.helper';
 
 const initialEcgLetters = [];
 const initialEcgLettersDetailed = [];
@@ -47,7 +49,12 @@ export class App extends Component {
     const onMessageWorkerHandler = (workerEvent) => {
       const workerResponse = workerEvent.data;
       if (workerResponse.constructor === ImageBitmap) {
-        const ecgResult = getEcgResult(workerResponse);
+        if (workerResponse.error) {
+          onImageError(workerResponse);
+          return;
+        }
+        const imageData = getImageData(workerResponse);
+        const ecgResult = getEcgResult(imageData);
         this.setState({
           isEcgResultVisible: true,
           currentImage: workerResponse,

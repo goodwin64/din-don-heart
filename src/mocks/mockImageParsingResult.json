@@ -1,0 +1,40 @@
+{
+  "baseLineY": 5,
+  "cellsSize": 3,
+  "ecgLetters": [
+    "O",
+    "M",
+    "M",
+    "M"
+  ],
+  "ecgLettersDetailed": [
+    "O",
+    "K",
+    "R",
+    "M",
+    "K",
+    "M",
+    "O",
+    "M",
+    "M",
+    "M"
+  ],
+  "plotPoints": [
+    {
+      "letter": "O",
+      "index": 4
+    },
+    {
+      "letter": "M",
+      "index": 5
+    },
+    {
+      "letter": "M",
+      "index": 5
+    },
+    {
+      "letter": "M",
+      "index": 5
+    }
+  ]
+}
