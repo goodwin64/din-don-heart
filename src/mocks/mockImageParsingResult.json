@@ -1,24 +1,8 @@
 {
   "baseLineY": 5,
   "cellsSize": 3,
-  "ecgLetters": [
-    "O",
-    "M",
-    "M",
-    "M"
-  ],
-  "ecgLettersDetailed": [
-    "O",
-    "K",
-    "R",
-    "M",
-    "K",
-    "M",
-    "O",
-    "M",
-    "M",
-    "M"
-  ],
+  "ecgLetters": "OMMM",
+  "ecgLettersDetailed": "OKRMKMOMMM",
   "plotPoints": [
     {
       "letter": "O",

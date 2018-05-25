@@ -1,11 +1,4 @@
 import {
-  BLACK_PIXEL,
-  BLUE_PIXEL,
-  DARK_GREY_PIXEL,
-  GREEN_PIXEL,
-  GREY_PIXEL,
-  RED_PIXEL,
-  WHITE_PIXEL,
   arePixelsSimilarByColor,
   findTheMostDarkPixel,
   getCellsSizeInRow,
@@ -17,6 +10,15 @@ import {
 
 import mockImageData from '../mocks/mockImageData.json';
 import mockImageParsingResult from '../mocks/mockImageParsingResult.json';
+import {
+  BLACK_PIXEL,
+  BLUE_PIXEL,
+  DARK_GREY_PIXEL,
+  GREEN_PIXEL,
+  GREY_PIXEL,
+  RED_PIXEL,
+  WHITE_PIXEL,
+} from '../constants';
 
 describe('getPixelsByRows method', () => {
   it('should return empty array if it passed, notwithstanding row width', () => {

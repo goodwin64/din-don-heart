@@ -140,7 +140,7 @@ export class App extends Component {
         )}
         {ecgLetters.length > 0 && (
           <DiseaseDetector
-            ecgLetters={ecgLetters}
+            ecgLettersDetailed={ecgLettersDetailed}
             onDiseaseResult={this.onDiseaseAnalysisResult}
           />
         )}

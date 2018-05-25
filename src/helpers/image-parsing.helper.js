@@ -1,24 +1,18 @@
 import chunk from 'lodash.chunk';
 import mean from 'lodash.mean';
-
-// import getDisease from './disease.helper';
-import { ERROR_IMAGE_SIZE, onImageError } from './error-handlers.helper';
+import {
+  ERROR_IMAGE_SIZE,
+  onImageError,
+} from './error-handlers.helper';
 import { mapRgbaToCustomPixels } from './canvas.helper';
-import { MAX_IMAGE_HEIGHT, MAX_IMAGE_WIDTH } from '../constants';
+import {
+  abcReversed,
+  BLACK_PIXEL,
+  MAX_IMAGE_HEIGHT,
+  MAX_IMAGE_WIDTH,
+  WHITE_PIXEL,
+} from '../constants';
 
-/**
- * Reverse because server expects A to Z (bottom to top)
- * But the image is parsed from top to bottom
- */
-const abc = 'ABCDEFGHIKLMNOPQRSTVXYZ'.split('').reverse();
-
-export const WHITE_PIXEL = { r: 255, g: 255, b: 255 };
-export const GREY_PIXEL = { r: 128, g: 128, b: 128 };
-export const DARK_GREY_PIXEL = { r: 64, g: 64, b: 64 };
-export const BLACK_PIXEL = { r: 0, g: 0, b: 0 };
-export const RED_PIXEL = { r: 255, g: 0, b: 0 };
-export const GREEN_PIXEL = { r: 0, g: 255, b: 0 };
-export const BLUE_PIXEL = { r: 0, g: 0, b: 255 };
 
 export const getRgbSum = pixel => pixel.r + pixel.g + pixel.b;
 
@@ -160,7 +154,7 @@ function calculateEcgLetters(pixelsByColumns, imageData, shrinkFactor = 1) {
       return plotPointsInChunk.concat(theMostDarkPixel.index);
     }, []);
     const averageIndexInChunk = Math.round(mean(pixelIndicesInChunk));
-    const letter = getCurrentLetter(imageData, abc, averageIndexInChunk);
+    const letter = getCurrentLetter(imageData, abcReversed, averageIndexInChunk);
     return {
       letter,
       index: averageIndexInChunk,
@@ -187,8 +181,8 @@ export const getEcgResult = (imageData) => {
   const cellsSize = calculateCellSizeInECG(pixelsByRows);
   const plotPoints = calculateEcgLetters(pixelsByColumns, imageData, cellsSize);
   const plotPointsDetailed = calculateEcgLetters(pixelsByColumns, imageData, 1);
-  const ecgLetters = plotPoints.map(plotPoint => plotPoint.letter);
-  const ecgLettersDetailed = plotPointsDetailed.map(plotPoint => plotPoint.letter);
+  const ecgLetters = plotPoints.map(plotPoint => plotPoint.letter).join('');
+  const ecgLettersDetailed = plotPointsDetailed.map(plotPoint => plotPoint.letter).join('');
   const baseLineY = calculateBaseLineEcg(plotPoints);
 
   return {
