@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { colors } from '../../App.styled';
+import { colors } from '../App/App.styled';
 
 const LanguageSelectorContainer = styled.div`
   .Select-control, .Select-menu-outer {

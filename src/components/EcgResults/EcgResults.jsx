@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
-import { EcgResultContainer, EcgResultCanvas, ClearCanvasButton } from '../../App.styled';
+import { EcgResultContainer, EcgResultCanvas, ClearCanvasButton } from '../App/App.styled';
 import { CLOSE_CHARACTER } from '../../constants';
 import strings from '../../localization';
 import { ecgLettersPT, diseaseResultPT, plotIndexPT } from '../../helpers/proptypes.helper';

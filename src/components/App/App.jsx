@@ -2,17 +2,17 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
 import './App.css';
-import { getEcgResult } from './helpers/image-parsing.helper';
+import { getEcgResult } from '../../helpers/image-parsing.helper';
 import { AppDescription } from './App.styled';
-import strings, { defaultLanguage } from './localization';
+import strings, { defaultLanguage } from '../../localization';
 
-import LanguageSelector from './components/LanguageSelector/LanguageSelector';
-import Header from './components/Header/Header';
-import FilePicker from './components/FilePicker/FilePicker';
-import EcgResults from './components/EcgResults/EcgResults';
-import DiseaseDetector from './components/DiseaseDetector/DiseaseDetector';
-import { onImageError } from './helpers/error-handlers.helper';
-import { getImageData } from './helpers/canvas.helper';
+import LanguageSelector from '../LanguageSelector/LanguageSelector';
+import Header from '../Header/Header';
+import FilePicker from '../FilePicker/FilePicker';
+import EcgResults from '../EcgResults/EcgResults';
+import DiseaseDetector from '../DiseaseDetector/DiseaseDetector';
+import { onImageError } from '../../helpers/error-handlers.helper';
+import { getImageData } from '../../helpers/canvas.helper';
 
 const initialEcgLetters = [];
 const initialEcgLettersDetailed = [];
