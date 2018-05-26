@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import Select from 'react-select';
 
-import { CODE_ENG, CODE_RUS } from '../../localization';
+import { CODE_ENG, CODE_RUS } from '../../helpers/localization';
 import LanguageSelectorContainer, {
   CountryFlag, LanguageOptionContainer,
   LanguageOptionLabel,

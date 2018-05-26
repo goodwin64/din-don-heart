@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
 import { FilePickerContainer, FilePickerInput, FilePickerLabel } from '../App/App.styled';
-import strings from '../../localization';
+import strings from '../../helpers/localization';
 
 const defaultFile = {};
 

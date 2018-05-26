@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import './App.css';
 import { getEcgResult } from '../../helpers/image-parsing.helper';
 import { AppDescription } from './App.styled';
-import strings, { defaultLanguage } from '../../localization';
+import strings, { defaultLanguage } from '../../helpers/localization';
 
 import LanguageSelector from '../LanguageSelector/LanguageSelector';
 import Header from '../Header/Header';
