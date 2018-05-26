@@ -1,24 +1,7 @@
 {
   "baseLineY": 5,
   "cellsSize": 3,
-  "ecgLetters": "OMMM",
-  "ecgLettersDetailed": "OKRMKMOMMM",
-  "plotPoints": [
-    {
-      "letter": "O",
-      "index": 4
-    },
-    {
-      "letter": "M",
-      "index": 5
-    },
-    {
-      "letter": "M",
-      "index": 5
-    },
-    {
-      "letter": "M",
-      "index": 5
-    }
-  ]
+  "ecgLetters": "FFFF",
+  "ecgLettersDetailed": "FFFFFFFFFF",
+  "plotIndices": [5,5,5,5]
 }

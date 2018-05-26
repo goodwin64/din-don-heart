@@ -7,7 +7,7 @@ export const MAX_IMAGE_HEIGHT = 3000;
  * Reverse because server expects A to Z (bottom to top)
  * But the image is parsed from top to bottom
  */
-export const abc = 'ABCDEFGHIKLMNOPQRSTVXYZ';
+export const abc = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 export const abcReversed = abc.split('').reverse();
 
 export const WHITE_PIXEL = { r: 255, g: 255, b: 255 };

@@ -83,7 +83,9 @@
       "jsx",
       "node"
     ],
-    "snapshotSerializers": ["enzyme-to-json/serializer"]
+    "snapshotSerializers": [
+      "enzyme-to-json/serializer"
+    ]
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",

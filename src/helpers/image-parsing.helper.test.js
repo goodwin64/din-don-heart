@@ -6,6 +6,7 @@ import {
   getPixelsByRows,
   getPixelsByColumns,
   getEcgResult,
+  calculateEcgLetters,
 } from './image-parsing.helper';
 
 import mockImageData from '../mocks/mockImageData.json';
@@ -85,39 +86,47 @@ describe('getPixelsByColumns', () => {
 
 describe('getCurrentLetter method', () => {
   const mockAbc = ['A', 'B', 'C', 'D', 'E'];
-  const mockImageData = { height: 8 };
+  const mockLettersAmplitude = 8;
   let expected;
 
-  it('should recognize first letter if outside of boundary (left)', () => {
-    expect(getCurrentLetter(mockImageData, mockAbc, -20)).toEqual('A');
+  it('should recognize as the first letter if outside of boundary (top)', () => {
+    expect(getCurrentLetter(mockLettersAmplitude, -20, mockAbc)).toEqual('A');
   });
 
-  it('should recognize first letter if outside of boundary (right)', () => {
-    expect(getCurrentLetter(mockImageData, mockAbc, 20)).toEqual('E');
+  it('should recognize as the last letter if outside of boundary (bottom)', () => {
+    expect(getCurrentLetter(mockLettersAmplitude, 20, mockAbc)).toEqual('E');
   });
 
   it('should recognize step A', () => {
     expected = 'A';
 
-    expect(getCurrentLetter(mockImageData, mockAbc, 0)).toEqual(expected);
-    expect(getCurrentLetter(mockImageData, mockAbc, 0.01)).toEqual(expected);
-    expect(getCurrentLetter(mockImageData, mockAbc, 0.85)).toEqual(expected);
-    expect(getCurrentLetter(mockImageData, mockAbc, 1.599)).toEqual(expected);
+    expect(getCurrentLetter(mockLettersAmplitude, 0, mockAbc)).toEqual(expected);
+    expect(getCurrentLetter(mockLettersAmplitude, 0.01, mockAbc)).toEqual(expected);
+    expect(getCurrentLetter(mockLettersAmplitude, 0.85, mockAbc)).toEqual(expected);
+    expect(getCurrentLetter(mockLettersAmplitude, 1.599, mockAbc)).toEqual(expected);
   });
 
   it('should recognize step B', () => {
     expected = 'B';
 
-    expect(getCurrentLetter(mockImageData, mockAbc, 1.6)).toEqual(expected);
-    expect(getCurrentLetter(mockImageData, mockAbc, 2)).toEqual(expected);
-    expect(getCurrentLetter(mockImageData, mockAbc, 3)).toEqual(expected);
-    expect(getCurrentLetter(mockImageData, mockAbc, 3.19)).toEqual(expected);
+    expect(getCurrentLetter(mockLettersAmplitude, 1.6, mockAbc)).toEqual(expected);
+    expect(getCurrentLetter(mockLettersAmplitude, 2, mockAbc)).toEqual(expected);
+    expect(getCurrentLetter(mockLettersAmplitude, 3, mockAbc)).toEqual(expected);
+    expect(getCurrentLetter(mockLettersAmplitude, 3.19, mockAbc)).toEqual(expected);
   });
 
   it('should recognize step E', () => {
     expected = 'E';
 
-    expect(getCurrentLetter(mockImageData, mockAbc, 7.9)).toEqual(expected);
+    expect(getCurrentLetter(mockLettersAmplitude, 7.9, mockAbc)).toEqual(expected);
+  });
+
+  it('should set step size to 1 if zero-amplitude', () => {
+    expect(getCurrentLetter(0, 0.5, mockAbc)).toEqual('A');
+    expect(getCurrentLetter(0, 1.5, mockAbc)).toEqual('B');
+    expect(getCurrentLetter(0, 2.5, mockAbc)).toEqual('C');
+    expect(getCurrentLetter(0, 3.5, mockAbc)).toEqual('D');
+    expect(getCurrentLetter(0, 4.5, mockAbc)).toEqual('E');
   });
 });
 
@@ -245,10 +254,28 @@ describe('getCellsSizeInRow method', () => {
   });
 });
 
+describe('calculateEcgLetters method', () => {
+  it('should calculate letters based on difference between MAX and MIN indices', () => {
+    const indicesLow = [0, 1, 2, 3, 4, 5];
+    const indicesHigh = [500, 501, 502, 503, 504, 505];
+    const actualLow = calculateEcgLetters(indicesLow, 'ABC');
+    const actualHigh = calculateEcgLetters(indicesHigh, 'ABC');
+    const expected = 'AABBCC';
+    expect(actualLow).toEqual(expected);
+    expect(actualHigh).toEqual(expected);
+  });
+
+  it('should return letters by indices even if letters are the same', () => {
+    const indices = [1, 1, 1];
+    const abc = 'ABC';
+    expect(calculateEcgLetters(indices, abc)).toEqual('BBB');
+  });
+});
+
 describe('getEcgResult method', () => {
   it('calculates ECG test data properly', () => {
     /*
-     * 0 - black, 1 - white
+     * 0 - black, 1 - white; see in details: src/mocks/mockImage.jpg
      *
      * 0 00 0 00 0 0 00 0
      * 0 11 0 11 0 0 11 0

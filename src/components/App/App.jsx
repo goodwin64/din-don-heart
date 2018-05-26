@@ -16,13 +16,13 @@ import { getImageData } from '../../helpers/canvas.helper';
 
 const initialEcgLetters = [];
 const initialEcgLettersDetailed = [];
-const initialPlotPoints = [];
+const initialPlotIndices = [];
 const initialEcgResult = {
   baseLineY: 0,
   cellsSize: 0,
   ecgLetters: initialEcgLetters,
   ecgLettersDetailed: initialEcgLettersDetailed,
-  plotPoints: initialPlotPoints,
+  plotIndices: initialPlotIndices,
 };
 
 export class App extends Component {
@@ -107,7 +107,7 @@ export class App extends Component {
         cellsSize,
         ecgLetters,
         ecgLettersDetailed,
-        plotPoints,
+        plotIndices,
       },
       diseaseResult,
     } = this.state;
@@ -131,7 +131,7 @@ export class App extends Component {
             cellsSize={cellsSize}
             ecgLetters={ecgLetters}
             ecgLettersDetailed={ecgLettersDetailed}
-            plotPoints={plotPoints}
+            plotIndices={plotIndices}
             currentImage={currentImage}
             clearEcgResult={this.clearEcgResult}
             resetCurrentFile={this.beforeCurrentFileReset}

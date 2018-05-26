@@ -1,18 +1,20 @@
+/* eslint-disable quotes,comma-spacing,key-spacing,quote-props,object-curly-newline,object-curly-spacing,max-len */
 import chunk from 'lodash.chunk';
 import mean from 'lodash.mean';
+
 import {
   ERROR_IMAGE_SIZE,
   onImageError,
 } from './error-handlers.helper';
 import { mapRgbaToCustomPixels } from './canvas.helper';
+
 import {
-  abcReversed,
+  abc,
   BLACK_PIXEL,
   MAX_IMAGE_HEIGHT,
   MAX_IMAGE_WIDTH,
   WHITE_PIXEL,
 } from '../constants';
-
 
 export const getRgbSum = pixel => pixel.r + pixel.g + pixel.b;
 
@@ -52,9 +54,10 @@ export const getPixelsByColumns = (flatArr = [], columnsCount = 1) =>
     return acc;
   }, []);
 
-export const getCurrentLetter = (imageData, alphabet, yCoord) => {
+export const getCurrentLetter = (yAmplitude, yCoord, alphabet) => {
   const alphabetSize = alphabet.length;
-  const cardioStepSize = imageData.height / alphabetSize;
+  // couldn't be zero
+  const cardioStepSize = (yAmplitude / alphabetSize) || 1;
   const currentStep = Math.floor(yCoord / cardioStepSize);
 
   if (currentStep < 0) {
@@ -147,23 +150,38 @@ export function calculateCellSizeInECG(pixelsByRows) {
   return Math.round(mean(withoutFloorAndCeilRows));
 }
 
-function calculateEcgLetters(pixelsByColumns, imageData, shrinkFactor = 1) {
+function calculateEcgPlotIndices(pixelsByColumns, shrinkFactor = 1) {
   return chunk(pixelsByColumns, shrinkFactor).map((columnsChunk) => {
-    const pixelIndicesInChunk = columnsChunk.reduce((plotPointsInChunk, currentColumn) => {
+    const pixelIndicesInChunk = columnsChunk.reduce((plotIndicesInChunk, currentColumn) => {
       const theMostDarkPixel = findTheMostDarkPixel(currentColumn);
-      return plotPointsInChunk.concat(theMostDarkPixel.index);
+      return plotIndicesInChunk.concat(theMostDarkPixel.index);
     }, []);
-    const averageIndexInChunk = Math.round(mean(pixelIndicesInChunk));
-    const letter = getCurrentLetter(imageData, abcReversed, averageIndexInChunk);
-    return {
-      letter,
-      index: averageIndexInChunk,
-    };
+    return Math.round(mean(pixelIndicesInChunk));
   });
 }
 
 function calculateBaseLineEcg(pixelsList) {
-  return Math.round(pixelsList.reduce((acc, curr) => acc + curr.index, 0) / pixelsList.length);
+  return Math.round(pixelsList.reduce((acc, curr) => acc + curr, 0) / pixelsList.length);
+}
+
+/**
+ * All points indices become reduced by min index
+ * So now algorithm looks for letters not in the entire image height amplitude
+ * but from min index to max index. It means the outer space is ignored.
+ */
+export function calculateEcgLetters(indices, alphabet, shrinkFactor = 1) {
+  const [maxIndex, minIndex] = [Math.max.apply(null, indices), Math.min.apply(null, indices)];
+  const yAmplitude = maxIndex - minIndex;
+
+  return chunk(indices, shrinkFactor).map((chunkOfIndices) => {
+    const currChunkAverageIndex = Math.round(mean(chunkOfIndices));
+    const letterIndex = (
+      yAmplitude === 0
+        ? currChunkAverageIndex
+        : currChunkAverageIndex - minIndex
+    );
+    return getCurrentLetter(yAmplitude, letterIndex, alphabet);
+  }).join('');
 }
 
 export const getEcgResult = (imageData) => {
@@ -171,7 +189,7 @@ export const getEcgResult = (imageData) => {
     onImageError({
       errorMessage: ERROR_IMAGE_SIZE,
     });
-    return '';
+    return {};
   }
 
   const imagePixels = mapRgbaToCustomPixels(imageData.data);
@@ -179,17 +197,18 @@ export const getEcgResult = (imageData) => {
   const pixelsByColumns = getPixelsByColumns(imagePixels, imageData.width);
 
   const cellsSize = calculateCellSizeInECG(pixelsByRows);
-  const plotPoints = calculateEcgLetters(pixelsByColumns, imageData, cellsSize);
-  const plotPointsDetailed = calculateEcgLetters(pixelsByColumns, imageData, 1);
-  const ecgLetters = plotPoints.map(plotPoint => plotPoint.letter).join('');
-  const ecgLettersDetailed = plotPointsDetailed.map(plotPoint => plotPoint.letter).join('');
-  const baseLineY = calculateBaseLineEcg(plotPoints);
+  const plotIndices = calculateEcgPlotIndices(pixelsByColumns, cellsSize);
+  const plotIndicesAll = calculateEcgPlotIndices(pixelsByColumns, 1);
+
+  const ecgLetters = calculateEcgLetters(plotIndicesAll, abc, cellsSize);
+  const ecgLettersDetailed = calculateEcgLetters(plotIndicesAll, abc);
+  const baseLineY = calculateBaseLineEcg(plotIndices);
 
   return {
     baseLineY,
     cellsSize,
     ecgLetters,
     ecgLettersDetailed,
-    plotPoints,
+    plotIndices,
   };
 };
