@@ -1,4 +1,16 @@
 import {
+  arePixelsSimilarByColor,
+  findTheMostDarkPixel,
+  getCellsSizeInRow,
+  getCurrentLetter,
+  getPixelsByRows,
+  getPixelsByColumns,
+  getEcgResult,
+} from './image-parsing.helper';
+
+import mockImageData from '../mocks/mockImageData.json';
+import mockImageParsingResult from '../mocks/mockImageParsingResult.json';
+import {
   BLACK_PIXEL,
   BLUE_PIXEL,
   DARK_GREY_PIXEL,
@@ -6,26 +18,19 @@ import {
   GREY_PIXEL,
   RED_PIXEL,
   WHITE_PIXEL,
-  arePixelsSimilarByColor,
-  findTheMostDarkPixel,
-  getCellsSizeInRow,
-  getCurrentLetter,
-  getPixelsByLetters,
-  getPixelsByTime,
-  calculateEcgLetters,
-} from './image-parsing.helper';
+} from '../constants';
 
-describe('getPixelsByLetters method', () => {
+describe('getPixelsByRows method', () => {
   it('should return empty array if it passed, notwithstanding row width', () => {
     const emptyArray = [];
 
-    expect(getPixelsByLetters(emptyArray, 1)).toBe(emptyArray);
-    expect(getPixelsByLetters(emptyArray, 20)).toBe(emptyArray);
-    expect(getPixelsByLetters(emptyArray, 100)).toBe(emptyArray);
+    expect(getPixelsByRows(emptyArray, 1)).toBe(emptyArray);
+    expect(getPixelsByRows(emptyArray, 20)).toBe(emptyArray);
+    expect(getPixelsByRows(emptyArray, 100)).toBe(emptyArray);
   });
 
   it('should make 3 rows by 2 elements from flat 6-size array', () => {
-    const actual = getPixelsByLetters([1, 2, 3, 4, 5, 6], 2);
+    const actual = getPixelsByRows([1, 2, 3, 4, 5, 6], 2);
     const expected = [
       [1, 2],
       [3, 4],
@@ -36,7 +41,7 @@ describe('getPixelsByLetters method', () => {
   });
 
   it('should make 2 rows by 3 elements from flat 6-size array', () => {
-    const actual = getPixelsByLetters([1, 2, 3, 4, 5, 6], 3);
+    const actual = getPixelsByRows([1, 2, 3, 4, 5, 6], 3);
     const expected = [
       [1, 2, 3],
       [4, 5, 6],
@@ -46,16 +51,16 @@ describe('getPixelsByLetters method', () => {
   });
 });
 
-describe('getPixelsByTime', () => {
+describe('getPixelsByColumns', () => {
   let actual;
   let expected;
 
   it('should return empty array if such passed', () => {
-    expect(getPixelsByTime([])).toEqual([]);
+    expect(getPixelsByColumns([])).toEqual([]);
   });
 
   it('should make 2 columns from 6-size array', () => {
-    actual = getPixelsByTime([1, 2, 3, 4, 5, 6], 2);
+    actual = getPixelsByColumns([1, 2, 3, 4, 5, 6], 2);
     expected = [
       [1, 3, 5],
       [2, 4, 6],
@@ -66,7 +71,7 @@ describe('getPixelsByTime', () => {
 
   it('should make 4 columns from 16-size array', () => {
     const arrFrom1To16 = Array(16).fill(0).map((_, index) => index + 1);
-    actual = getPixelsByTime(arrFrom1To16, 4);
+    actual = getPixelsByColumns(arrFrom1To16, 4);
     expected = [
       [1, 5, 9, 13],
       [2, 6, 10, 14],
@@ -80,39 +85,39 @@ describe('getPixelsByTime', () => {
 
 describe('getCurrentLetter method', () => {
   const mockAbc = ['A', 'B', 'C', 'D', 'E'];
-  const mockImageHeight = 8;
+  const mockImageData = { height: 8 };
   let expected;
 
   it('should recognize first letter if outside of boundary (left)', () => {
-    expect(getCurrentLetter(mockImageHeight, -20, mockAbc)).toEqual('A');
+    expect(getCurrentLetter(mockImageData, mockAbc, -20)).toEqual('A');
   });
 
   it('should recognize first letter if outside of boundary (right)', () => {
-    expect(getCurrentLetter(mockImageHeight, 20, mockAbc)).toEqual('E');
+    expect(getCurrentLetter(mockImageData, mockAbc, 20)).toEqual('E');
   });
 
   it('should recognize step A', () => {
     expected = 'A';
 
-    expect(getCurrentLetter(mockImageHeight, 0, mockAbc)).toEqual(expected);
-    expect(getCurrentLetter(mockImageHeight, 0.01, mockAbc)).toEqual(expected);
-    expect(getCurrentLetter(mockImageHeight, 0.85, mockAbc)).toEqual(expected);
-    expect(getCurrentLetter(mockImageHeight, 1.599, mockAbc)).toEqual(expected);
+    expect(getCurrentLetter(mockImageData, mockAbc, 0)).toEqual(expected);
+    expect(getCurrentLetter(mockImageData, mockAbc, 0.01)).toEqual(expected);
+    expect(getCurrentLetter(mockImageData, mockAbc, 0.85)).toEqual(expected);
+    expect(getCurrentLetter(mockImageData, mockAbc, 1.599)).toEqual(expected);
   });
 
   it('should recognize step B', () => {
     expected = 'B';
 
-    expect(getCurrentLetter(mockImageHeight, 1.6, mockAbc)).toEqual(expected);
-    expect(getCurrentLetter(mockImageHeight, 2, mockAbc)).toEqual(expected);
-    expect(getCurrentLetter(mockImageHeight, 3, mockAbc)).toEqual(expected);
-    expect(getCurrentLetter(mockImageHeight, 3.19, mockAbc)).toEqual(expected);
+    expect(getCurrentLetter(mockImageData, mockAbc, 1.6)).toEqual(expected);
+    expect(getCurrentLetter(mockImageData, mockAbc, 2)).toEqual(expected);
+    expect(getCurrentLetter(mockImageData, mockAbc, 3)).toEqual(expected);
+    expect(getCurrentLetter(mockImageData, mockAbc, 3.19)).toEqual(expected);
   });
 
   it('should recognize step E', () => {
     expected = 'E';
 
-    expect(getCurrentLetter(mockImageHeight, 7.9, mockAbc)).toEqual(expected);
+    expect(getCurrentLetter(mockImageData, mockAbc, 7.9)).toEqual(expected);
   });
 });
 
@@ -240,14 +245,23 @@ describe('getCellsSizeInRow method', () => {
   });
 });
 
-describe('calculateEcgLetters method', () => {
-  it('should calculate letters based on difference between MAX and MIN indices', () => {
-    const indicesLow = [0, 1, 2, 3, 4, 5];
-    const indicesHigh = [500, 501, 502, 503, 504, 505];
-    const actualLow = calculateEcgLetters(indicesLow, 'ABC');
-    const actualHigh = calculateEcgLetters(indicesHigh, 'ABC');
-    const expected = 'AABBCC'.split('');
-    expect(actualLow).toEqual(expected);
-    expect(actualHigh).toEqual(expected);
+describe('getEcgResult method', () => {
+  it('calculates ECG test data properly', () => {
+    /*
+     * 0 - black, 1 - white
+     *
+     * 0 00 0 00 0 0 00 0
+     * 0 11 0 11 0 0 11 0
+     * 0 11 0 11 0 0 11 0
+     * 0 00 0 00 0 0 00 0
+     * 0 11 0 11 0 0 11 0
+     * 0 11 0 11 0 0 11 0
+     * 0 00 0 00 0 0 00 0
+     * 0 11 0 11 0 0 11 0
+     * 0 11 0 11 0 0 11 0
+     * 0 00 0 00 0 0 00 0
+     */
+    const actual = getEcgResult(mockImageData);
+    expect(actual).toEqual(mockImageParsingResult);
   });
 });

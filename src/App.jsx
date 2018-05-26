@@ -11,19 +11,18 @@ import Header from './components/Header/Header';
 import FilePicker from './components/FilePicker/FilePicker';
 import EcgResults from './components/EcgResults/EcgResults';
 import DiseaseDetector from './components/DiseaseDetector/DiseaseDetector';
-import { ECG_RESULT_BENCHMARKING_LABEL } from './constants';
-
-// export const noop = () => {};
+import { onImageError } from './helpers/error-handlers.helper';
+import { getImageData } from './helpers/canvas.helper';
 
 const initialEcgLetters = [];
 const initialEcgLettersDetailed = [];
-const initialPlotIndices = [];
+const initialPlotPoints = [];
 const initialEcgResult = {
   baseLineY: 0,
   cellsSize: 0,
   ecgLetters: initialEcgLetters,
   ecgLettersDetailed: initialEcgLettersDetailed,
-  plotIndices: initialPlotIndices,
+  plotPoints: initialPlotPoints,
 };
 
 export class App extends Component {
@@ -50,10 +49,12 @@ export class App extends Component {
     const onMessageWorkerHandler = (workerEvent) => {
       const workerResponse = workerEvent.data;
       if (workerResponse.constructor === ImageBitmap) {
-        console.time(ECG_RESULT_BENCHMARKING_LABEL);
-        const ecgResult = getEcgResult(workerResponse);
-        console.timeEnd(ECG_RESULT_BENCHMARKING_LABEL);
-
+        if (workerResponse.error) {
+          onImageError(workerResponse);
+          return;
+        }
+        const imageData = getImageData(workerResponse);
+        const ecgResult = getEcgResult(imageData);
         this.setState({
           isEcgResultVisible: true,
           currentImage: workerResponse,
@@ -106,7 +107,7 @@ export class App extends Component {
         cellsSize,
         ecgLetters,
         ecgLettersDetailed,
-        plotIndices,
+        plotPoints,
       },
       diseaseResult,
     } = this.state;
@@ -130,7 +131,7 @@ export class App extends Component {
             cellsSize={cellsSize}
             ecgLetters={ecgLetters}
             ecgLettersDetailed={ecgLettersDetailed}
-            plotIndices={plotIndices}
+            plotPoints={plotPoints}
             currentImage={currentImage}
             clearEcgResult={this.clearEcgResult}
             resetCurrentFile={this.beforeCurrentFileReset}
@@ -139,7 +140,7 @@ export class App extends Component {
         )}
         {ecgLetters.length > 0 && (
           <DiseaseDetector
-            ecgLetters={ecgLetters}
+            ecgLettersDetailed={ecgLettersDetailed}
             onDiseaseResult={this.onDiseaseAnalysisResult}
           />
         )}

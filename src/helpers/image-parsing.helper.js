@@ -1,29 +1,20 @@
 import chunk from 'lodash.chunk';
 import mean from 'lodash.mean';
+import {
+  ERROR_IMAGE_SIZE,
+  onImageError,
+} from './error-handlers.helper';
+import { mapRgbaToCustomPixels } from './canvas.helper';
+import {
+  abcReversed,
+  BLACK_PIXEL,
+  MAX_IMAGE_HEIGHT,
+  MAX_IMAGE_WIDTH,
+  WHITE_PIXEL,
+} from '../constants';
 
-// import getDisease from './disease.helper';
-import { ERROR_IMAGE_SIZE, onImageError } from './error-handlers.helper';
-import { getImageData, mapRgbaToCustomPixels } from './canvas.helper';
-import { MAX_IMAGE_HEIGHT, MAX_IMAGE_WIDTH } from '../constants';
 
-/**
- * Reverse because server expects A to Z (bottom to top)
- * But the image is parsed from top to bottom
- */
-const abc = 'ABCDEFGHIKLMNOPQRSTVXYZ'.split('').reverse().join('');
-
-export const WHITE_PIXEL = { r: 255, g: 255, b: 255 };
-export const GREY_PIXEL = { r: 128, g: 128, b: 128 };
-export const DARK_GREY_PIXEL = { r: 64, g: 64, b: 64 };
-export const BLACK_PIXEL = { r: 0, g: 0, b: 0 };
-export const RED_PIXEL = { r: 255, g: 0, b: 0 };
-export const GREEN_PIXEL = { r: 0, g: 255, b: 0 };
-export const BLUE_PIXEL = { r: 0, g: 0, b: 255 };
-
-export const getRgbSum = pixel => (pixel
-  ? pixel.r + pixel.g + pixel.b
-  : 0
-);
+export const getRgbSum = pixel => pixel.r + pixel.g + pixel.b;
 
 export default function initImageParsingWorker() {
   const imageParsingWorker = new Worker('image-worker.js');
@@ -38,7 +29,7 @@ export default function initImageParsingWorker() {
 /**
  * Groups flat Pixels array by Y coordinate (letters)
  */
-export const getPixelsByLetters = (flatArr = [], rowWidth) => (
+export const getPixelsByRows = (flatArr = [], rowWidth = 1) => (
   flatArr.length
     ? chunk(flatArr, rowWidth)
     : flatArr
@@ -46,7 +37,7 @@ export const getPixelsByLetters = (flatArr = [], rowWidth) => (
 /**
  * Groups flat Pixels array by X coordinate (time)
  */
-export const getPixelsByTime = (flatArr = [], columnsCount) =>
+export const getPixelsByColumns = (flatArr = [], columnsCount = 1) =>
   flatArr.reduce((acc, curr, index) => {
     if (index < columnsCount) {
       // container not yet exists
@@ -61,9 +52,9 @@ export const getPixelsByTime = (flatArr = [], columnsCount) =>
     return acc;
   }, []);
 
-export const getCurrentLetter = (yAmplitude, yCoord, alphabet) => {
+export const getCurrentLetter = (imageData, alphabet, yCoord) => {
   const alphabetSize = alphabet.length;
-  const cardioStepSize = yAmplitude / alphabetSize;
+  const cardioStepSize = imageData.height / alphabetSize;
   const currentStep = Math.floor(yCoord / cardioStepSize);
 
   if (currentStep < 0) {
@@ -123,7 +114,7 @@ export const arePixelsSimilarByColor = (pixel1, pixel2, maxDeviationInPercent = 
  */
 export const getCellsSizeInRow = (
   row = [],
-  minWhiteSliceLength = 6,
+  minWhiteSliceLength = 2,
   cellBackgroundColor = WHITE_PIXEL,
   wallColor = BLACK_PIXEL,
 ) => {
@@ -145,8 +136,10 @@ export const getCellsSizeInRow = (
   return Math.round(row.length / cellsCount);
 };
 
-export function calculateCellsSizeInECG(pixelsByRows) {
-  const cellsSizesByRows = pixelsByRows.map(row => getCellsSizeInRow(row));
+export function calculateCellSizeInECG(pixelsByRows) {
+  const cellsSizesByRows = pixelsByRows
+    .map(row => getCellsSizeInRow(row))
+    .filter(cellsSize => cellsSize > 0);
   const averageCellSize = mean(cellsSizesByRows);
   const withoutFloorAndCeilRows = cellsSizesByRows.filter(cellSizeInRow =>
     cellSizeInRow > (averageCellSize * 0.5) &&
@@ -154,42 +147,26 @@ export function calculateCellsSizeInECG(pixelsByRows) {
   return Math.round(mean(withoutFloorAndCeilRows));
 }
 
-function calculateEcgPlotIndices(pixelsByColumns, shrinkFactor = 1) {
+function calculateEcgLetters(pixelsByColumns, imageData, shrinkFactor = 1) {
   return chunk(pixelsByColumns, shrinkFactor).map((columnsChunk) => {
-    const pixelIndicesInChunk = columnsChunk.reduce((plotIndicesInChunk, currentColumn) => {
+    const pixelIndicesInChunk = columnsChunk.reduce((plotPointsInChunk, currentColumn) => {
       const theMostDarkPixel = findTheMostDarkPixel(currentColumn);
-      return plotIndicesInChunk.concat(theMostDarkPixel.index);
+      return plotPointsInChunk.concat(theMostDarkPixel.index);
     }, []);
-    return Math.round(mean(pixelIndicesInChunk));
+    const averageIndexInChunk = Math.round(mean(pixelIndicesInChunk));
+    const letter = getCurrentLetter(imageData, abcReversed, averageIndexInChunk);
+    return {
+      letter,
+      index: averageIndexInChunk,
+    };
   });
 }
 
 function calculateBaseLineEcg(pixelsList) {
-  return Math.round(pixelsList.reduce((acc, curr) => acc + curr, 0) / pixelsList.length);
+  return Math.round(pixelsList.reduce((acc, curr) => acc + curr.index, 0) / pixelsList.length);
 }
 
-/**
- * All points indices become reduced by min index
- * So now algorithm looks for letters not in the entire image height amplitude
- * but from min index to max index. It means the outer space is ignored.
- */
-export function calculateEcgLetters(indices, alphabet, shrinkFactor = 1) {
-  const [maxIndex, minIndex] = [Math.max.apply(null, indices), Math.min.apply(null, indices)];
-  const yAmplitude = maxIndex - minIndex;
-
-  return chunk(indices, shrinkFactor).map((chunkOfIndices) => {
-    const currChunkAverageIndex = Math.round(mean(chunkOfIndices));
-    return getCurrentLetter(yAmplitude, currChunkAverageIndex - minIndex, alphabet);
-  });
-}
-
-export const getEcgResult = (workerResponse) => {
-  if (workerResponse.error) {
-    onImageError(workerResponse);
-    return '';
-  }
-
-  const imageData = getImageData(workerResponse);
+export const getEcgResult = (imageData) => {
   if (imageData.height > MAX_IMAGE_HEIGHT || imageData.width > MAX_IMAGE_WIDTH) {
     onImageError({
       errorMessage: ERROR_IMAGE_SIZE,
@@ -198,22 +175,21 @@ export const getEcgResult = (workerResponse) => {
   }
 
   const imagePixels = mapRgbaToCustomPixels(imageData.data);
-  const pixelsByRows = getPixelsByLetters(imagePixels, imageData.width);
-  const pixelsByColumns = getPixelsByTime(imagePixels, imageData.width);
+  const pixelsByRows = getPixelsByRows(imagePixels, imageData.width);
+  const pixelsByColumns = getPixelsByColumns(imagePixels, imageData.width);
 
-  const cellsSize = calculateCellsSizeInECG(pixelsByRows);
-  const plotIndices = calculateEcgPlotIndices(pixelsByColumns, cellsSize);
-  const plotIndicesAll = calculateEcgPlotIndices(pixelsByColumns, 1);
-
-  const ecgLetters = calculateEcgLetters(plotIndicesAll, abc, cellsSize);
-  const ecgLettersDetailed = calculateEcgLetters(plotIndicesAll, abc);
-  const baseLineY = calculateBaseLineEcg(plotIndices);
+  const cellsSize = calculateCellSizeInECG(pixelsByRows);
+  const plotPoints = calculateEcgLetters(pixelsByColumns, imageData, cellsSize);
+  const plotPointsDetailed = calculateEcgLetters(pixelsByColumns, imageData, 1);
+  const ecgLetters = plotPoints.map(plotPoint => plotPoint.letter).join('');
+  const ecgLettersDetailed = plotPointsDetailed.map(plotPoint => plotPoint.letter).join('');
+  const baseLineY = calculateBaseLineEcg(plotPoints);
 
   return {
     baseLineY,
     cellsSize,
     ecgLetters,
     ecgLettersDetailed,
-    plotIndices,
+    plotPoints,
   };
 };

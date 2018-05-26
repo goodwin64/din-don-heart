@@ -1,41 +1,37 @@
 import { Component } from 'react';
 
-import { ecgLettersPT, onDiseaseResultPT } from '../../helpers/proptypes.helper';
-
-const wait = seconds => new Promise(resolve => setTimeout(resolve, seconds));
+import {
+  DiseaseServicePT,
+  ecgLettersPT,
+  onDiseaseResultPT,
+} from '../../helpers/proptypes.helper';
+import DiseaseService from './DiseaseService';
 
 class DiseaseDetector extends Component {
   static propTypes = {
     onDiseaseResult: onDiseaseResultPT.isRequired,
-    ecgLetters: ecgLettersPT.isRequired,
+    ecgLettersDetailed: ecgLettersPT.isRequired,
+    DiseaseService: DiseaseServicePT,
   };
 
+  static defaultProps = {
+    DiseaseService,
+  };
+
+  constructor(props) {
+    super(props);
+    this.diseaseService = new props.DiseaseService(props.onDiseaseResult);
+  }
+
   componentDidMount() {
-    this.sendEcgForAnalysis(this.props);
+    this.diseaseService.sendEcgForAnalysis(this.props.ecgLettersDetailed);
   }
 
   componentWillReceiveProps(props) {
-    if (props.ecgLetters !== this.props.ecgLetters) {
-      this.sendEcgForAnalysis(props);
+    if (props.ecgLettersDetailed !== this.props.ecgLettersDetailed) {
+      this.diseaseService.sendEcgForAnalysis(props.ecgLettersDetailed);
     }
   }
-
-  sendEcgForAnalysis = (props) => {
-    const { ecgLetters, onDiseaseResult } = props;
-    const fakeServerResponse = wait(0).then(() => ({ json: () => `You are healthy (${ecgLetters.length})` }));
-    const realServerResponse = fetch(`https://randomuser.me/api/?results=10&ecgLetters=${ecgLetters}`);
-
-    Promise.race([
-      fakeServerResponse,
-      realServerResponse,
-    ]).then(result => result.json())
-      .then((result) => {
-        onDiseaseResult(JSON.stringify(result));
-      })
-      .catch((err) => {
-        console.error('Error in DiseaseDetector', err);
-      });
-  };
 
   render() {
     return null;
