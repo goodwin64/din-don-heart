@@ -2,6 +2,7 @@ import LocalizedStrings from 'react-localization';
 
 export const CODE_ENG = 'ENG';
 export const CODE_RUS = 'RUS';
+export const CODE_UA = 'UA';
 
 export const defaultLanguage = CODE_ENG;
 
@@ -17,7 +18,7 @@ const strings = new LocalizedStrings({
     diseaseResult: 'Disease result',
   },
   [CODE_RUS]: {
-    appDescription: 'Всё, что следует знать о Вашем сердце',
+    appDescription: 'Всё, что Вам следует знать о своём сердце',
     chooseFile: 'Выберите файл',
     ecgResultTitle: 'Данные Вашей ЭКГ',
     baseLineY: 'Координаты базовой линии (пиксели)',
@@ -25,6 +26,16 @@ const strings = new LocalizedStrings({
     ecgLetters: 'Лексема ЭКГ',
     ecgLettersDetailed: 'Расширенная лексема ЭКГ',
     diseaseResult: 'Результат анализа ЭКГ',
+  },
+  [CODE_UA]: {
+    appDescription: 'Все, що Вам слід знати про своє серце',
+    chooseFile: 'Оберіть файл',
+    ecgResultTitle: 'Дані вашої ЕКГ',
+    baseLineY: 'Координати базової лінії (пікселі)',
+    cellsSize: 'Розмір клітинок (пікселі)',
+    ecgLetters: 'Лексема ЕКГ',
+    ecgLettersDetailed: 'Розширена лексема ЕКГ',
+    diseaseResult: 'Результат аналізу ЕКГ',
   },
 });
 
