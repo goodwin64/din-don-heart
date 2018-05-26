@@ -4,7 +4,7 @@ export const CODE_ENG = 'ENG';
 export const CODE_RUS = 'RUS';
 export const CODE_UA = 'UA';
 
-export const defaultLanguage = CODE_ENG;
+export const defaultLanguageCode = CODE_ENG;
 
 const strings = new LocalizedStrings({
   [CODE_ENG]: {

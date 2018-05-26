@@ -5,7 +5,7 @@ import {
   DISEASE_MESSAGE_DEATH,
   DISEASE_MESSAGE_TOO_SHORT,
   MIN_ECG_LENGTH,
-} from '../constants';
+} from '../constants/constants';
 
 describe('getDisease method', () => {
   it('should detect death', () => {

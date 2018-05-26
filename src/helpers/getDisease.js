@@ -4,7 +4,7 @@ import {
   DISEASE_MESSAGE_HEALTHY,
   DISEASE_MESSAGE_TOO_SHORT,
   MIN_ECG_LENGTH,
-} from '../constants';
+} from '../constants/constants';
 
 export default function getDisease(ecgLetters) {
   const lettersList = (

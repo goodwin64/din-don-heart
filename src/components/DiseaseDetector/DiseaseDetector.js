@@ -1,41 +1,52 @@
 import { Component } from 'react';
+import { connect } from 'react-redux';
 
 import {
-  DiseaseServicePT,
   ecgLettersPT,
   onDiseaseResultPT,
 } from '../../helpers/proptypes.helper';
-import DiseaseService from './DiseaseService';
+import getDisease from '../../helpers/getDisease';
+import { onDiseaseResultServerAnalysis } from '../../actions/onDiseaseResult';
+
+const wait = seconds => new Promise(resolve => setTimeout(resolve, seconds));
 
 class DiseaseDetector extends Component {
   static propTypes = {
-    onDiseaseResult: onDiseaseResultPT.isRequired,
     ecgLettersDetailed: ecgLettersPT.isRequired,
-    DiseaseService: DiseaseServicePT,
+    onDiseaseResult: onDiseaseResultPT.isRequired,
   };
-
-  static defaultProps = {
-    DiseaseService,
-  };
-
-  constructor(props) {
-    super(props);
-    this.diseaseService = new props.DiseaseService(props.onDiseaseResult);
-  }
 
   componentDidMount() {
-    this.diseaseService.sendEcgForAnalysis(this.props.ecgLettersDetailed);
+    this.sendEcgForAnalysis(this.props.ecgLettersDetailed);
   }
 
   componentWillReceiveProps(props) {
     if (props.ecgLettersDetailed !== this.props.ecgLettersDetailed) {
-      this.diseaseService.sendEcgForAnalysis(props.ecgLettersDetailed);
+      this.sendEcgForAnalysis(props.ecgLettersDetailed);
     }
   }
+
+  sendEcgForAnalysis = (ecgLettersDetailed) => {
+    const fakeServerResponse = wait(0).then(() => ({ json: () => getDisease(ecgLettersDetailed) }));
+    const realServerResponse = fetch(`https://randomuser.me/api/?results=10&ecgLetters=${ecgLettersDetailed}`);
+
+    Promise.race([
+      fakeServerResponse,
+      realServerResponse,
+    ]).then(result => result.json())
+      .then((result) => {
+        this.props.onDiseaseResult(result);
+      })
+      .catch((err) => {
+        console.error('Error in Disease Detector', err);
+      });
+  };
 
   render() {
     return null;
   }
 }
 
-export default DiseaseDetector;
+export default connect(null, {
+  onDiseaseResult: onDiseaseResultServerAnalysis,
+})(DiseaseDetector);

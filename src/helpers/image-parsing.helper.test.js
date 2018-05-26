@@ -19,7 +19,7 @@ import {
   GREY_PIXEL,
   RED_PIXEL,
   WHITE_PIXEL,
-} from '../constants';
+} from '../constants/constants';
 
 describe('getPixelsByRows method', () => {
   it('should return empty array if it passed, notwithstanding row width', () => {

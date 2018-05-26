@@ -1,18 +1,20 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 
 import { EcgResultContainer, EcgResultCanvas, ClearCanvasButton } from '../App/App.styled';
-import { CLOSE_CHARACTER } from '../../constants';
+import { CLOSE_CHARACTER } from '../../constants/constants';
 import strings from '../LanguageSelector/localization';
 import { ecgLettersPT, diseaseResultPT, plotIndexPT } from '../../helpers/proptypes.helper';
+import { setEcgResultVisibility, setShouldCurrentFileBeCleared } from '../../actions/onDiseaseResult';
 
 class EcgResults extends Component {
   static propTypes = {
     baseLineY: PropTypes.number.isRequired,
     cellsSize: PropTypes.number.isRequired,
     plotIndices: PropTypes.arrayOf(plotIndexPT).isRequired,
-    clearEcgResult: PropTypes.func.isRequired,
-    resetCurrentFile: PropTypes.func.isRequired,
+    setEcgResultVisibility: PropTypes.func.isRequired,
+    setShouldCurrentFileBeCleared: PropTypes.func.isRequired,
     currentImage: PropTypes.shape({}).isRequired, // image bitmap
     ecgLetters: ecgLettersPT.isRequired,
     ecgLettersDetailed: ecgLettersPT.isRequired,
@@ -36,8 +38,8 @@ class EcgResults extends Component {
 
   handleResultResetButton = () => {
     this.clearCanvas();
-    this.props.clearEcgResult();
-    this.props.resetCurrentFile();
+    this.props.setEcgResultVisibility(false);
+    this.props.setShouldCurrentFileBeCleared(true);
   };
 
   /**
@@ -111,4 +113,20 @@ class EcgResults extends Component {
   }
 }
 
-export default EcgResults;
+function mapStateToProps(state) {
+  return {
+    currentImage: state.appCommonParams.currentImage,
+    currentLanguage: state.appCommonParams.currentLanguage,
+    baseLineY: state.ecgResult.baseLineY,
+    cellsSize: state.ecgResult.cellsSize,
+    ecgLetters: state.ecgResult.ecgLetters,
+    ecgLettersDetailed: state.ecgResult.ecgLettersDetailed,
+    plotIndices: state.ecgResult.plotIndices,
+    diseaseResult: state.ecgResult.diseaseResult,
+  };
+}
+
+export default connect(mapStateToProps, {
+  setEcgResultVisibility,
+  setShouldCurrentFileBeCleared,
+})(EcgResults);

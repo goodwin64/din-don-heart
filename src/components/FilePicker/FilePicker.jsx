@@ -1,16 +1,19 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 
 import { FilePickerContainer, FilePickerInput, FilePickerLabel } from '../App/App.styled';
 import strings from '../LanguageSelector/localization';
+import { setShouldCurrentFileBeCleared } from '../../actions/onDiseaseResult';
+import { imageParsingWorkerPT } from '../../helpers/proptypes.helper';
 
 const defaultFile = {};
 
 class FilePicker extends Component {
   static propTypes = {
     shouldCurrentFileBeCleared: PropTypes.bool.isRequired,
-    afterCurrentFileReset: PropTypes.func.isRequired,
-    onFileChange: PropTypes.func.isRequired,
+    setShouldCurrentFileBeCleared: PropTypes.func.isRequired,
+    imageParsingWorker: imageParsingWorkerPT.isRequired,
   };
 
   componentWillReceiveProps(props) {
@@ -21,12 +24,13 @@ class FilePicker extends Component {
 
   onFileChange = (event) => {
     const file = event.target.files[0] || defaultFile;
-    this.props.onFileChange(file);
+    this.props.setShouldCurrentFileBeCleared(true);
+    this.props.imageParsingWorker.postMessage({ file });
   };
 
   resetCurrentFile = () => {
     this.filePicker.value = '';
-    this.props.afterCurrentFileReset();
+    this.props.setShouldCurrentFileBeCleared(false);
   };
 
   render() {
@@ -49,4 +53,14 @@ class FilePicker extends Component {
   }
 }
 
-export default FilePicker;
+// TODO: wrap with currentLanguage HOC
+function mapStateToProps(state) {
+  return {
+    shouldCurrentFileBeCleared: state.appCommonParams.shouldCurrentFileBeCleared,
+    currentLanguage: state.appCommonParams.currentLanguage,
+  };
+}
+
+export default connect(mapStateToProps, {
+  setShouldCurrentFileBeCleared,
+})(FilePicker);

@@ -1,10 +1,15 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import Select from 'react-select';
+import { connect } from 'react-redux';
 
-import { CODE_ENG, CODE_RUS, CODE_UA } from './localization';
+import { setLanguage } from '../../actions/onDiseaseResult';
+import { setLanguagePT } from '../../helpers/proptypes.helper';
+import strings, { CODE_ENG, CODE_RUS, CODE_UA, defaultLanguageCode } from './localization';
+
 import LanguageSelectorContainer, {
-  CountryFlag, LanguageOptionContainer,
+  CountryFlag,
+  LanguageOptionContainer,
   LanguageOptionLabel,
 } from './LanguageSelector.styled';
 
@@ -17,15 +22,19 @@ const languageOptions = [
   { value: CODE_UA, label: 'Українська', imgBase64: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEgAAABIBAMAAACnw650AAAAG1BMVEVHcEwAW7v/1QAAW7v/1QAAW7v/1QD/1QAAW7uIqOaMAAAAB3RSTlMAx8dgYCAg36fI1gAAAGpJREFUSMdjYBgFdAeGHXiBMEhNYAcBIMrAwNpBEAQwMBJWJMBgQVhRM4MEYUWNDB1EgFFFo4qGsqJyIsCoolFFQ1mROmE1RQzuhBWVMDARVqTAwEZYUQIDQxIhNWqgqtMJvxqV0QYI/QEAHf+XxuFYqnUAAAAASUVORK5CYII=' },
 ];
 
-export default class LanguageSelector extends PureComponent {
+class LanguageSelector extends PureComponent {
   static propTypes = {
     currentLanguage: PropTypes.string.isRequired,
-    onLanguageChange: PropTypes.func.isRequired,
+    setLanguage: setLanguagePT.isRequired,
   };
 
   onLanguageSelect = (language) => {
     if (!language) { return; }
-    this.props.onLanguageChange(language.value);
+
+    const selectedLanguageCode = language.value;
+    const currentLanguageCode = selectedLanguageCode || defaultLanguageCode;
+    strings.setLanguage(currentLanguageCode);
+    this.props.setLanguage(currentLanguageCode);
   };
 
   renderOption = option => (
@@ -52,3 +61,13 @@ export default class LanguageSelector extends PureComponent {
     );
   }
 }
+
+function mapStateToProps(state) {
+  return {
+    currentLanguage: state.appCommonParams.currentLanguage,
+  };
+}
+
+export default connect(mapStateToProps, {
+  setLanguage,
+})(LanguageSelector);

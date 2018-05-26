@@ -14,7 +14,7 @@ import {
   MAX_IMAGE_HEIGHT,
   MAX_IMAGE_WIDTH,
   WHITE_PIXEL,
-} from '../constants';
+} from '../constants/constants';
 
 export const getRgbSum = pixel => pixel.r + pixel.g + pixel.b;
 
