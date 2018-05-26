@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 import { EcgResultContainer, EcgResultCanvas, ClearCanvasButton } from '../App/App.styled';
 import { CLOSE_CHARACTER } from '../../constants';
-import strings from '../../helpers/localization';
+import strings from '../LanguageSelector/localization';
 import { ecgLettersPT, diseaseResultPT, plotIndexPT } from '../../helpers/proptypes.helper';
 
 class EcgResults extends Component {

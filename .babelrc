@@ -8,10 +8,16 @@
   "presets": ["react", "env"],
   "env": {
     "production": {
-      "plugins": ["transform-es2015-modules-commonjs"]
+      "plugins": [
+        ["transform-es2015-modules-commonjs"],
+        ["transform-object-rest-spread"]
+      ]
     },
     "development": {
-      "plugins": ["transform-es2015-modules-commonjs"]
+      "plugins": [
+        ["transform-es2015-modules-commonjs"],
+        ["transform-object-rest-spread"]
+      ]
     },
     "test": {
       "plugins": [

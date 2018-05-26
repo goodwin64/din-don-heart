@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import './App.css';
 import { getEcgResult } from '../../helpers/image-parsing.helper';
 import { AppDescription } from './App.styled';
-import strings, { defaultLanguage } from '../../helpers/localization';
+import strings, { defaultLanguage } from '../LanguageSelector/localization';
 
 import LanguageSelector from '../LanguageSelector/LanguageSelector';
 import Header from '../Header/Header';
@@ -14,15 +14,13 @@ import DiseaseDetector from '../DiseaseDetector/DiseaseDetector';
 import { onImageError } from '../../helpers/error-handlers.helper';
 import { getImageData } from '../../helpers/canvas.helper';
 
-const initialEcgLetters = [];
-const initialEcgLettersDetailed = [];
-const initialPlotIndices = [];
 const initialEcgResult = {
   baseLineY: 0,
   cellsSize: 0,
-  ecgLetters: initialEcgLetters,
-  ecgLettersDetailed: initialEcgLettersDetailed,
-  plotIndices: initialPlotIndices,
+  ecgLetters: [],
+  ecgLettersDetailed: [],
+  plotIndices: [],
+  diseaseResult: '',
 };
 
 export class App extends Component {
@@ -41,7 +39,6 @@ export class App extends Component {
       currentImage: null,
       currentLanguage: strings.getLanguage() || defaultLanguage,
       isEcgResultVisible: false,
-      diseaseResult: '',
     };
   }
 
@@ -58,7 +55,10 @@ export class App extends Component {
         this.setState({
           isEcgResultVisible: true,
           currentImage: workerResponse,
-          ecgResult,
+          ecgResult: {
+            ...this.state.ecgResult,
+            ...ecgResult,
+          },
         });
       }
     };
@@ -77,7 +77,12 @@ export class App extends Component {
   };
 
   onDiseaseAnalysisResult = (diseaseResult) => {
-    this.setState({ diseaseResult });
+    this.setState({
+      ecgResult: {
+        ...this.state.ecgResult,
+        diseaseResult,
+      },
+    });
   };
 
   afterCurrentFileReset = () => {
@@ -91,7 +96,6 @@ export class App extends Component {
   clearEcgResult = () => {
     this.setState({
       isEcgResultVisible: false,
-      diseaseResult: '',
       ecgResult: initialEcgResult,
     });
   };
@@ -108,8 +112,8 @@ export class App extends Component {
         ecgLetters,
         ecgLettersDetailed,
         plotIndices,
+        diseaseResult,
       },
-      diseaseResult,
     } = this.state;
 
     return (
