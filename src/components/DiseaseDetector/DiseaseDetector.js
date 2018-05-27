@@ -35,7 +35,8 @@ class DiseaseDetector extends Component {
       realServerResponse,
     ]).then(result => result.json())
       .then((result) => {
-        this.props.onDiseaseResult(result);
+        const resultStringified = JSON.stringify(result);
+        this.props.onDiseaseResult(resultStringified);
       })
       .catch((err) => {
         console.error('Error in Disease Detector', err);

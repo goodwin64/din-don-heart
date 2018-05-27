@@ -53,7 +53,7 @@ class FilePicker extends Component {
   }
 }
 
-// TODO: wrap with currentLanguage HOC
+// TODO: wrap with currentLanguage HOC or pass "strings" from context
 function mapStateToProps(state) {
   return {
     shouldCurrentFileBeCleared: state.appCommonParams.shouldCurrentFileBeCleared,

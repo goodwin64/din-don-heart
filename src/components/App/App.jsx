@@ -84,7 +84,7 @@ export class App extends Component {
 function mapStateToProps(state) {
   return {
     ecgResult: state.ecgResult,
-    appCommonParams: state.appCommonParams,
+    currentLanguage: state.appCommonParams.currentLanguage,
     isEcgResultVisible: state.appCommonParams.isEcgResultVisible,
   };
 }

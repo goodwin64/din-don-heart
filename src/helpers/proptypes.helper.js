@@ -9,10 +9,12 @@ export const cellsSizePT = PropTypes.number;
 
 // complex shapes
 export const plotIndicesPT = PropTypes.arrayOf(plotIndexPT);
+
 export const imageParsingWorkerPT = PropTypes.shape({
   setOnMessageHandler: PropTypes.func.isRequired,
   postMessage: PropTypes.func.isRequired,
 });
+
 export const ecgResultPT = PropTypes.shape({
   baseLineY: baseLineYPT,
   cellsSize: cellsSizePT,
