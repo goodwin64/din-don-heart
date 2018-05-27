@@ -17,7 +17,7 @@ in computer memory, which is the base for detecting heart diseases.
 Must-have widgets:
 - [x] ECG visual analysis
 - [ ] Heart diseases demo templates
-- [ ] Save for offline usage
+- [x] Save for offline usage
 - [ ] Configuring options
 
 Optional nice features:
@@ -29,5 +29,5 @@ Optional nice features:
 
 Easy development:
 - [x] Travis CI configuration
-- [ ] Github templates
+- [x] Github pages
 - [x] ESLint + prettier
