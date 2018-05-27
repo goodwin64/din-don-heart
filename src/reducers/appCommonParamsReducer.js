@@ -6,7 +6,7 @@ import {
   SET_LANGUAGE,
   SET_CURRENT_IMAGE,
   SET_CURRENT_FILE_SHOULD_BE_CLEARED,
-  SET_ECG_RESULT_VISIBILITY,
+  SET_ECG_RESULT_VISIBILITY, SET_ECG_EXAMPLES_VISIBILITY,
 } from '../constants/actionTypes';
 
 export const appInitialState = {
@@ -14,6 +14,7 @@ export const appInitialState = {
   currentImage: null,
   currentLanguage: strings.getLanguage() || defaultLanguageCode,
   isEcgResultVisible: false,
+  areExamplesVisible: false,
 };
 
 export default function appCommonParamsReducer(state = appInitialState, action = {}) {
@@ -43,6 +44,13 @@ export default function appCommonParamsReducer(state = appInitialState, action =
       return {
         ...state,
         currentLanguage: action.payload,
+      };
+    }
+
+    case SET_ECG_EXAMPLES_VISIBILITY: {
+      return {
+        ...state,
+        areEcgExamplesVisible: action.payload,
       };
     }
 

@@ -28,6 +28,7 @@ export const ecgResultPT = PropTypes.shape({
 export const onDiseaseResultPT = PropTypes.func;
 export const onDiseaseResultLocalAnalysisPT = PropTypes.func;
 export const setEcgResultVisibilityPT = PropTypes.func;
+export const setEcgExamplesVisibilityPT = PropTypes.func;
 export const setCurrentImagePT = PropTypes.func;
 export const setShouldCurrentFileBeClearedPT = PropTypes.func;
 export const setLanguagePT = PropTypes.func;

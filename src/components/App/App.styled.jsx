@@ -34,7 +34,6 @@ export const EcgResultContainer = styled.div`
   position: relative;
   margin: 20px auto;
   width: ${CANVAS_WIDTH_PC}px;
-  height: ${CANVAS_HEIGHT_PC}px;
   
   @media only screen and (max-width: ${CANVAS_WIDTH_PC}px) {
     width: ${CANVAS_WIDTH_MOBILE}px;

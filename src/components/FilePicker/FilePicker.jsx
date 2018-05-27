@@ -7,8 +7,6 @@ import strings from '../LanguageSelector/localization';
 import { setShouldCurrentFileBeCleared } from '../../actions/onDiseaseResult';
 import { imageParsingWorkerPT } from '../../helpers/proptypes.helper';
 
-const defaultFile = {};
-
 class FilePicker extends Component {
   static propTypes = {
     shouldCurrentFileBeCleared: PropTypes.bool.isRequired,
@@ -23,9 +21,12 @@ class FilePicker extends Component {
   }
 
   onFileChange = (event) => {
-    const file = event.target.files[0] || defaultFile;
-    this.props.setShouldCurrentFileBeCleared(true);
-    this.props.imageParsingWorker.postMessage({ file });
+    const file = event.target.files[0];
+    if (file) {
+      this.props.imageParsingWorker.postMessage({ file });
+    } else {
+      this.props.setShouldCurrentFileBeCleared(true);
+    }
   };
 
   resetCurrentFile = () => {
@@ -40,6 +41,7 @@ class FilePicker extends Component {
           type="file"
           id="file-picker"
           onChange={this.onFileChange}
+          accept="image/*"
           innerRef={(node) => {
             this.filePicker = node;
           }}

@@ -5,7 +5,13 @@ import { connect } from 'react-redux';
 import { EcgResultContainer, EcgResultCanvas, ClearCanvasButton } from '../App/App.styled';
 import { CLOSE_CHARACTER } from '../../constants/constants';
 import strings from '../LanguageSelector/localization';
-import { ecgLettersPT, diseaseResultPT, plotIndexPT } from '../../helpers/proptypes.helper';
+import {
+  ecgLettersPT,
+  diseaseResultPT,
+  plotIndexPT,
+  setShouldCurrentFileBeClearedPT,
+} from '../../helpers/proptypes.helper';
+
 import { setEcgResultVisibility, setShouldCurrentFileBeCleared } from '../../actions/onDiseaseResult';
 
 class EcgResults extends Component {
@@ -14,7 +20,7 @@ class EcgResults extends Component {
     cellsSize: PropTypes.number.isRequired,
     plotIndices: PropTypes.arrayOf(plotIndexPT).isRequired,
     setEcgResultVisibility: PropTypes.func.isRequired,
-    setShouldCurrentFileBeCleared: PropTypes.func.isRequired,
+    setShouldCurrentFileBeCleared: setShouldCurrentFileBeClearedPT.isRequired,
     currentImage: PropTypes.shape({}).isRequired, // image bitmap
     ecgLetters: ecgLettersPT.isRequired,
     ecgLettersDetailed: ecgLettersPT.isRequired,

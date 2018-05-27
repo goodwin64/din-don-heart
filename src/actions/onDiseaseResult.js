@@ -3,7 +3,9 @@ import {
   SET_CURRENT_FILE_SHOULD_BE_CLEARED,
   SET_DISEASE_RESULT_LOCAL_ANALYSIS,
   SET_DISEASE_RESULT_SERVER_ANALYSIS,
-  SET_ECG_RESULT_VISIBILITY, SET_LANGUAGE,
+  SET_ECG_RESULT_VISIBILITY,
+  SET_LANGUAGE,
+  SET_ECG_EXAMPLES_VISIBILITY,
 } from '../constants/actionTypes';
 
 export function onDiseaseResultLocalAnalysis(ecgResult) {
@@ -24,6 +26,13 @@ export function setEcgResultVisibility(isEcgResultVisible) {
   return {
     type: SET_ECG_RESULT_VISIBILITY,
     payload: isEcgResultVisible,
+  };
+}
+
+export function setEcgExamplesVisibility(areEcgExamplesVisible) {
+  return {
+    type: SET_ECG_EXAMPLES_VISIBILITY,
+    payload: areEcgExamplesVisible,
   };
 }
 
