@@ -22,8 +22,12 @@ export default function appCommonParamsReducer(state = appInitialState, action =
     case SET_LOCALIZATION: {
       return {
         ...state,
-        currentLanguage: action.payload.getLanguage(),
-        localization: { ...action.payload },
+        // eslint-disable-next-line no-underscore-dangle
+        currentLanguage: action.payload._language,
+        localization: {
+          ...state.localization,
+          ...action.payload,
+        },
       };
     }
 

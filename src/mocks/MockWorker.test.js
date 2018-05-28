@@ -1,10 +1,8 @@
-import * as noopModule from '../helpers/noop';
-
 import MockWorker from './MockWorker';
 
 it('should do nothing on postMessage', () => {
-  const spy = jest.spyOn(noopModule, 'noop');
-  const mockWorker = new MockWorker();
+  const spy = jest.fn();
+  const mockWorker = new MockWorker('url', spy);
 
   expect(spy).not.toBeCalled();
   mockWorker.postMessage();
