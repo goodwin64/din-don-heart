@@ -41,7 +41,7 @@ export class App extends Component {
     setCurrentImage: setCurrentImagePT.isRequired,
     imageParsingWorker: imageParsingWorkerPT.isRequired,
     isEcgResultVisible: PropTypes.bool.isRequired,
-    areExamplesVisible: PropTypes.bool.isRequired,
+    areEcgExamplesVisible: PropTypes.bool.isRequired,
     setEcgResultVisibility: setEcgResultVisibilityPT.isRequired,
     setEcgExamplesVisibility: setEcgExamplesVisibilityPT.isRequired,
     onDiseaseResultLocalAnalysis: onDiseaseResultLocalAnalysisPT.isRequired,
@@ -71,7 +71,7 @@ export class App extends Component {
   render() {
     const {
       isEcgResultVisible,
-      areExamplesVisible,
+      areEcgExamplesVisible,
       ecgLetters,
       ecgLettersDetailed,
     } = this.props;
@@ -94,7 +94,7 @@ export class App extends Component {
         <button onClick={() => this.props.setEcgExamplesVisibility(false)}>
           Hide examples
         </button>
-        {areExamplesVisible && <EcgAnalysisExample />}
+        {areEcgExamplesVisible && <EcgAnalysisExample />}
       </div>
     );
   }
@@ -106,7 +106,7 @@ function mapStateToProps(state) {
     ecgLettersDetailed: state.ecgResult.ecgLettersDetailed,
     localization: state.appCommonParams.localization,
     isEcgResultVisible: state.ecgResult.isEcgResultVisible,
-    areExamplesVisible: state.appCommonParams.areEcgExamplesVisible,
+    areEcgExamplesVisible: state.appCommonParams.areEcgExamplesVisible,
     imageParsingWorker: state.appCommonParams.imageParsingWorker,
   };
 }

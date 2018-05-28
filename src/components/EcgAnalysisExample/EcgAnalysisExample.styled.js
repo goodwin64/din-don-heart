@@ -7,7 +7,9 @@ export const ExamplesContainer = styled.div`
   margin: 0 auto;
 `;
 
-export const ExampleImageContainer = styled.div``;
+export const ExampleImageContainer = styled.div`
+  margin: 10px;
+`;
 
 export const ExampleImage = styled.img`
   width: 100%;

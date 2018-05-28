@@ -38,7 +38,7 @@ describe('App component', () => {
       ecgLettersDetailed: '',
       localization: mockLocalization,
       isEcgResultVisible: true,
-      areExamplesVisible: false,
+      areEcgExamplesVisible: false,
       imageParsingWorker: mockWorkerInstance,
       resetEcgResult: spies.spyResetEcgResult,
       setCurrentImage: spies.spySetCurrentImage,
@@ -104,7 +104,7 @@ describe('App component', () => {
     wrapper = shallow(<App {...mockProps} />);
     expect(wrapper.find(EcgAnalysisExample).length).toBe(0);
 
-    wrapper.setProps({ areExamplesVisible: true });
+    wrapper.setProps({ areEcgExamplesVisible: true });
     expect(wrapper.find(EcgAnalysisExample).length).toBe(1);
   });
 });

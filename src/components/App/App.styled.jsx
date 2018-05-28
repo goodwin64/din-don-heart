@@ -37,7 +37,6 @@ export const EcgResultContainer = styled.div`
   
   @media only screen and (max-width: ${CANVAS_WIDTH_PC}px) {
     width: ${CANVAS_WIDTH_MOBILE}px;
-    height: ${CANVAS_HEIGHT_MOBILE}px;
 
     ${EcgResultCanvas} {
       width: ${CANVAS_WIDTH_MOBILE}px;

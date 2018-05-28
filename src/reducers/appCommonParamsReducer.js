@@ -4,7 +4,6 @@ import strings, {
 
 import {
   SET_LOCALIZATION,
-  SET_CURRENT_IMAGE,
   SET_ECG_EXAMPLES_VISIBILITY,
 } from '../constants/actionTypes';
 
@@ -14,7 +13,7 @@ export const appInitialState = {
   currentLanguage: strings.getLanguage() || defaultLanguageCode,
   localization: { ...strings },
   imageParsingWorker: initImageParsingWorker(),
-  areExamplesVisible: false,
+  areEcgExamplesVisible: false,
 };
 
 export default function appCommonParamsReducer(state = appInitialState, action = {}) {
