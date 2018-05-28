@@ -7,16 +7,13 @@ import MockWorker from '../../mocks/MockWorker';
 import EcgResults from '../EcgResults/EcgResults';
 import { AppDescription } from './App.styled';
 import DiseaseDetectorHOC from '../DiseaseDetector/DiseaseDetector';
-import noop from '../../helpers/noop';
+import EcgAnalysisExample from '../EcgAnalysisExample/EcgAnalysisExample';
 
 describe('App component', () => {
   let wrapper;
   let mockProps;
-  let spyResetEcgResult;
   let mockWorkerInstance;
-  let spySetCurrentImage;
-  let spySetEcgResultVisibility;
-  let spyOnDiseaseResultLocalAnalysis;
+  const spies = {};
 
   const mockLocalization = new LocalizedStrings({
     en: {
@@ -28,10 +25,11 @@ describe('App component', () => {
   });
 
   beforeEach(() => {
-    spyResetEcgResult = jest.fn();
-    spySetCurrentImage = jest.fn();
-    spySetEcgResultVisibility = jest.fn();
-    spyOnDiseaseResultLocalAnalysis = jest.fn();
+    spies.spyResetEcgResult = jest.fn();
+    spies.spySetCurrentImage = jest.fn();
+    spies.setEcgResultVisibility = jest.fn();
+    spies.setEcgExamplesVisibility = jest.fn();
+    spies.onDiseaseResultLocalAnalysis = jest.fn();
 
     mockWorkerInstance = new MockWorker('');
 
@@ -40,12 +38,18 @@ describe('App component', () => {
       ecgLettersDetailed: '',
       localization: mockLocalization,
       isEcgResultVisible: true,
+      areExamplesVisible: false,
       imageParsingWorker: mockWorkerInstance,
-      resetEcgResult: spyResetEcgResult,
-      setCurrentImage: spySetCurrentImage,
-      setEcgResultVisibility: spySetEcgResultVisibility,
-      onDiseaseResultLocalAnalysis: spyOnDiseaseResultLocalAnalysis,
+      resetEcgResult: spies.spyResetEcgResult,
+      setCurrentImage: spies.spySetCurrentImage,
+      setEcgResultVisibility: spies.setEcgResultVisibility,
+      setEcgExamplesVisibility: spies.setEcgExamplesVisibility,
+      onDiseaseResultLocalAnalysis: spies.onDiseaseResultLocalAnalysis,
     };
+  });
+
+  afterEach(() => {
+    wrapper = null;
   });
 
   it('ECG results are visible/hidden', () => {
@@ -90,9 +94,17 @@ describe('App component', () => {
 
   it('should reset ecg result when error data came from worker', () => {
     const errorResponseFromWorker = { data: { error: { errorMessage: 'Mock error from worker' } } };
-    expect(spyResetEcgResult).not.toBeCalled();
+    expect(spies.spyResetEcgResult).not.toBeCalled();
     shallow(<App {...mockProps} />);
     mockWorkerInstance.postMessage(errorResponseFromWorker);
-    expect(spyResetEcgResult).toBeCalled();
+    expect(spies.spyResetEcgResult).toBeCalled();
+  });
+
+  it('should show/hide ecg examples', () => {
+    wrapper = shallow(<App {...mockProps} />);
+    expect(wrapper.find(EcgAnalysisExample).length).toBe(0);
+
+    wrapper.setProps({ areExamplesVisible: true });
+    expect(wrapper.find(EcgAnalysisExample).length).toBe(1);
   });
 });
