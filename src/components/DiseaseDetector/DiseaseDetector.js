@@ -6,11 +6,11 @@ import {
   onDiseaseResultPT,
 } from '../../helpers/proptypes.helper';
 import getDisease from '../../helpers/getDisease';
-import { onDiseaseResultServerAnalysis } from '../../actions/onDiseaseResult';
+import { onDiseaseResultServerAnalysis } from '../../actions/actions';
 
 const wait = seconds => new Promise(resolve => setTimeout(resolve, seconds));
 
-class DiseaseDetector extends Component {
+export class DiseaseDetector extends Component {
   static propTypes = {
     ecgLettersDetailed: ecgLettersPT.isRequired,
     onDiseaseResult: onDiseaseResultPT.isRequired,

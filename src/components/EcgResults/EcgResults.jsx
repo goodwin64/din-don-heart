@@ -5,16 +5,15 @@ import { connect } from 'react-redux';
 import { EcgResultContainer, EcgResultCanvas, ClearCanvasButton } from '../App/App.styled';
 import { CLOSE_CHARACTER } from '../../constants/constants';
 import strings from '../LanguageSelector/localization';
-import { ecgLettersPT, diseaseResultPT, plotIndexPT } from '../../helpers/proptypes.helper';
-import { setEcgResultVisibility, setShouldCurrentFileBeCleared } from '../../actions/onDiseaseResult';
+import { ecgLettersPT, diseaseResultPT, plotIndexPT, resetEcgResultPT } from '../../helpers/proptypes.helper';
+import { resetEcgResult } from '../../actions/actions';
 
 class EcgResults extends Component {
   static propTypes = {
     baseLineY: PropTypes.number.isRequired,
     cellsSize: PropTypes.number.isRequired,
     plotIndices: PropTypes.arrayOf(plotIndexPT).isRequired,
-    setEcgResultVisibility: PropTypes.func.isRequired,
-    setShouldCurrentFileBeCleared: PropTypes.func.isRequired,
+    resetEcgResult: resetEcgResultPT.isRequired,
     currentImage: PropTypes.shape({}).isRequired, // image bitmap
     ecgLetters: ecgLettersPT.isRequired,
     ecgLettersDetailed: ecgLettersPT.isRequired,
@@ -38,8 +37,7 @@ class EcgResults extends Component {
 
   handleResultResetButton = () => {
     this.clearCanvas();
-    this.props.setEcgResultVisibility(false);
-    this.props.setShouldCurrentFileBeCleared(true);
+    this.props.resetEcgResult();
   };
 
   /**
@@ -115,18 +113,17 @@ class EcgResults extends Component {
 
 function mapStateToProps(state) {
   return {
-    currentImage: state.appCommonParams.currentImage,
     currentLanguage: state.appCommonParams.currentLanguage,
     baseLineY: state.ecgResult.baseLineY,
     cellsSize: state.ecgResult.cellsSize,
     ecgLetters: state.ecgResult.ecgLetters,
-    ecgLettersDetailed: state.ecgResult.ecgLettersDetailed,
     plotIndices: state.ecgResult.plotIndices,
+    currentImage: state.ecgResult.currentImage,
     diseaseResult: state.ecgResult.diseaseResult,
+    ecgLettersDetailed: state.ecgResult.ecgLettersDetailed,
   };
 }
 
 export default connect(mapStateToProps, {
-  setEcgResultVisibility,
-  setShouldCurrentFileBeCleared,
+  resetEcgResult,
 })(EcgResults);

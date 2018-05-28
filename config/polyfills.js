@@ -1,5 +1,5 @@
 'use strict';
-import mockWorker from '../src/mocks/mockWorker';
+import mockWorker from '../src/mocks/MockWorker';
 /* eslint-disable */
 
 if (typeof Promise === 'undefined') {

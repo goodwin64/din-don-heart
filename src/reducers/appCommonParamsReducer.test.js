@@ -1,12 +1,12 @@
 import appCommonParamsReducer, { appInitialState } from './appCommonParamsReducer';
-import { SET_CURRENT_FILE_SHOULD_BE_CLEARED, SET_CURRENT_IMAGE, SET_LANGUAGE } from '../constants/actionTypes';
+import { SET_LOCALIZATION } from '../constants/actionTypes';
 
 describe('appCommonParamsReducer', () => {
   const mockStateBefore = {
-    shouldCurrentFileBeCleared: true,
     currentImage: { data: 1 },
     currentLanguage: 'Lang 123',
     isEcgResultVisible: true,
+    localization: {},
   };
   let mockStateAfter;
 
@@ -24,54 +24,15 @@ describe('appCommonParamsReducer', () => {
     })).toBe(mockStateBefore);
   });
 
-  it('should update only the status whether current file should be cleared', () => {
-    mockStateAfter = {
-      shouldCurrentFileBeCleared: true,
-      currentImage: { data: 1 },
-      currentLanguage: 'Lang 123',
-      isEcgResultVisible: true,
-    };
-    expect(appCommonParamsReducer(mockStateBefore, {
-      type: SET_CURRENT_FILE_SHOULD_BE_CLEARED,
-      payload: true,
-    })).toEqual(mockStateAfter);
-
-    mockStateAfter = {
-      shouldCurrentFileBeCleared: false,
-      currentImage: { data: 1 },
-      currentLanguage: 'Lang 123',
-      isEcgResultVisible: true,
-    };
-    expect(appCommonParamsReducer(mockStateBefore, {
-      type: SET_CURRENT_FILE_SHOULD_BE_CLEARED,
-      payload: false,
-    })).toEqual(mockStateAfter);
-  });
-
   it('should update language properly', () => {
     mockStateAfter = {
-      shouldCurrentFileBeCleared: true,
-      currentImage: { data: 1 },
+      ...mockStateBefore,
       currentLanguage: 'Lang 999',
-      isEcgResultVisible: true,
     };
 
     expect(appCommonParamsReducer(mockStateBefore, {
-      type: SET_LANGUAGE,
+      type: SET_LOCALIZATION,
       payload: 'Lang 999',
-    })).toEqual(mockStateAfter);
-  });
-
-  it('should update ecg image', () => {
-    mockStateAfter = {
-      shouldCurrentFileBeCleared: true,
-      currentImage: { data: 2 },
-      currentLanguage: 'Lang 123',
-      isEcgResultVisible: true,
-    };
-    expect(appCommonParamsReducer(mockStateBefore, {
-      type: SET_CURRENT_IMAGE,
-      payload: { data: 2 },
     })).toEqual(mockStateAfter);
   });
 });

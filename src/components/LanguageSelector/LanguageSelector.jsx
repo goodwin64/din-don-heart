@@ -1,10 +1,9 @@
 import React, { PureComponent } from 'react';
-import PropTypes from 'prop-types';
 import Select from 'react-select';
 import { connect } from 'react-redux';
 
-import { setLanguage } from '../../actions/onDiseaseResult';
-import { setLanguagePT } from '../../helpers/proptypes.helper';
+import { setLocalization } from '../../actions/actions';
+import { setLocalizationPT, currentLanguagePT } from '../../helpers/proptypes.helper';
 import strings, { CODE_ENG, CODE_RUS, CODE_UA, defaultLanguageCode } from './localization';
 
 import LanguageSelectorContainer, {
@@ -24,8 +23,8 @@ const languageOptions = [
 
 class LanguageSelector extends PureComponent {
   static propTypes = {
-    currentLanguage: PropTypes.string.isRequired,
-    setLanguage: setLanguagePT.isRequired,
+    currentLanguage: currentLanguagePT.isRequired,
+    setLocalization: setLocalizationPT.isRequired,
   };
 
   onLanguageSelect = (language) => {
@@ -34,7 +33,7 @@ class LanguageSelector extends PureComponent {
     const selectedLanguageCode = language.value;
     const currentLanguageCode = selectedLanguageCode || defaultLanguageCode;
     strings.setLanguage(currentLanguageCode);
-    this.props.setLanguage(currentLanguageCode);
+    this.props.setLocalization(strings);
   };
 
   renderOption = option => (
@@ -69,5 +68,5 @@ function mapStateToProps(state) {
 }
 
 export default connect(mapStateToProps, {
-  setLanguage,
+  setLocalization,
 })(LanguageSelector);

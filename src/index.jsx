@@ -4,14 +4,11 @@ import { createStore } from 'redux';
 import { Provider } from 'react-redux';
 
 import './index.css';
-import AppComponent from './components/App/App';
+import ConnectedApp from './components/App/App';
 import registerServiceWorker from './registerServiceWorker';
-import initImageParsingWorker from './helpers/image-parsing.helper';
 import reducer from './reducers/mainReducer';
 
 registerServiceWorker();
-
-const imageParsingWorker = initImageParsingWorker();
 
 /* eslint-disable no-underscore-dangle */
 const store = createStore(
@@ -23,7 +20,7 @@ const store = createStore(
 
 ReactDOM.render(
   <Provider store={store}>
-    <AppComponent imageParsingWorker={imageParsingWorker} />
+    <ConnectedApp />
   </Provider>,
   document.getElementById('root'),
 );

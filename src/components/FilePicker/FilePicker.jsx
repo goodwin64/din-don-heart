@@ -1,36 +1,24 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
 import { FilePickerContainer, FilePickerInput, FilePickerLabel } from '../App/App.styled';
-import strings from '../LanguageSelector/localization';
-import { setShouldCurrentFileBeCleared } from '../../actions/onDiseaseResult';
-import { imageParsingWorkerPT } from '../../helpers/proptypes.helper';
+import { resetEcgResult } from '../../actions/actions';
+import { imageParsingWorkerPT, localizationPT, resetEcgResultPT } from '../../helpers/proptypes.helper';
 
-const defaultFile = {};
-
-class FilePicker extends Component {
+export class FilePicker extends Component {
   static propTypes = {
-    shouldCurrentFileBeCleared: PropTypes.bool.isRequired,
-    setShouldCurrentFileBeCleared: PropTypes.func.isRequired,
+    localization: localizationPT.isRequired,
+    resetEcgResult: resetEcgResultPT.isRequired,
     imageParsingWorker: imageParsingWorkerPT.isRequired,
   };
 
-  componentWillReceiveProps(props) {
-    if (props.shouldCurrentFileBeCleared) {
-      this.resetCurrentFile();
-    }
-  }
-
   onFileChange = (event) => {
-    const file = event.target.files[0] || defaultFile;
-    this.props.setShouldCurrentFileBeCleared(true);
-    this.props.imageParsingWorker.postMessage({ file });
-  };
-
-  resetCurrentFile = () => {
-    this.filePicker.value = '';
-    this.props.setShouldCurrentFileBeCleared(false);
+    const file = event.target.files[0];
+    if (file) {
+      this.props.imageParsingWorker.postMessage({ file });
+    } else {
+      this.props.resetEcgResult();
+    }
   };
 
   render() {
@@ -40,27 +28,23 @@ class FilePicker extends Component {
           type="file"
           id="file-picker"
           onChange={this.onFileChange}
-          innerRef={(node) => {
-            this.filePicker = node;
-          }}
         />
         <FilePickerLabel htmlFor="file-picker">
-          <span role="img" aria-label={strings.chooseFile}>📁</span>
-          {strings.chooseFile}
+          <span role="img" aria-label={this.props.localization.chooseFile}>📁</span>
+          {this.props.localization.chooseFile}
         </FilePickerLabel>
       </FilePickerContainer>
     );
   }
 }
 
-// TODO: wrap with currentLanguage HOC or pass "strings" from context
 function mapStateToProps(state) {
   return {
-    shouldCurrentFileBeCleared: state.appCommonParams.shouldCurrentFileBeCleared,
-    currentLanguage: state.appCommonParams.currentLanguage,
+    imageParsingWorker: state.appCommonParams.imageParsingWorker,
+    localization: state.appCommonParams.localization,
   };
 }
 
 export default connect(mapStateToProps, {
-  setShouldCurrentFileBeCleared,
+  resetEcgResult,
 })(FilePicker);
