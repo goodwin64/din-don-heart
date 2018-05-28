@@ -7,10 +7,12 @@ import MockWorker from '../../mocks/MockWorker';
 import EcgResults from '../EcgResults/EcgResults';
 import { AppDescription } from './App.styled';
 import DiseaseDetectorHOC from '../DiseaseDetector/DiseaseDetector';
+import noop from '../../helpers/noop';
 
 describe('App component', () => {
   let wrapper;
   let mockProps;
+  let spyResetEcgResult;
   let mockWorkerInstance;
   let spySetCurrentImage;
   let spySetEcgResultVisibility;
@@ -26,6 +28,7 @@ describe('App component', () => {
   });
 
   beforeEach(() => {
+    spyResetEcgResult = jest.fn();
     spySetCurrentImage = jest.fn();
     spySetEcgResultVisibility = jest.fn();
     spyOnDiseaseResultLocalAnalysis = jest.fn();
@@ -38,6 +41,7 @@ describe('App component', () => {
       localization: mockLocalization,
       isEcgResultVisible: true,
       imageParsingWorker: mockWorkerInstance,
+      resetEcgResult: spyResetEcgResult,
       setCurrentImage: spySetCurrentImage,
       setEcgResultVisibility: spySetEcgResultVisibility,
       onDiseaseResultLocalAnalysis: spyOnDiseaseResultLocalAnalysis,
@@ -82,5 +86,13 @@ describe('App component', () => {
       ecgLetters: 'ABC',
     });
     expect(wrapper.find(DiseaseDetectorHOC).length).toEqual(1);
+  });
+
+  it('should reset ecg result when error data came from worker', () => {
+    const errorResponseFromWorker = { data: { error: { errorMessage: 'Mock error from worker' } } };
+    expect(spyResetEcgResult).not.toBeCalled();
+    shallow(<App {...mockProps} />);
+    mockWorkerInstance.postMessage(errorResponseFromWorker);
+    expect(spyResetEcgResult).toBeCalled();
   });
 });

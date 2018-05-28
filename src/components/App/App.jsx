@@ -48,7 +48,7 @@ export class App extends Component {
   onMessageWorkerHandler = (workerEvent) => {
     const workerResponse = workerEvent.data;
     if (workerResponse.error) {
-      onImageError(workerResponse);
+      onImageError(workerResponse.error);
       this.props.resetEcgResult();
       return;
     }

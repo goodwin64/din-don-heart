@@ -6,7 +6,10 @@ describe('appCommonParamsReducer', () => {
     currentImage: { data: 1 },
     currentLanguage: 'Lang 123',
     isEcgResultVisible: true,
-    localization: {},
+    localization: {
+      _language: 'Lang 123',
+      anotherLanguageField: 'mock value',
+    },
   };
   let mockStateAfter;
 
@@ -25,14 +28,19 @@ describe('appCommonParamsReducer', () => {
   });
 
   it('should update language properly', () => {
+    const payload = { _language: 'Lang 987' };
     mockStateAfter = {
       ...mockStateBefore,
-      currentLanguage: 'Lang 999',
+      currentLanguage: 'Lang 987',
+      localization: {
+        ...mockStateBefore.localization,
+        ...payload,
+      },
     };
 
     expect(appCommonParamsReducer(mockStateBefore, {
       type: SET_LOCALIZATION,
-      payload: 'Lang 999',
+      payload,
     })).toEqual(mockStateAfter);
   });
 });
