@@ -19,13 +19,7 @@ import {
 export const getRgbSum = pixel => pixel.r + pixel.g + pixel.b;
 
 export default function initImageParsingWorker() {
-  const imageParsingWorker = new Worker('image-worker.js');
-
-  imageParsingWorker.setOnMessageHandler = (onMessageHandler) => {
-    imageParsingWorker.onmessage = onMessageHandler;
-  };
-
-  return imageParsingWorker;
+  return new Worker('image-worker.js');
 }
 
 /**

@@ -1,10 +1,10 @@
 import {
   SET_CURRENT_IMAGE,
-  SET_CURRENT_FILE_SHOULD_BE_CLEARED,
   SET_DISEASE_RESULT_LOCAL_ANALYSIS,
   SET_DISEASE_RESULT_SERVER_ANALYSIS,
   SET_ECG_RESULT_VISIBILITY,
-  SET_LANGUAGE,
+  SET_LOCALIZATION,
+  RESET_DISEASE_RESULT_FULLY,
   SET_ECG_EXAMPLES_VISIBILITY,
 } from '../constants/actionTypes';
 
@@ -43,16 +43,15 @@ export function setCurrentImage(image) {
   };
 }
 
-export function setShouldCurrentFileBeCleared(payload) {
+export function setLocalization(localization) {
   return {
-    type: SET_CURRENT_FILE_SHOULD_BE_CLEARED,
-    payload,
+    type: SET_LOCALIZATION,
+    payload: localization,
   };
 }
 
-export function setLanguage(language) {
+export function resetEcgResult() {
   return {
-    type: SET_LANGUAGE,
-    payload: language,
+    type: RESET_DISEASE_RESULT_FULLY,
   };
 }

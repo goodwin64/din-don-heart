@@ -1,9 +1,7 @@
-import { noop } from '../helpers/noop';
-
 class MockWorker {
-  constructor(stringUrl) {
+  constructor(stringUrl, onmessage) {
     this.url = stringUrl;
-    this.onmessage = noop;
+    this.onmessage = onmessage;
   }
 
   postMessage(msg) {

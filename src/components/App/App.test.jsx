@@ -1,45 +1,86 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
-import { mount, shallow } from 'enzyme';
+import { shallow } from 'enzyme';
+import LocalizedStrings from 'react-localization';
 
 import { App } from './App';
-import { FilePickerInput } from './App.styled';
+import MockWorker from '../../mocks/MockWorker';
+import EcgResults from '../EcgResults/EcgResults';
+import { AppDescription } from './App.styled';
+import DiseaseDetectorHOC from '../DiseaseDetector/DiseaseDetector';
 
 describe('App component', () => {
-  let mockWorker;
+  let wrapper;
+  let mockProps;
+  let mockWorkerInstance;
+  let spySetCurrentImage;
+  let spySetEcgResultVisibility;
+  let spyOnDiseaseResultLocalAnalysis;
+
+  const mockLocalization = new LocalizedStrings({
+    en: {
+      appDescription: 'heart',
+    },
+    ru: {
+      appDescription: 'сердце',
+    },
+  });
 
   beforeEach(() => {
-    mockWorker = {
-      postMessage: () => {},
-      setOnMessageHandler: (handler) => { mockWorker.onmessage = handler; },
+    spySetCurrentImage = jest.fn();
+    spySetEcgResultVisibility = jest.fn();
+    spyOnDiseaseResultLocalAnalysis = jest.fn();
+
+    mockWorkerInstance = new MockWorker('');
+
+    mockProps = {
+      ecgLetters: '',
+      ecgLettersDetailed: '',
+      localization: mockLocalization,
+      isEcgResultVisible: true,
+      imageParsingWorker: mockWorkerInstance,
+      setCurrentImage: spySetCurrentImage,
+      setEcgResultVisibility: spySetEcgResultVisibility,
+      onDiseaseResultLocalAnalysis: spyOnDiseaseResultLocalAnalysis,
     };
   });
 
-  it('renders without crashing', () => {
-    const div = document.createElement('div');
-    ReactDOM.render(<App imageParsingWorker={mockWorker} />, div);
-    ReactDOM.unmountComponentAtNode(div);
-  });
+  it('ECG results are visible/hidden', () => {
+    wrapper = shallow(<App {...mockProps} />);
 
-  it('should test file input handler', () => {
-    const AppWrapper = mount(<App imageParsingWorker={mockWorker} />);
-    const filePickerInput = AppWrapper.find(FilePickerInput);
-    const fileContents = 'file contents';
-    const textFile = new Blob([fileContents], { type: 'text/plain' });
-    const imageWorkerPostMessageSpy = jest.spyOn(mockWorker, 'postMessage');
+    wrapper.setProps({
+      isEcgResultVisible: true,
+    });
+    expect(wrapper.find(EcgResults).length).toEqual(1);
 
-    filePickerInput.simulate('change', { target: { files: [textFile] } });
-    expect(imageWorkerPostMessageSpy).toHaveBeenCalledTimes(1);
-    expect(imageWorkerPostMessageSpy).toHaveBeenCalledWith({ file: textFile });
-
-    filePickerInput.simulate('change', { target: { files: [] } });
-    expect(imageWorkerPostMessageSpy).toHaveBeenCalledTimes(2);
-    expect(imageWorkerPostMessageSpy).toHaveBeenCalledWith({ file: {} });
+    wrapper.setProps({
+      isEcgResultVisible: false,
+    });
+    expect(wrapper.find(EcgResults).length).toEqual(0);
   });
 
   it('should create "onMessage" handler in worker when component mounted', () => {
-    expect(mockWorker.onmessage).not.toBeDefined();
-    shallow(<App imageParsingWorker={mockWorker} />);
-    expect(mockWorker.onmessage).toBeDefined();
+    expect(mockWorkerInstance.onmessage).not.toBeDefined();
+    shallow(<App {...mockProps} />);
+    expect(mockWorkerInstance.onmessage).toBeDefined();
+  });
+
+  it('should use current language based on localization', () => {
+    wrapper = shallow(<App {...mockProps} />);
+    expect(wrapper.find(AppDescription).render().text()).toEqual('heart');
+
+    mockLocalization.setLanguage('ru');
+    wrapper.setProps({});
+
+    expect(wrapper.find(AppDescription).render().text()).toEqual('сердце');
+  });
+
+  it('should add DiseaseDetector only after local analysis (ECG letters are present)', () => {
+    wrapper = shallow(<App {...mockProps} />);
+    expect(wrapper.find(DiseaseDetectorHOC).length).toEqual(0);
+
+    wrapper.setProps({
+      ecgLetters: 'ABC',
+    });
+    expect(wrapper.find(DiseaseDetectorHOC).length).toEqual(1);
   });
 });

@@ -1,10 +1,12 @@
-import ecgResultReducer, { ecgResultInitialState } from './ecgResultReducer';
+import ecgResultReducer, { ecgResultInitialState, initialStateLocalAnalysis } from './ecgResultReducer';
 import {
   RESET_DISEASE_RESULT_FULLY,
   RESET_DISEASE_RESULT_LOCAL_ANALYSIS,
   RESET_DISEASE_RESULT_SERVER_ANALYSIS,
+  SET_CURRENT_IMAGE,
   SET_DISEASE_RESULT_LOCAL_ANALYSIS,
   SET_DISEASE_RESULT_SERVER_ANALYSIS,
+  SET_ECG_RESULT_VISIBILITY,
 } from '../constants/actionTypes';
 
 describe('ecgResultReducer', () => {
@@ -15,6 +17,8 @@ describe('ecgResultReducer', () => {
     ecgLettersDetailed: 'ABCD',
     plotIndices: [1, 2, 3],
     diseaseResult: '123',
+    currentImage: { data: 1 },
+    isEcgResultVisible: false,
   };
   let mockStateAfter;
 
@@ -40,12 +44,8 @@ describe('ecgResultReducer', () => {
 
   it('should reset params from local analysis', () => {
     mockStateAfter = {
-      baseLineY: 0,
-      cellsSize: 0,
-      ecgLetters: '',
-      ecgLettersDetailed: '',
-      plotIndices: [],
-      diseaseResult: '123',
+      ...mockStateBefore,
+      ...initialStateLocalAnalysis,
     };
 
     expect(ecgResultReducer(mockStateBefore, {
@@ -55,11 +55,7 @@ describe('ecgResultReducer', () => {
 
   it('should reset params from server analysis', () => {
     mockStateAfter = {
-      baseLineY: 25,
-      cellsSize: 20,
-      ecgLetters: 'ABC',
-      ecgLettersDetailed: 'ABCD',
-      plotIndices: [1, 2, 3],
+      ...mockStateBefore,
       diseaseResult: '',
     };
 
@@ -70,12 +66,12 @@ describe('ecgResultReducer', () => {
 
   it('should set params from local analysis, keeping server analysis results untouched', () => {
     mockStateAfter = {
+      ...mockStateBefore,
       baseLineY: 125,
       cellsSize: 120,
       ecgLetters: 'XYZ',
       ecgLettersDetailed: 'WXYZ',
       plotIndices: [1, 2, 3, 4],
-      diseaseResult: '123',
     };
 
     expect(ecgResultReducer(mockStateBefore, {
@@ -92,11 +88,7 @@ describe('ecgResultReducer', () => {
 
   it('should set params from server analysis, keeping local analysis results untouched', () => {
     mockStateAfter = {
-      baseLineY: 25,
-      cellsSize: 20,
-      ecgLetters: 'ABC',
-      ecgLettersDetailed: 'ABCD',
-      plotIndices: [1, 2, 3],
+      ...mockStateBefore,
       diseaseResult: 'You are healthy',
     };
 
@@ -104,5 +96,37 @@ describe('ecgResultReducer', () => {
       type: SET_DISEASE_RESULT_SERVER_ANALYSIS,
       payload: 'You are healthy',
     })).toEqual(mockStateAfter);
+  });
+
+  it('should update ecg image', () => {
+    mockStateAfter = {
+      ...mockStateBefore,
+      currentImage: { data: 2 },
+    };
+    expect(ecgResultReducer(mockStateBefore, {
+      type: SET_CURRENT_IMAGE,
+      payload: { data: 2 },
+    })).toEqual(mockStateAfter);
+  });
+
+  it('should show/hide ECG result', () => {
+    const mockStateAfterShow = {
+      ...mockStateBefore,
+      isEcgResultVisible: true,
+    };
+    const mockStateAfterHide = {
+      ...mockStateBefore,
+      isEcgResultVisible: false,
+    };
+
+    expect(ecgResultReducer(mockStateBefore, {
+      type: SET_ECG_RESULT_VISIBILITY,
+      payload: true,
+    })).toEqual(mockStateAfterShow);
+
+    expect(ecgResultReducer(mockStateAfterShow, {
+      type: SET_ECG_RESULT_VISIBILITY,
+      payload: false,
+    })).toEqual(mockStateAfterHide);
   });
 });

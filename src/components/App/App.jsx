@@ -5,7 +5,9 @@ import { connect } from 'react-redux';
 import './App.css';
 import { getEcgResult } from '../../helpers/image-parsing.helper';
 import {
-  ecgResultPT,
+  ecgLettersPT,
+  localizationPT,
+  resetEcgResultPT,
   setCurrentImagePT,
   imageParsingWorkerPT,
   setEcgResultVisibilityPT,
@@ -13,71 +15,76 @@ import {
   onDiseaseResultLocalAnalysisPT,
 } from '../../helpers/proptypes.helper';
 import { AppDescription } from './App.styled';
-import strings from '../LanguageSelector/localization';
 
 import LanguageSelector from '../LanguageSelector/LanguageSelector';
 import Header from '../Header/Header';
-import FilePicker from '../FilePicker/FilePicker';
+import FilePickerHOC from '../FilePicker/FilePicker';
 import EcgResults from '../EcgResults/EcgResults';
-import DiseaseDetector from '../DiseaseDetector/DiseaseDetector';
+import DiseaseDetectorHOC from '../DiseaseDetector/DiseaseDetector';
 import { onImageError } from '../../helpers/error-handlers.helper';
 import { getImageData } from '../../helpers/canvas.helper';
 import {
   setCurrentImage,
   setEcgResultVisibility,
-  onDiseaseResultLocalAnalysis, setEcgExamplesVisibility,
-} from '../../actions/onDiseaseResult';
+  onDiseaseResultLocalAnalysis,
+  resetEcgResult,
+  setEcgExamplesVisibility,
+} from '../../actions/actions';
 import EcgAnalysisExample from '../EcgAnalysisExample/EcgAnalysisExample';
 
 export class App extends Component {
   static propTypes = {
+    ecgLetters: ecgLettersPT.isRequired,
+    ecgLettersDetailed: ecgLettersPT.isRequired,
+    localization: localizationPT.isRequired,
+    resetEcgResult: resetEcgResultPT.isRequired,
+    setCurrentImage: setCurrentImagePT.isRequired,
     imageParsingWorker: imageParsingWorkerPT.isRequired,
-    ecgResult: ecgResultPT.isRequired,
     isEcgResultVisible: PropTypes.bool.isRequired,
     areExamplesVisible: PropTypes.bool.isRequired,
-    setCurrentImage: setCurrentImagePT.isRequired,
     setEcgResultVisibility: setEcgResultVisibilityPT.isRequired,
     setEcgExamplesVisibility: setEcgExamplesVisibilityPT.isRequired,
     onDiseaseResultLocalAnalysis: onDiseaseResultLocalAnalysisPT.isRequired,
   };
 
   componentDidMount() {
-    const onMessageWorkerHandler = (workerEvent) => {
-      const workerResponse = workerEvent.data;
-      if (workerResponse.constructor === ImageBitmap) {
-        if (workerResponse.error) {
-          onImageError(workerResponse);
-          return;
-        }
-        const imageData = getImageData(workerResponse);
-        const ecgResult = getEcgResult(imageData);
-        this.props.onDiseaseResultLocalAnalysis(ecgResult);
-        this.props.setCurrentImage(workerResponse);
-        this.props.setEcgResultVisibility(true);
-      }
-    };
-    this.props.imageParsingWorker.setOnMessageHandler(onMessageWorkerHandler);
+    this.props.imageParsingWorker.onmessage = this.onMessageWorkerHandler;
   }
+
+  onMessageWorkerHandler = (workerEvent) => {
+    const workerResponse = workerEvent.data;
+    if (workerResponse.error) {
+      onImageError(workerResponse);
+      this.props.resetEcgResult();
+      return;
+    }
+
+    if (workerResponse.constructor === ImageBitmap) {
+      const imageData = getImageData(workerResponse);
+      const ecgResult = getEcgResult(imageData);
+      this.props.onDiseaseResultLocalAnalysis(ecgResult);
+      this.props.setCurrentImage(workerResponse);
+      this.props.setEcgResultVisibility(true);
+    }
+  };
 
   render() {
     const {
       isEcgResultVisible,
       areExamplesVisible,
-      ecgResult: {
-        ecgLetters,
-        ecgLettersDetailed,
-      },
+      ecgLetters,
+      ecgLettersDetailed,
     } = this.props;
 
     return (
       <div className="App">
         <Header />
         <LanguageSelector />
-        <AppDescription>{strings.appDescription}</AppDescription>
-        <FilePicker imageParsingWorker={this.props.imageParsingWorker} />
+        <AppDescription>{this.props.localization.appDescription}</AppDescription>
+        <FilePickerHOC />
         {isEcgResultVisible && <EcgResults />}
         {ecgLetters.length > 0 && (
-          <DiseaseDetector
+          <DiseaseDetectorHOC
             ecgLettersDetailed={ecgLettersDetailed}
           />
         )}
@@ -95,10 +102,12 @@ export class App extends Component {
 
 function mapStateToProps(state) {
   return {
-    ecgResult: state.ecgResult,
-    currentLanguage: state.appCommonParams.currentLanguage,
-    isEcgResultVisible: state.appCommonParams.isEcgResultVisible,
+    ecgLetters: state.ecgResult.ecgLetters,
+    ecgLettersDetailed: state.ecgResult.ecgLettersDetailed,
+    localization: state.appCommonParams.localization,
+    isEcgResultVisible: state.ecgResult.isEcgResultVisible,
     areExamplesVisible: state.appCommonParams.areEcgExamplesVisible,
+    imageParsingWorker: state.appCommonParams.imageParsingWorker,
   };
 }
 
@@ -107,4 +116,5 @@ export default connect(mapStateToProps, {
   setEcgResultVisibility,
   setEcgExamplesVisibility,
   setCurrentImage,
+  resetEcgResult,
 })(App);

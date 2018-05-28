@@ -1,26 +1,28 @@
 import {
   RESET_DISEASE_RESULT_FULLY,
   RESET_DISEASE_RESULT_LOCAL_ANALYSIS,
-  RESET_DISEASE_RESULT_SERVER_ANALYSIS,
+  RESET_DISEASE_RESULT_SERVER_ANALYSIS, SET_CURRENT_IMAGE,
   SET_DISEASE_RESULT_LOCAL_ANALYSIS,
-  SET_DISEASE_RESULT_SERVER_ANALYSIS,
+  SET_DISEASE_RESULT_SERVER_ANALYSIS, SET_ECG_RESULT_VISIBILITY,
 } from '../constants/actionTypes';
 
-const initialStateLocalAnalysis = {
+export const initialStateLocalAnalysis = {
   baseLineY: 0,
   cellsSize: 0,
   ecgLetters: '',
   ecgLettersDetailed: '',
   plotIndices: [],
+  currentImage: null,
 };
 
-const initialStateServerAnalysis = {
+export const initialStateServerAnalysis = {
   diseaseResult: '',
 };
 
 export const ecgResultInitialState = {
   ...initialStateLocalAnalysis,
   ...initialStateServerAnalysis,
+  isEcgResultVisible: false,
 };
 
 export default function ecgResultReducer(state = ecgResultInitialState, action = {}) {
@@ -56,6 +58,20 @@ export default function ecgResultReducer(state = ecgResultInitialState, action =
 
     case RESET_DISEASE_RESULT_FULLY: {
       return ecgResultInitialState;
+    }
+
+    case SET_CURRENT_IMAGE: {
+      return {
+        ...state,
+        currentImage: action.payload,
+      };
+    }
+
+    case SET_ECG_RESULT_VISIBILITY: {
+      return {
+        ...state,
+        isEcgResultVisible: action.payload,
+      };
     }
 
     default: {

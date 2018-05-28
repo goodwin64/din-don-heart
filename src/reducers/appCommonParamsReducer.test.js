@@ -1,18 +1,14 @@
 import appCommonParamsReducer, { appInitialState } from './appCommonParamsReducer';
 import {
-  SET_CURRENT_FILE_SHOULD_BE_CLEARED,
-  SET_CURRENT_IMAGE,
+  SET_LOCALIZATION,
   SET_ECG_EXAMPLES_VISIBILITY,
-  SET_LANGUAGE,
 } from '../constants/actionTypes';
 
 describe('appCommonParamsReducer', () => {
   const mockStateBefore = {
-    shouldCurrentFileBeCleared: false,
-    currentImage: null,
     currentLanguage: 'Lang 123',
-    isEcgResultVisible: false,
     areEcgExamplesVisible: false,
+    localization: {},
   };
   let mockStateAfter;
 
@@ -30,26 +26,6 @@ describe('appCommonParamsReducer', () => {
     })).toBe(mockStateBefore);
   });
 
-  it('should update only the status whether current file should be cleared', () => {
-    mockStateAfter = {
-      ...mockStateBefore,
-      shouldCurrentFileBeCleared: true,
-    };
-    expect(appCommonParamsReducer(mockStateBefore, {
-      type: SET_CURRENT_FILE_SHOULD_BE_CLEARED,
-      payload: true,
-    })).toEqual(mockStateAfter);
-
-    mockStateAfter = {
-      ...mockStateBefore,
-      shouldCurrentFileBeCleared: false,
-    };
-    expect(appCommonParamsReducer(mockStateBefore, {
-      type: SET_CURRENT_FILE_SHOULD_BE_CLEARED,
-      payload: false,
-    })).toEqual(mockStateAfter);
-  });
-
   it('should update language properly', () => {
     mockStateAfter = {
       ...mockStateBefore,
@@ -57,19 +33,8 @@ describe('appCommonParamsReducer', () => {
     };
 
     expect(appCommonParamsReducer(mockStateBefore, {
-      type: SET_LANGUAGE,
+      type: SET_LOCALIZATION,
       payload: 'Lang 999',
-    })).toEqual(mockStateAfter);
-  });
-
-  it('should update ecg image', () => {
-    mockStateAfter = {
-      ...mockStateBefore,
-      currentImage: { data: 2 },
-    };
-    expect(appCommonParamsReducer(mockStateBefore, {
-      type: SET_CURRENT_IMAGE,
-      payload: { data: 2 },
     })).toEqual(mockStateAfter);
   });
 

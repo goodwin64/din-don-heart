@@ -73,6 +73,8 @@ export const FilePickerLabel = Button.extend`
   padding: 5px 10px;
 `.withComponent('label');
 
+export const FilePickerLabelText = styled.span``;
+
 export const FilePickerContainer = styled.div``;
 
 export const AppDescription = styled.p``;

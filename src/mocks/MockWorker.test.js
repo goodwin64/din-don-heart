@@ -1,6 +1,6 @@
 import * as noopModule from '../helpers/noop';
 
-import MockWorker from './mockWorker';
+import MockWorker from './MockWorker';
 
 it('should do nothing on postMessage', () => {
   const spy = jest.spyOn(noopModule, 'noop');
