@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import { FilePickerContainer, FilePickerInput, FilePickerLabel } from '../App/App.styled';
+import { FilePickerContainer, FilePickerInput, FilePickerLabel, FilePickerLabelText } from '../App/App.styled';
 import { resetEcgResult } from '../../actions/actions';
 import { imageParsingWorkerPT, localizationPT, resetEcgResultPT } from '../../helpers/proptypes.helper';
 
@@ -28,10 +28,11 @@ export class FilePicker extends Component {
           type="file"
           id="file-picker"
           onChange={this.onFileChange}
+          accept="image/*"
         />
         <FilePickerLabel htmlFor="file-picker">
           <span role="img" aria-label={this.props.localization.chooseFile}>📁</span>
-          {this.props.localization.chooseFile}
+          <FilePickerLabelText>{this.props.localization.chooseFile}</FilePickerLabelText>
         </FilePickerLabel>
       </FilePickerContainer>
     );

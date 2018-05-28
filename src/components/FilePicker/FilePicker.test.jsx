@@ -2,7 +2,7 @@ import React from 'react';
 import { shallow } from 'enzyme';
 
 import { FilePicker } from './FilePicker';
-import { FilePickerInput } from '../App/App.styled';
+import { FilePickerInput, FilePickerLabelText } from '../App/App.styled';
 import MockWorker from '../../mocks/MockWorker';
 
 describe('FilePicker component', () => {
@@ -11,9 +11,8 @@ describe('FilePicker component', () => {
   let mockWorker;
   let mockProps;
   let wrapper;
-  let fileContents;
-  let textFile;
-  let filePickerInput;
+  let imageFile;
+  let filePickerInputElem;
 
   beforeEach(() => {
     spyOnMessage = jest.fn();
@@ -22,18 +21,17 @@ describe('FilePicker component', () => {
     mockProps = {
       imageParsingWorker: mockWorker,
       localization: { chooseFile: 'abc' },
-      spyResetEcgResult,
+      resetEcgResult: spyResetEcgResult,
     };
     wrapper = shallow(<FilePicker {...mockProps} />);
 
-    fileContents = 'file contents';
-    textFile = new Blob([fileContents], { type: 'text/plain' });
-    filePickerInput = wrapper.find(FilePickerInput);
+    imageFile = new Blob(['file contents'], { type: 'image/jpeg' });
+    filePickerInputElem = wrapper.find(FilePickerInput);
   });
 
-  it('should clear file input queue when file selected', () => {
+  it('should clear file input queue when file selection discarded', () => {
     expect(spyResetEcgResult).not.toBeCalled();
-    filePickerInput.simulate('change', { target: { files: [textFile] } });
+    filePickerInputElem.simulate('change', { target: { files: [] } });
     expect(spyResetEcgResult).toBeCalled();
   });
 
@@ -41,22 +39,16 @@ describe('FilePicker component', () => {
     const imageWorkerPostMessageSpy = jest.spyOn(mockWorker, 'postMessage');
 
     expect(imageWorkerPostMessageSpy).not.toBeCalled();
-    filePickerInput.simulate('change', { target: { files: [textFile] } });
+    filePickerInputElem.simulate('change', { target: { files: [imageFile] } });
     expect(imageWorkerPostMessageSpy).toBeCalled();
   });
 
   it('should accept only images file type', () => {
-
+    expect(filePickerInputElem.prop('accept')).toContain('image/');
   });
 
-  it('should test file input handler', () => {
-
-    filePickerInput.simulate('change', { target: { files: [textFile] } });
-    expect(imageWorkerPostMessageSpy).toHaveBeenCalledTimes(1);
-    expect(imageWorkerPostMessageSpy).toHaveBeenCalledWith({ file: textFile });
-
-    filePickerInput.simulate('change', { target: { files: [] } });
-    expect(imageWorkerPostMessageSpy).toHaveBeenCalledTimes(2);
-    expect(imageWorkerPostMessageSpy).toHaveBeenCalledWith({ file: {} });
+  it('should use localized text for file picker button', () => {
+    const subject = wrapper.find(FilePickerLabelText);
+    expect(subject.render().text()).toEqual('abc');
   });
 });
