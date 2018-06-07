@@ -7,6 +7,8 @@ export const currentLanguagePT = PropTypes.string;
 export const plotIndexPT = PropTypes.number;
 export const baseLineYPT = PropTypes.number;
 export const cellsSizePT = PropTypes.number;
+export const areEcgExamplesVisiblePT = PropTypes.bool;
+
 
 // complex shapes
 export const plotIndicesPT = PropTypes.arrayOf(plotIndexPT);
@@ -31,6 +33,7 @@ export const localizationPT = PropTypes.shape({});
 export const onDiseaseResultPT = PropTypes.func;
 export const onDiseaseResultLocalAnalysisPT = PropTypes.func;
 export const setEcgResultVisibilityPT = PropTypes.func;
+export const setEcgExamplesVisibilityPT = PropTypes.func;
 export const setCurrentImagePT = PropTypes.func;
 export const resetEcgResultPT = PropTypes.func;
 export const setLocalizationPT = PropTypes.func;

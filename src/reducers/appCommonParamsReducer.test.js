@@ -1,11 +1,14 @@
 import appCommonParamsReducer, { appInitialState } from './appCommonParamsReducer';
-import { SET_LOCALIZATION } from '../constants/actionTypes';
+import {
+  SET_LOCALIZATION,
+  SET_ECG_EXAMPLES_VISIBILITY,
+} from '../constants/actionTypes';
 
 describe('appCommonParamsReducer', () => {
   const mockStateBefore = {
     currentImage: { data: 1 },
     currentLanguage: 'Lang 123',
-    isEcgResultVisible: true,
+    areEcgExamplesVisible: false,
     localization: {
       _language: 'Lang 123',
       anotherLanguageField: 'mock value',
@@ -42,5 +45,33 @@ describe('appCommonParamsReducer', () => {
       type: SET_LOCALIZATION,
       payload,
     })).toEqual(mockStateAfter);
+  });
+
+  it('should show/hide ecg examples', () => {
+    const mockStateExamplesHidden = mockStateBefore;
+    const mockStateExamplesVisible = {
+      ...mockStateBefore,
+      areEcgExamplesVisible: true,
+    };
+
+    expect(appCommonParamsReducer(mockStateExamplesHidden, {
+      type: SET_ECG_EXAMPLES_VISIBILITY,
+      payload: true,
+    })).toEqual(mockStateExamplesVisible);
+
+    expect(appCommonParamsReducer(mockStateExamplesHidden, {
+      type: SET_ECG_EXAMPLES_VISIBILITY,
+      payload: false,
+    })).toEqual(mockStateExamplesHidden);
+
+    expect(appCommonParamsReducer(mockStateExamplesVisible, {
+      type: SET_ECG_EXAMPLES_VISIBILITY,
+      payload: false,
+    })).toEqual(mockStateExamplesHidden);
+
+    expect(appCommonParamsReducer(mockStateExamplesVisible, {
+      type: SET_ECG_EXAMPLES_VISIBILITY,
+      payload: true,
+    })).toEqual(mockStateExamplesVisible);
   });
 });

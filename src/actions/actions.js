@@ -5,6 +5,7 @@ import {
   SET_ECG_RESULT_VISIBILITY,
   SET_LOCALIZATION,
   RESET_DISEASE_RESULT_FULLY,
+  SET_ECG_EXAMPLES_VISIBILITY,
 } from '../constants/actionTypes';
 
 export function onDiseaseResultLocalAnalysis(ecgResult) {
@@ -25,6 +26,13 @@ export function setEcgResultVisibility(isEcgResultVisible) {
   return {
     type: SET_ECG_RESULT_VISIBILITY,
     payload: isEcgResultVisible,
+  };
+}
+
+export function setEcgExamplesVisibility(areEcgExamplesVisible) {
+  return {
+    type: SET_ECG_EXAMPLES_VISIBILITY,
+    payload: areEcgExamplesVisible,
   };
 }
 

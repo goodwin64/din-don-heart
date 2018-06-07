@@ -5,7 +5,12 @@ import { connect } from 'react-redux';
 import { EcgResultContainer, EcgResultCanvas, ClearCanvasButton } from '../App/App.styled';
 import { CLOSE_CHARACTER } from '../../constants/constants';
 import strings from '../LanguageSelector/localization';
-import { ecgLettersPT, diseaseResultPT, plotIndexPT, resetEcgResultPT } from '../../helpers/proptypes.helper';
+import {
+  ecgLettersPT,
+  diseaseResultPT,
+  plotIndexPT,
+  resetEcgResultPT,
+} from '../../helpers/proptypes.helper';
 import { resetEcgResult } from '../../actions/actions';
 
 class EcgResults extends Component {
@@ -52,6 +57,8 @@ class EcgResults extends Component {
       cellsSize,
       ecgLetters,
     } = props;
+
+    if (!image) return;
 
     const canvas = this.ecgCanvasOut;
     const ctx = canvas.getContext('2d');

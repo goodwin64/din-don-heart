@@ -10,6 +10,7 @@ import {
   resetEcgResultPT,
   setCurrentImagePT,
   imageParsingWorkerPT,
+  areEcgExamplesVisiblePT,
   setEcgResultVisibilityPT,
   onDiseaseResultLocalAnalysisPT,
 } from '../../helpers/proptypes.helper';
@@ -20,12 +21,14 @@ import Header from '../Header/Header';
 import FilePickerHOC from '../FilePicker/FilePicker';
 import EcgResults from '../EcgResults/EcgResults';
 import DiseaseDetectorHOC from '../DiseaseDetector/DiseaseDetector';
+import EcgAnalysisExample from '../EcgAnalysisExample/EcgAnalysisExample';
 import { onImageError } from '../../helpers/error-handlers.helper';
 import { getImageData } from '../../helpers/canvas.helper';
 import {
   setCurrentImage,
   setEcgResultVisibility,
-  onDiseaseResultLocalAnalysis, resetEcgResult,
+  onDiseaseResultLocalAnalysis,
+  resetEcgResult,
 } from '../../actions/actions';
 
 export class App extends Component {
@@ -37,6 +40,7 @@ export class App extends Component {
     setCurrentImage: setCurrentImagePT.isRequired,
     imageParsingWorker: imageParsingWorkerPT.isRequired,
     isEcgResultVisible: PropTypes.bool.isRequired,
+    areEcgExamplesVisible: areEcgExamplesVisiblePT.isRequired,
     setEcgResultVisibility: setEcgResultVisibilityPT.isRequired,
     onDiseaseResultLocalAnalysis: onDiseaseResultLocalAnalysisPT.isRequired,
   };
@@ -65,6 +69,7 @@ export class App extends Component {
   render() {
     const {
       isEcgResultVisible,
+      areEcgExamplesVisible,
       ecgLetters,
       ecgLettersDetailed,
     } = this.props;
@@ -75,6 +80,7 @@ export class App extends Component {
         <LanguageSelector />
         <AppDescription>{this.props.localization.appDescription}</AppDescription>
         <FilePickerHOC />
+        {areEcgExamplesVisible && <EcgAnalysisExample />}
         {isEcgResultVisible && <EcgResults />}
         {ecgLetters.length > 0 && (
           <DiseaseDetectorHOC
@@ -92,6 +98,7 @@ function mapStateToProps(state) {
     ecgLettersDetailed: state.ecgResult.ecgLettersDetailed,
     localization: state.appCommonParams.localization,
     isEcgResultVisible: state.ecgResult.isEcgResultVisible,
+    areEcgExamplesVisible: state.appCommonParams.areEcgExamplesVisible,
     imageParsingWorker: state.appCommonParams.imageParsingWorker,
   };
 }

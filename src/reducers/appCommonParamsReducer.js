@@ -1,7 +1,10 @@
-import strings, { defaultLanguageCode } from '../components/LanguageSelector/localization';
+import strings, {
+  defaultLanguageCode,
+} from '../components/LanguageSelector/localization';
 
 import {
   SET_LOCALIZATION,
+  SET_ECG_EXAMPLES_VISIBILITY,
 } from '../constants/actionTypes';
 
 import initImageParsingWorker from '../helpers/image-parsing.helper';
@@ -10,6 +13,7 @@ export const appInitialState = {
   currentLanguage: strings.getLanguage() || defaultLanguageCode,
   localization: { ...strings },
   imageParsingWorker: initImageParsingWorker(),
+  areEcgExamplesVisible: false,
 };
 
 export default function appCommonParamsReducer(state = appInitialState, action = {}) {
@@ -23,6 +27,13 @@ export default function appCommonParamsReducer(state = appInitialState, action =
           ...state.localization,
           ...action.payload,
         },
+      };
+    }
+
+    case SET_ECG_EXAMPLES_VISIBILITY: {
+      return {
+        ...state,
+        areEcgExamplesVisible: action.payload,
       };
     }
 
