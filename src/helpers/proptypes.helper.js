@@ -7,6 +7,8 @@ export const currentLanguagePT = PropTypes.string;
 export const plotIndexPT = PropTypes.number;
 export const baseLineYPT = PropTypes.number;
 export const cellsSizePT = PropTypes.number;
+export const areEcgExamplesVisiblePT = PropTypes.bool;
+
 
 // complex shapes
 export const plotIndicesPT = PropTypes.arrayOf(plotIndexPT);

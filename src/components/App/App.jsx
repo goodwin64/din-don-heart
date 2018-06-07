@@ -10,8 +10,8 @@ import {
   resetEcgResultPT,
   setCurrentImagePT,
   imageParsingWorkerPT,
+  areEcgExamplesVisiblePT,
   setEcgResultVisibilityPT,
-  setEcgExamplesVisibilityPT,
   onDiseaseResultLocalAnalysisPT,
 } from '../../helpers/proptypes.helper';
 import { AppDescription } from './App.styled';
@@ -21,6 +21,7 @@ import Header from '../Header/Header';
 import FilePickerHOC from '../FilePicker/FilePicker';
 import EcgResults from '../EcgResults/EcgResults';
 import DiseaseDetectorHOC from '../DiseaseDetector/DiseaseDetector';
+import EcgAnalysisExample from '../EcgAnalysisExample/EcgAnalysisExample';
 import { onImageError } from '../../helpers/error-handlers.helper';
 import { getImageData } from '../../helpers/canvas.helper';
 import {
@@ -28,9 +29,7 @@ import {
   setEcgResultVisibility,
   onDiseaseResultLocalAnalysis,
   resetEcgResult,
-  setEcgExamplesVisibility,
 } from '../../actions/actions';
-import EcgAnalysisExample from '../EcgAnalysisExample/EcgAnalysisExample';
 
 export class App extends Component {
   static propTypes = {
@@ -41,9 +40,8 @@ export class App extends Component {
     setCurrentImage: setCurrentImagePT.isRequired,
     imageParsingWorker: imageParsingWorkerPT.isRequired,
     isEcgResultVisible: PropTypes.bool.isRequired,
-    areEcgExamplesVisible: PropTypes.bool.isRequired,
+    areEcgExamplesVisible: areEcgExamplesVisiblePT.isRequired,
     setEcgResultVisibility: setEcgResultVisibilityPT.isRequired,
-    setEcgExamplesVisibility: setEcgExamplesVisibilityPT.isRequired,
     onDiseaseResultLocalAnalysis: onDiseaseResultLocalAnalysisPT.isRequired,
   };
 
@@ -82,19 +80,13 @@ export class App extends Component {
         <LanguageSelector />
         <AppDescription>{this.props.localization.appDescription}</AppDescription>
         <FilePickerHOC />
+        {areEcgExamplesVisible && <EcgAnalysisExample />}
         {isEcgResultVisible && <EcgResults />}
         {ecgLetters.length > 0 && (
           <DiseaseDetectorHOC
             ecgLettersDetailed={ecgLettersDetailed}
           />
         )}
-        <button onClick={() => this.props.setEcgExamplesVisibility(true)}>
-          Show examples
-        </button>
-        <button onClick={() => this.props.setEcgExamplesVisibility(false)}>
-          Hide examples
-        </button>
-        {areEcgExamplesVisible && <EcgAnalysisExample />}
       </div>
     );
   }
@@ -114,7 +106,6 @@ function mapStateToProps(state) {
 export default connect(mapStateToProps, {
   onDiseaseResultLocalAnalysis,
   setEcgResultVisibility,
-  setEcgExamplesVisibility,
   setCurrentImage,
   resetEcgResult,
 })(App);

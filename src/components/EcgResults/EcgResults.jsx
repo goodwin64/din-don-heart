@@ -58,6 +58,8 @@ class EcgResults extends Component {
       ecgLetters,
     } = props;
 
+    if (!image) return;
+
     const canvas = this.ecgCanvasOut;
     const ctx = canvas.getContext('2d');
     const hRatio = canvas.width / image.width;

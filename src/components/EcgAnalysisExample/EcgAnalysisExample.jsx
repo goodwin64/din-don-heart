@@ -1,18 +1,27 @@
-/* eslint-disable jsx-a11y/no-noninteractive-element-interactions,jsx-a11y/click-events-have-key-events,max-len */
 import React, { PureComponent } from 'react';
-import { getEcgResult } from '../../helpers/image-parsing.helper';
-import { ExampleImage, ExampleImageContainer, ExamplesContainer } from './EcgAnalysisExample.styled';
+import { connect } from 'react-redux';
 
-export default class EcgAnalysisExample extends PureComponent {
+import { ExampleImage, ExampleImageContainer, ExamplesContainer } from './EcgAnalysisExample.styled';
+import { resetEcgResult } from '../../actions/actions';
+import { imageParsingWorkerPT, resetEcgResultPT } from '../../helpers/proptypes.helper';
+
+export class EcgAnalysisExampleDumb extends PureComponent {
+  static propTypes = {
+    imageParsingWorker: imageParsingWorkerPT.isRequired,
+    resetEcgResult: resetEcgResultPT.isRequired,
+  };
+
   onExampleSelect = (event) => {
     const img = event.target;
-    const canvas = document.createElement('canvas');
-    const context = canvas.getContext('2d');
-    canvas.width = img.width;
-    canvas.height = img.height;
-    context.drawImage(img, 0, 0);
-    const myData = context.getImageData(0, 0, img.width, img.height);
-    console.log(getEcgResult(myData));
+    if (img && img.src) {
+      fetch(img.src)
+        .then(resp => resp.blob())
+        .then((blob) => {
+          this.props.imageParsingWorker.postMessage({ file: blob });
+        });
+    } else {
+      this.props.resetEcgResult();
+    }
   };
 
   render() {
@@ -33,3 +42,13 @@ export default class EcgAnalysisExample extends PureComponent {
     );
   }
 }
+
+function mapStateToProps(state) {
+  return {
+    imageParsingWorker: state.appCommonParams.imageParsingWorker,
+  };
+}
+
+export default connect(mapStateToProps, {
+  resetEcgResult,
+})(EcgAnalysisExampleDumb);
