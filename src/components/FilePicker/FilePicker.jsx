@@ -2,12 +2,17 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
 import {
- resetEcgResult ,
-  setEcgExamplesVisibility,} from '../../actions/actions';
-import {  localizationPT, resetEcgResultPT ,
+  resetEcgResult,
+  setEcgExamplesVisibility,
+} from '../../actions/actions';
+import {
+  localizationPT,
+  resetEcgResultPT,
   imageParsingWorkerPT,
   areEcgExamplesVisiblePT,
-  setEcgExamplesVisibilityPT,} from '../../helpers/proptypes.helper';import {
+  setEcgExamplesVisibilityPT,
+} from '../../helpers/proptypes.helper';
+import {
   ButtonsDelimiter,
   FilePickerContainer,
   FilePickerInput,

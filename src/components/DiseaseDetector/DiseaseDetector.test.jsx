@@ -2,7 +2,7 @@ import React from 'react';
 import { shallow } from 'enzyme';
 import toJson from 'enzyme-to-json';
 
-import { noop } from '../../helpers/noop';
+import noop from '../../helpers/noop';
 import { DiseaseDetector } from './DiseaseDetector';
 
 // TODO: add async action and test it

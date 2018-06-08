@@ -3,10 +3,13 @@ import { shallow } from 'enzyme';
 
 import {
   FilePicker,
-  FilePickerInput,
-  FilePickerLabelText,
 } from './FilePicker';
 import MockWorker from '../../mocks/MockWorker';
+import {
+  FilePickerInput,
+  FilePickerLabelText,
+} from './FilePicker.styled';
+import noop from '../../helpers/noop';
 
 describe('FilePicker component', () => {
   let spyOnMessage;
@@ -25,6 +28,8 @@ describe('FilePicker component', () => {
       imageParsingWorker: mockWorker,
       localization: { chooseFile: 'abc' },
       resetEcgResult: spyResetEcgResult,
+      areEcgExamplesVisible: false,
+      setEcgExamplesVisibility: noop, // TODO: add unit test for ECG example feature
     };
     wrapper = shallow(<FilePicker {...mockProps} />);
 
