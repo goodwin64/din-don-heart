@@ -1,8 +1,11 @@
 import React from 'react';
 import { shallow } from 'enzyme';
 
-import { FilePicker } from './FilePicker';
-import { FilePickerInput, FilePickerLabelText } from '../App/App.styled';
+import {
+  FilePicker,
+  FilePickerInput,
+  FilePickerLabelText,
+} from './FilePicker';
 import MockWorker from '../../mocks/MockWorker';
 
 describe('FilePicker component', () => {

@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import { FilePickerContainer, FilePickerInput, FilePickerLabel, FilePickerLabelText } from '../App/App.styled';
 import {
   resetEcgResult,
   setEcgExamplesVisibility,
@@ -13,6 +12,14 @@ import {
   areEcgExamplesVisiblePT,
   setEcgExamplesVisibilityPT,
 } from '../../helpers/proptypes.helper';
+import {
+  ButtonsDelimiter,
+  FilePickerContainer,
+  FilePickerInput,
+  FilePickerLabel,
+  FilePickerLabelText,
+  ShowExamplesButton,
+} from './FilePicker.styled';
 
 export class FilePicker extends Component {
   static propTypes = {
@@ -45,15 +52,15 @@ export class FilePicker extends Component {
           <span role="img" aria-label={this.props.localization.chooseFile}>📁</span>
           <FilePickerLabelText>{this.props.localization.chooseFile}</FilePickerLabelText>
         </FilePickerLabel>
-        <span>or</span>
+        <ButtonsDelimiter>or</ButtonsDelimiter>
         {this.props.areEcgExamplesVisible ? (
-          <button onClick={() => this.props.setEcgExamplesVisibility(false)}>
+          <ShowExamplesButton onClick={() => this.props.setEcgExamplesVisibility(false)}>
             Hide examples
-          </button>
+          </ShowExamplesButton>
         ) : (
-          <button onClick={() => this.props.setEcgExamplesVisibility(true)}>
+          <ShowExamplesButton onClick={() => this.props.setEcgExamplesVisibility(true)}>
             Show examples
-          </button>
+          </ShowExamplesButton>
         )}
 
       </FilePickerContainer>
