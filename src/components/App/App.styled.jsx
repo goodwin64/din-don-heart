@@ -8,11 +8,17 @@ export const colors = {
   white: '#fff',
 };
 
-const Button = styled.button`
+export const Button = styled.button`
   border: 0;
   background-color: ${colors.dark};
   cursor: pointer;
   user-select: none;
+  font-size: 1.25em;
+  color: white;
+  display: inline-block;
+  padding: 0 10px;
+  height: 40px;
+  line-height: 40px;
   
   :hover {
     background-color: ${colors.red};
@@ -51,29 +57,9 @@ export const ClearCanvasButton = styled(Button)`
   top: 0;
   width: 30px;
   height: 30px;
+  line-height: 30px;
   color: ${colors.white};
   font-size: 18px;
 `;
-
-export const FilePickerInput = styled.input`
-  width: 0.1px;
-  height: 0.1px;
-  opacity: 0;
-  overflow: hidden;
-  position: absolute;
-  z-index: -1;
-`;
-
-export const FilePickerLabel = Button.extend`
-  font-size: 1.25em;
-  font-weight: 700;
-  color: white;
-  display: inline-block;
-  padding: 5px 10px;
-`.withComponent('label');
-
-export const FilePickerLabelText = styled.span``;
-
-export const FilePickerContainer = styled.div``;
 
 export const AppDescription = styled.p``;
