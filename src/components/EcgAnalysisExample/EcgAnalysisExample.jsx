@@ -28,15 +28,15 @@ export class EcgAnalysisExampleDumb extends PureComponent {
     return (
       <ExamplesContainer onClick={this.onExampleSelect}>
         <ExampleImageContainer>
-          <ExampleImage src="./ECG-1.jpg" alt="ECG-1 - before" />
+          <ExampleImage src="/ECG-1.jpg" alt="ECG-1 - before" />
         </ExampleImageContainer>
 
         <ExampleImageContainer>
-          <ExampleImage src="./ECG-2.jpg" alt="ECG-2 - before" />
+          <ExampleImage src="/ECG-2.jpg" alt="ECG-2 - before" />
         </ExampleImageContainer>
 
         <ExampleImageContainer>
-          <ExampleImage src="./ECG-3.jpg" alt="ECG-3 - before" />
+          <ExampleImage src="/ECG-3.jpg" alt="ECG-3 - before" />
         </ExampleImageContainer>
       </ExamplesContainer>
     );
