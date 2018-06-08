@@ -16,6 +16,9 @@ const strings = new LocalizedStrings({
     ecgLetters: 'ECG letters',
     ecgLettersDetailed: 'ECG letters (full)',
     diseaseResult: 'Disease result',
+    showExamples: 'Show examples',
+    or: 'or',
+    hideExamples: 'Hide examples',
   },
   [CODE_RUS]: {
     appDescription: 'Всё, что Вам следует знать о своём сердце',
@@ -26,6 +29,9 @@ const strings = new LocalizedStrings({
     ecgLetters: 'Лексема ЭКГ',
     ecgLettersDetailed: 'Расширенная лексема ЭКГ',
     diseaseResult: 'Результат анализа ЭКГ',
+    showExamples: 'Показать примеры',
+    or: 'или',
+    hideExamples: 'Спрятать примеры',
   },
   [CODE_UA]: {
     appDescription: 'Все, що Вам слід знати про своє серце',
@@ -36,6 +42,9 @@ const strings = new LocalizedStrings({
     ecgLetters: 'Лексема ЕКГ',
     ecgLettersDetailed: 'Розширена лексема ЕКГ',
     diseaseResult: 'Результат аналізу ЕКГ',
+    showExamples: 'Показати приклади',
+    or: 'або',
+    hideExamples: 'Сховати приклади',
   },
 });
 

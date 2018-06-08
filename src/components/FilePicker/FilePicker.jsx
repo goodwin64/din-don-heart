@@ -52,14 +52,14 @@ export class FilePicker extends Component {
           <span role="img" aria-label={this.props.localization.chooseFile}>📁</span>
           <FilePickerLabelText>{this.props.localization.chooseFile}</FilePickerLabelText>
         </FilePickerLabel>
-        <ButtonsDelimiter>or</ButtonsDelimiter>
+        <ButtonsDelimiter>{this.props.localization.or}</ButtonsDelimiter>
         {this.props.areEcgExamplesVisible ? (
           <ShowExamplesButton onClick={() => this.props.setEcgExamplesVisibility(false)}>
-            Hide examples
+            {this.props.localization.hideExamples}
           </ShowExamplesButton>
         ) : (
           <ShowExamplesButton onClick={() => this.props.setEcgExamplesVisibility(true)}>
-            Show examples
+            {this.props.localization.showExamples}
           </ShowExamplesButton>
         )}
 
