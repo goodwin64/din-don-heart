@@ -15,6 +15,7 @@ in computer memory, which is the base for detecting heart diseases.
 
 # Project state and TODO steps
 Must-have widgets:
+- [ ] Login page
 - [x] ECG visual analysis
 - [ ] Heart diseases demo templates
 - [x] Save for offline usage

@@ -22,6 +22,8 @@ import FilePickerHOC from '../FilePicker/FilePicker';
 import EcgResults from '../EcgResults/EcgResults';
 import DiseaseDetectorHOC from '../DiseaseDetector/DiseaseDetector';
 import EcgAnalysisExample from '../EcgAnalysisExample/EcgAnalysisExample';
+import LoginForm from '../LoginForm/LoginForm';
+
 import { onImageError } from '../../helpers/error-handlers.helper';
 import { getImageData } from '../../helpers/canvas.helper';
 import {
@@ -73,6 +75,10 @@ export class App extends Component {
       ecgLetters,
       ecgLettersDetailed,
     } = this.props;
+
+    if (Math.random() < 2) {
+      return <LoginForm />;
+    }
 
     return (
       <div className="App">
