@@ -4,34 +4,6 @@
     font-family: 'Tajawal', sans-serif;
 }
 
-.App {
-    text-align: center;
-}
-
-.App-logo {
-    animation: App-logo-heart-bit infinite 3s ease-in-out;
-    color: #dc5759;
-}
-
-@keyframes App-logo-heart-bit {
-    50% {
-        color: #df3937;
-    }
-}
-
-.App-header {
-    background-color: #222;
-    padding: 20px;
-    color: white;
-}
-
-.App-title {
-}
-
-.App-intro {
-    font-size: large;
-}
-
 #outCanvas {
     margin: 0 auto;
     display: block;

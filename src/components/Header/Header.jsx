@@ -1,14 +1,30 @@
 import React, { PureComponent } from 'react';
+import { Nav, Navbar, NavItem } from 'react-bootstrap';
+import { LinkContainer } from 'react-router-bootstrap';
+
+import { AppLogo, HeaderContainer } from './Header.styled';
 
 class Header extends PureComponent {
   render() {
     return (
-      <header className="App-header">
-        <h1 className="App-title">
-          Din-Don
-          <span className="App-logo">❤</span>
-        </h1>
-      </header>
+      <div>
+        <HeaderContainer>
+          <h1>
+            Din-Don
+            <AppLogo>❤</AppLogo>
+          </h1>
+        </HeaderContainer>
+        <Navbar.Collapse>
+          <Nav pullRight>
+            <LinkContainer to="/signup">
+              <NavItem>Signup</NavItem>
+            </LinkContainer>
+            <LinkContainer to="/login">
+              <NavItem>Login</NavItem>
+            </LinkContainer>
+          </Nav>
+        </Navbar.Collapse>
+      </div>
     );
   }
 }

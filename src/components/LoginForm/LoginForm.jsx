@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { Button, FormGroup, FormControl, ControlLabel } from 'react-bootstrap';
 
 import { localizationPT } from '../../helpers/proptypes.helper';
+import LoginContainer from './LoginForm.styled';
 
 export class LoginForm extends React.Component {
   static propTypes = {
@@ -36,7 +37,7 @@ export class LoginForm extends React.Component {
 
   render() {
     return (
-      <div className="Login">
+      <LoginContainer>
         <form onSubmit={this.handleSubmit}>
           <FormGroup controlId="email" bsSize="large">
             <ControlLabel>{this.props.localization.emailLabel}</ControlLabel>
@@ -64,7 +65,7 @@ export class LoginForm extends React.Component {
             {this.props.localization.loginButtonText}
           </Button>
         </form>
-      </div>
+      </LoginContainer>
     );
   }
 }
