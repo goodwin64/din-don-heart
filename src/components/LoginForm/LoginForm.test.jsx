@@ -1,14 +1,19 @@
 import React from 'react';
 import { shallow } from 'enzyme';
 
-import LoginPage from './LoginForm';
+import { LoginForm } from './LoginForm';
 import { PasswordInput, UsernameInput } from './LoginForm.styled';
 
 describe('Login form', () => {
   let wrapper;
 
   beforeEach(() => {
-    wrapper = shallow(<LoginPage />);
+    wrapper = shallow(<LoginForm
+      localization={{
+          tooShort: 'too short text',
+          tooLong: 'too long text',
+        }}
+    />);
   });
 
   it('should render login and password inputs', () => {
@@ -16,32 +21,19 @@ describe('Login form', () => {
     expect(wrapper.find(PasswordInput).length).toEqual(1);
   });
 
-  it('should add "error" prop if name/pass is too short/long', () => {
-    expect(wrapper.find(UsernameInput).prop('error')).toBeNull();
+  it('should add "error" prop if pass is too short/long', () => {
     expect(wrapper.find(PasswordInput).prop('error')).toBeNull();
+    console.log('wrapper.debug() 1', wrapper.debug());
 
     wrapper.find(PasswordInput).simulate('change', {
-      target: {
-        value: '',
-        dataset: { inputType: 'username' },
-      },
-    });
-    wrapper.find(UsernameInput).simulate('change', {
       target: {
         value: '',
         dataset: { inputType: 'password' },
       },
     });
 
-    expect(wrapper.find(UsernameInput).prop('error')).toEqual('too short');
-    expect(wrapper.find(PasswordInput).prop('error')).toEqual('too short');
+    expect(wrapper.find(PasswordInput).prop('error')).toEqual('too short text');
 
-    wrapper.find(UsernameInput).simulate('change', {
-      target: {
-        value: '12345678',
-        dataset: { inputType: 'username' },
-      },
-    });
     wrapper.find(PasswordInput).simulate('change', {
       target: {
         value: '12345678',
@@ -49,23 +41,15 @@ describe('Login form', () => {
       },
     });
 
-    expect(wrapper.find(UsernameInput).prop('error')).toBeNull();
     expect(wrapper.find(PasswordInput).prop('error')).toBeNull();
 
     wrapper.find(PasswordInput).simulate('change', {
-      target: {
-        value: '1234567890_1234567890_1234567890',
-        dataset: { inputType: 'username' },
-      },
-    });
-    wrapper.find(UsernameInput).simulate('change', {
       target: {
         value: '1234567890_1234567890_1234567890',
         dataset: { inputType: 'password' },
       },
     });
 
-    expect(wrapper.find(UsernameInput).prop('error')).toEqual('too long');
-    expect(wrapper.find(PasswordInput).prop('error')).toEqual('too long');
+    expect(wrapper.find(PasswordInput).prop('error')).toEqual('too long text');
   });
 });

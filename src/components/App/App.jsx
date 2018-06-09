@@ -18,11 +18,11 @@ import { AppDescription } from './App.styled';
 
 import LanguageSelector from '../LanguageSelector/LanguageSelector';
 import Header from '../Header/Header';
-import FilePickerHOC from '../FilePicker/FilePicker';
+import FilePickerConnected from '../FilePicker/FilePicker';
 import EcgResults from '../EcgResults/EcgResults';
-import DiseaseDetectorHOC from '../DiseaseDetector/DiseaseDetector';
+import DiseaseDetectorConnected from '../DiseaseDetector/DiseaseDetector';
 import EcgAnalysisExample from '../EcgAnalysisExample/EcgAnalysisExample';
-import LoginForm from '../LoginForm/LoginForm';
+import LoginFormConnected from '../LoginForm/LoginForm';
 
 import { onImageError } from '../../helpers/error-handlers.helper';
 import { getImageData } from '../../helpers/canvas.helper';
@@ -76,20 +76,17 @@ export class App extends Component {
       ecgLettersDetailed,
     } = this.props;
 
-    if (Math.random() < 2) {
-      return <LoginForm />;
-    }
-
     return (
       <div className="App">
         <Header />
         <LanguageSelector />
+        <LoginFormConnected />
         <AppDescription>{this.props.localization.appDescription}</AppDescription>
-        <FilePickerHOC />
+        <FilePickerConnected />
         {areEcgExamplesVisible && <EcgAnalysisExample />}
         {isEcgResultVisible && <EcgResults />}
         {ecgLetters.length > 0 && (
-          <DiseaseDetectorHOC
+          <DiseaseDetectorConnected
             ecgLettersDetailed={ecgLettersDetailed}
           />
         )}

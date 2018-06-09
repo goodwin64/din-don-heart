@@ -19,6 +19,9 @@ const strings = new LocalizedStrings({
     showExamples: 'Show examples',
     or: 'or',
     hideExamples: 'Hide examples',
+    tooShort: 'Too short',
+    tooLong: 'Too long',
+    loginButtonText: 'Log in',
   },
   [CODE_RUS]: {
     appDescription: 'Всё, что Вам следует знать о своём сердце',
@@ -32,6 +35,9 @@ const strings = new LocalizedStrings({
     showExamples: 'Показать примеры',
     or: 'или',
     hideExamples: 'Спрятать примеры',
+    tooShort: 'Слишком мало символов',
+    tooLong: 'Слишком много символов',
+    loginButtonText: 'Войти',
   },
   [CODE_UA]: {
     appDescription: 'Все, що Вам слід знати про своє серце',
@@ -45,6 +51,9 @@ const strings = new LocalizedStrings({
     showExamples: 'Показати приклади',
     or: 'або',
     hideExamples: 'Сховати приклади',
+    tooShort: 'Замало символів',
+    tooLong: 'Забагато символів',
+    loginButtonText: 'Увійти',
   },
 });
 

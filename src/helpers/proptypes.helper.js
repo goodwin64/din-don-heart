@@ -10,7 +10,7 @@ export const cellsSizePT = PropTypes.number;
 export const areEcgExamplesVisiblePT = PropTypes.bool;
 
 
-// complex shapes
+// complex proptypes, shapes
 export const plotIndicesPT = PropTypes.arrayOf(plotIndexPT);
 
 export const imageParsingWorkerPT = PropTypes.shape({

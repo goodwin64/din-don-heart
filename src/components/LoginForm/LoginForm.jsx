@@ -1,8 +1,14 @@
 import React from 'react';
+import { connect } from 'react-redux';
 
 import { PasswordInput, UsernameInput } from './LoginForm.styled';
+import { localizationPT } from '../../helpers/proptypes.helper';
 
-class LoginForm extends React.Component {
+export class LoginForm extends React.Component {
+  static propTypes = {
+    localization: localizationPT.isRequired,
+  };
+
   constructor(props) {
     super(props);
 
@@ -28,9 +34,11 @@ class LoginForm extends React.Component {
 
     const isPassword = inputType === 'password';
     if (isPassword && inputValue.length < 8) {
-      nextSubState.error = 'too short';
+      console.log('this.props.localization.tooShort', this.props.localization.tooShort);
+      nextSubState.error = this.props.localization.tooShort;
     } else if (isPassword && inputValue.length > 20) {
-      nextSubState.error = 'too long';
+      console.log('this.props.localization.tooLong', this.props.localization.tooLong);
+      nextSubState.error = this.props.localization.tooLong;
     }
 
     this.setState({
@@ -68,7 +76,7 @@ class LoginForm extends React.Component {
         />
         <input
           type="submit"
-          value="Log in"
+          value={this.props.localization.loginButtonText}
           disabled={this.isLoginDisallowed()}
         />
       </form>
@@ -76,4 +84,10 @@ class LoginForm extends React.Component {
   }
 }
 
-export default LoginForm;
+function mapStateToProps(state) {
+  return {
+    localization: state.appCommonParams.localization,
+  };
+}
+
+export default connect(mapStateToProps)(LoginForm);
