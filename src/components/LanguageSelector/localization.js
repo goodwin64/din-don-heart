@@ -21,7 +21,9 @@ const strings = new LocalizedStrings({
     hideExamples: 'Hide examples',
     emailLabel: 'Email',
     passwordLabel: 'Password',
+    signupButtonText: 'Sign up',
     loginButtonText: 'Log in',
+    logoutButtonText: 'Log out',
   },
   [CODE_RUS]: {
     appDescription: 'Всё, что Вам следует знать о своём сердце',
@@ -37,7 +39,9 @@ const strings = new LocalizedStrings({
     hideExamples: 'Спрятать примеры',
     emailLabel: 'Электронная почта',
     passwordLabel: 'Пароль',
+    signupButtonText: 'Зарегистрироваться',
     loginButtonText: 'Войти',
+    logoutButtonText: 'Выйти',
   },
   [CODE_UA]: {
     appDescription: 'Все, що Вам слід знати про своє серце',
@@ -53,7 +57,9 @@ const strings = new LocalizedStrings({
     hideExamples: 'Сховати приклади',
     emailLabel: 'Електронна скринька',
     passwordLabel: 'Кодове слово',
+    signupButtonText: 'Зареєструватися',
     loginButtonText: 'Увійти',
+    logoutButtonText: 'Вийти',
   },
 });
 

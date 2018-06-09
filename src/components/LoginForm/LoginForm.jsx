@@ -2,12 +2,27 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Button, FormGroup, FormControl, ControlLabel } from 'react-bootstrap';
 
-import { localizationPT } from '../../helpers/proptypes.helper';
+import {
+  historyPT,
+  isLoginFetchingPT,
+  localizationPT,
+  userLogInPT,
+  userLogOutPT,
+  userStartLoginPT,
+} from '../../helpers/proptypes.helper';
 import LoginContainer from './LoginForm.styled';
+import { userLoggedIn, userLoggedOut, userStartLogin } from '../../actions/userActions';
+import FakeAuthService from './FakeAuthService';
+import Loader from '../Loader/Loader';
 
-export class LoginForm extends React.Component {
+export class LoginForm extends React.PureComponent {
   static propTypes = {
     localization: localizationPT.isRequired,
+    userLoggedIn: userLogInPT.isRequired,
+    userLoggedOut: userLogOutPT.isRequired,
+    userStartLogin: userStartLoginPT.isRequired,
+    isLoginFetching: isLoginFetchingPT.isRequired,
+    history: historyPT.isRequired,
   };
 
   constructor(props) {
@@ -33,6 +48,15 @@ export class LoginForm extends React.Component {
 
   handleSubmit = (event) => {
     event.preventDefault();
+    this.props.userStartLogin();
+    const credentials = {
+      username: event.target.email.value,
+    };
+
+    FakeAuthService(credentials)
+      .then(this.props.userLoggedIn)
+      .then(() => this.props.history.push('/home'))
+      .catch(this.props.userLoggedOut);
   };
 
   render() {
@@ -56,14 +80,15 @@ export class LoginForm extends React.Component {
               type="password"
             />
           </FormGroup>
-          <Button
-            block
-            bsSize="large"
-            disabled={this.isLoginDisallowed()}
-            type="submit"
-          >
-            {this.props.localization.loginButtonText}
-          </Button>
+          {
+            this.props.isLoginFetching
+              ? <Loader />
+              : (
+                <Button block bsSize="large" type="submit" disabled={this.isLoginDisallowed()}>
+                  {this.props.localization.loginButtonText}
+                </Button>
+              )
+          }
         </form>
       </LoginContainer>
     );
@@ -72,8 +97,14 @@ export class LoginForm extends React.Component {
 
 function mapStateToProps(state) {
   return {
+    isLoggedIn: state.user.isLoggedIn,
+    isLoginFetching: state.user.isLoginFetching,
     localization: state.appCommonParams.localization,
   };
 }
 
-export default connect(mapStateToProps)(LoginForm);
+export default connect(mapStateToProps, {
+  userLoggedIn,
+  userLoggedOut,
+  userStartLogin,
+})(LoginForm);

@@ -1,10 +1,40 @@
 import React, { PureComponent } from 'react';
-import { Nav, Navbar, NavItem } from 'react-bootstrap';
+import { connect } from 'react-redux';
+import { Nav, NavItem } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
 
 import { AppLogo, HeaderContainer } from './Header.styled';
+import { isLoggedInPT, localizationPT, userLogOutPT } from '../../helpers/proptypes.helper';
+import { userLoggedOut } from '../../actions/userActions';
 
 class Header extends PureComponent {
+  static propTypes = {
+    isLoggedIn: isLoggedInPT.isRequired,
+    userLoggedOut: userLogOutPT.isRequired,
+    localization: localizationPT.isRequired,
+  };
+
+  getHeaderForUser = () => (
+    <Nav>
+      <LinkContainer to="/login">
+        <NavItem onClick={this.props.userLoggedOut}>
+          {this.props.localization.logoutButtonText}
+        </NavItem>
+      </LinkContainer>
+    </Nav>
+  );
+
+  getHeaderForGuest = () => (
+    <Nav>
+      <LinkContainer to="/signup">
+        <NavItem>{this.props.localization.signupButtonText}</NavItem>
+      </LinkContainer>
+      <LinkContainer to="/login">
+        <NavItem>{this.props.localization.loginButtonText}</NavItem>
+      </LinkContainer>
+    </Nav>
+  );
+
   render() {
     return (
       <div>
@@ -14,19 +44,23 @@ class Header extends PureComponent {
             <AppLogo>❤</AppLogo>
           </h1>
         </HeaderContainer>
-        <Navbar.Collapse>
-          <Nav pullRight>
-            <LinkContainer to="/signup">
-              <NavItem>Signup</NavItem>
-            </LinkContainer>
-            <LinkContainer to="/login">
-              <NavItem>Login</NavItem>
-            </LinkContainer>
-          </Nav>
-        </Navbar.Collapse>
+        {
+          this.props.isLoggedIn
+            ? this.getHeaderForUser()
+            : this.getHeaderForGuest()
+        }
       </div>
     );
   }
 }
 
-export default Header;
+function mapStateToProps(state) {
+  return {
+    isLoggedIn: state.user.isLoggedIn,
+    localization: state.appCommonParams.localization,
+  };
+}
+
+export default connect(mapStateToProps, {
+  userLoggedOut,
+})(Header);

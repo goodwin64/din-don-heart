@@ -8,6 +8,8 @@ export const plotIndexPT = PropTypes.number;
 export const baseLineYPT = PropTypes.number;
 export const cellsSizePT = PropTypes.number;
 export const areEcgExamplesVisiblePT = PropTypes.bool;
+export const isLoggedInPT = PropTypes.bool;
+export const isLoginFetchingPT = PropTypes.bool;
 
 
 // complex proptypes, shapes
@@ -29,7 +31,14 @@ export const ecgResultPT = PropTypes.shape({
 
 export const localizationPT = PropTypes.shape({});
 
+export const historyPT = PropTypes.shape({
+  push: PropTypes.func,
+});
+
 // dispatchers (connected via mapDispatchToProps)
+export const userLogInPT = PropTypes.func;
+export const userLogOutPT = PropTypes.func;
+export const userStartLoginPT = PropTypes.func;
 export const onDiseaseResultPT = PropTypes.func;
 export const onDiseaseResultLocalAnalysisPT = PropTypes.func;
 export const setEcgResultVisibilityPT = PropTypes.func;

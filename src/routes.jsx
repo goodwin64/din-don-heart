@@ -8,9 +8,9 @@ import NotFound from './components/NotFound/NotFound';
 export default function () {
   return (
     <Switch>
+      <Route path="/" exact component={LoginFormConnected} />
       <Route path="/login" exact component={LoginFormConnected} />
       <Route path="/home" exact component={HomeConnected} />
-      <Route path="/" exact component={HomeConnected} />
       <Route component={NotFound} />
     </Switch>
   );
