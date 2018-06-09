@@ -19,8 +19,8 @@ const strings = new LocalizedStrings({
     showExamples: 'Show examples',
     or: 'or',
     hideExamples: 'Hide examples',
-    tooShort: 'Too short',
-    tooLong: 'Too long',
+    emailLabel: 'Email',
+    passwordLabel: 'Password',
     loginButtonText: 'Log in',
   },
   [CODE_RUS]: {
@@ -35,8 +35,8 @@ const strings = new LocalizedStrings({
     showExamples: 'Показать примеры',
     or: 'или',
     hideExamples: 'Спрятать примеры',
-    tooShort: 'Слишком мало символов',
-    tooLong: 'Слишком много символов',
+    emailLabel: 'Электронная почта',
+    passwordLabel: 'Пароль',
     loginButtonText: 'Войти',
   },
   [CODE_UA]: {
@@ -51,8 +51,8 @@ const strings = new LocalizedStrings({
     showExamples: 'Показати приклади',
     or: 'або',
     hideExamples: 'Сховати приклади',
-    tooShort: 'Замало символів',
-    tooLong: 'Забагато символів',
+    emailLabel: 'Електронна скринька',
+    passwordLabel: 'Кодове слово',
     loginButtonText: 'Увійти',
   },
 });

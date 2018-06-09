@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import { Button, FormGroup, FormControl, ControlLabel } from 'react-bootstrap';
 
-import { PasswordInput, UsernameInput } from './LoginForm.styled';
 import { localizationPT } from '../../helpers/proptypes.helper';
 
 export class LoginForm extends React.Component {
@@ -12,74 +12,59 @@ export class LoginForm extends React.Component {
   constructor(props) {
     super(props);
 
-    const defaultInputParameters = {
-      value: '',
-      error: null,
-    };
-
     this.state = {
-      username: { ...defaultInputParameters },
-      password: { ...defaultInputParameters },
+      email: '',
+      password: '',
     };
   }
 
-  handleInputChange = (event) => {
-    const inputValue = event.target.value;
-    const { inputType } = event.target.dataset;
+  isLoginDisallowed() {
+    return !(
+      this.state.email.length > 0 && this.state.password.length > 0
+    );
+  }
 
-    const nextSubState = {
-      value: inputValue,
-      error: null,
-    };
-
-    const isPassword = inputType === 'password';
-    if (isPassword && inputValue.length < 8) {
-      console.log('this.props.localization.tooShort', this.props.localization.tooShort);
-      nextSubState.error = this.props.localization.tooShort;
-    } else if (isPassword && inputValue.length > 20) {
-      console.log('this.props.localization.tooLong', this.props.localization.tooLong);
-      nextSubState.error = this.props.localization.tooLong;
-    }
-
+  handleChange = (event) => {
     this.setState({
-      [inputType]: nextSubState,
+      [event.target.id]: event.target.value,
     });
   };
 
-  isLoginDisallowed = () => (
-    this.state.username.error ||
-    this.state.username.value.length === 0 ||
-    this.state.password.error ||
-    this.state.password.value.length === 0
-  );
+  handleSubmit = (event) => {
+    event.preventDefault();
+  };
 
   render() {
     return (
-      <form onSubmit={e => e.preventDefault()}>
-        <UsernameInput
-          value={this.state.username.value}
-          error={this.state.username.error}
-          data-input-type="username"
-          type="email"
-          placeholder="name@example.com"
-          onChange={this.handleInputChange}
-          required
-        />
-        <PasswordInput
-          value={this.state.password.value}
-          error={this.state.password.error}
-          data-input-type="password"
-          type="password"
-          placeholder="password"
-          onChange={this.handleInputChange}
-          required
-        />
-        <input
-          type="submit"
-          value={this.props.localization.loginButtonText}
-          disabled={this.isLoginDisallowed()}
-        />
-      </form>
+      <div className="Login">
+        <form onSubmit={this.handleSubmit}>
+          <FormGroup controlId="email" bsSize="large">
+            <ControlLabel>{this.props.localization.emailLabel}</ControlLabel>
+            <FormControl
+              autoFocus
+              type="email"
+              value={this.state.email}
+              onChange={this.handleChange}
+            />
+          </FormGroup>
+          <FormGroup controlId="password" bsSize="large">
+            <ControlLabel>{this.props.localization.passwordLabel}</ControlLabel>
+            <FormControl
+              value={this.state.password}
+              onChange={this.handleChange}
+              type="password"
+            />
+          </FormGroup>
+          <Button
+            block
+            bsSize="large"
+            disabled={this.isLoginDisallowed()}
+            type="submit"
+          >
+            {this.props.localization.loginButtonText}
+          </Button>
+        </form>
+      </div>
     );
   }
 }
