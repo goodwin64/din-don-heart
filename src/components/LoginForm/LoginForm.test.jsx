@@ -1,55 +1,48 @@
 import React from 'react';
-import { shallow } from 'enzyme';
+import { mount } from 'enzyme';
 
 import { LoginForm } from './LoginForm';
-import { PasswordInput, UsernameInput } from './LoginForm.styled';
+
+const getFakeInputEvent = (inputValue, inputType) => ({
+  target: {
+    value: inputValue,
+    id: inputType,
+  },
+});
 
 describe('Login form', () => {
   let wrapper;
 
   beforeEach(() => {
-    wrapper = shallow(<LoginForm
+    wrapper = mount(<LoginForm
       localization={{
-          tooShort: 'too short text',
-          tooLong: 'too long text',
-        }}
+        emailLabel: 'email',
+        passwordLabel: 'pass',
+        loginButtonText: 'log in',
+      }}
     />);
   });
 
-  it('should render login and password inputs', () => {
-    expect(wrapper.find(UsernameInput).length).toEqual(1);
-    expect(wrapper.find(PasswordInput).length).toEqual(1);
-  });
+  it('should disable Login button if email/pass too short', () => {
+    // initial state: both email and password are empty (incorrect)
+    expect(wrapper.find('button[type="submit"]').prop('disabled')).toBe(true);
 
-  it('should add "error" prop if pass is too short/long', () => {
-    expect(wrapper.find(PasswordInput).prop('error')).toBeNull();
-    console.log('wrapper.debug() 1', wrapper.debug());
+    wrapper
+      .find('input[type="email"]')
+      .simulate('change', getFakeInputEvent('email@example.com', 'email'));
+    // only email is correct
+    expect(wrapper.find('button[type="submit"]').prop('disabled')).toBe(true);
 
-    wrapper.find(PasswordInput).simulate('change', {
-      target: {
-        value: '',
-        dataset: { inputType: 'password' },
-      },
-    });
+    wrapper
+      .find('input[type="password"]')
+      .simulate('change', getFakeInputEvent('12345678', 'password'));
+    // both email and password are correct
+    expect(wrapper.find('button[type="submit"]').prop('disabled')).toBe(false);
 
-    expect(wrapper.find(PasswordInput).prop('error')).toEqual('too short text');
-
-    wrapper.find(PasswordInput).simulate('change', {
-      target: {
-        value: '12345678',
-        dataset: { inputType: 'password' },
-      },
-    });
-
-    expect(wrapper.find(PasswordInput).prop('error')).toBeNull();
-
-    wrapper.find(PasswordInput).simulate('change', {
-      target: {
-        value: '1234567890_1234567890_1234567890',
-        dataset: { inputType: 'password' },
-      },
-    });
-
-    expect(wrapper.find(PasswordInput).prop('error')).toEqual('too long text');
+    wrapper
+      .find('input[type="email"]')
+      .simulate('change', getFakeInputEvent('', 'email'));
+    // empty email, incorrect
+    expect(wrapper.find('button[type="submit"]').prop('disabled')).toBe(true);
   });
 });
