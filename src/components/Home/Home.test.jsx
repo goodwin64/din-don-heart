@@ -2,14 +2,14 @@ import React from 'react';
 import { shallow } from 'enzyme';
 import LocalizedStrings from 'react-localization';
 
-import { App } from './App';
+import { App } from './Home';
 import MockWorker from '../../mocks/MockWorker';
 import EcgResults from '../EcgResults/EcgResults';
-import { AppDescription } from './App.styled';
+import { AppDescription } from './Home.styled';
 import DiseaseDetectorHOC from '../DiseaseDetector/DiseaseDetector';
 import EcgAnalysisExample from '../EcgAnalysisExample/EcgAnalysisExample';
 
-describe('App component', () => {
+describe('Home component', () => {
   let wrapper;
   let mockProps;
   let mockWorkerInstance;

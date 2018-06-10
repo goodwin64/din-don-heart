@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
-import { EcgResultContainer, EcgResultCanvas, ClearCanvasButton } from '../App/App.styled';
+import { EcgResultContainer, EcgResultCanvas, ClearCanvasButton } from '../Home/Home.styled';
 import { CLOSE_CHARACTER } from '../../constants/constants';
 import strings from '../LanguageSelector/localization';
 import {

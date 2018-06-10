@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-import { Button } from '../App/App.styled';
+import { Button } from '../Home/Home.styled';
 
 export const FilePickerInput = styled.input`
   width: 0.1px;
