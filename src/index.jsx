@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { BrowserRouter as Router } from 'react-router-dom';
+import { BrowserRouter } from 'react-router-dom';
 import { createStore } from 'redux';
 import { Provider } from 'react-redux';
 
@@ -19,11 +19,14 @@ const store = createStore(
 );
 /* eslint-enable */
 
+const isLocalhost = process.env.NODE_ENV === 'development';
+const BrowserRouterBasename = isLocalhost ? '/' : '/din-don-heart/';
+
 ReactDOM.render(
-  <Router>
+  <BrowserRouter basename={BrowserRouterBasename}>
     <Provider store={store}>
       <ConnectedApp />
     </Provider>
-  </Router>,
+  </BrowserRouter>,
   document.getElementById('root'),
 );

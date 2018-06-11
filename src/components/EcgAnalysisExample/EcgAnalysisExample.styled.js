@@ -24,6 +24,5 @@ export const ExampleImageContainer = styled.div`
 
 export const ExampleImage = styled.img`
   width: 100%;
-  max-width: 300px;
   max-width: ${imageSize}px;
 `;
