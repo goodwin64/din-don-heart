@@ -7,6 +7,8 @@ import {
 } from '../../helpers/proptypes.helper';
 import getDisease from '../../helpers/getDisease';
 import { onDiseaseResultServerAnalysis } from '../../actions/actions';
+// import postData from '../../helpers/postData';
+import getData from '../../helpers/getData';
 
 const wait = seconds => new Promise(resolve => setTimeout(resolve, seconds));
 
@@ -27,17 +29,16 @@ export class DiseaseDetector extends Component {
   }
 
   sendEcgForAnalysis = (ecgLettersDetailed) => {
-    const fakeServerResponse = wait(0).then(() => ({ json: () => getDisease(ecgLettersDetailed) }));
-    const realServerResponse = fetch(`https://randomuser.me/api/?results=10&ecgLetters=${ecgLettersDetailed}`);
+    const fakeServerResponse = wait(500).then(() => getDisease(ecgLettersDetailed));
+    const realServerResponse = getData('/fakeEcgResponses/response1.json');
 
     Promise.race([
       fakeServerResponse,
       realServerResponse,
-    ]).then(result => result.json())
-      .then((result) => {
-        const resultStringified = JSON.stringify(result);
-        this.props.onDiseaseResult(resultStringified);
-      })
+    ]).then((result) => {
+      const resultStringified = JSON.stringify(result);
+      this.props.onDiseaseResult(resultStringified);
+    })
       .catch((err) => {
         console.error('Error in Disease Detector', err);
       });
