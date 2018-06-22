@@ -3,6 +3,8 @@ import { USER_LOGIN_FETCHING, USER_LOGGED_IN, USER_LOGGED_OUT } from '../constan
 export const userInitialState = {
   isLoggedIn: false,
   isLoginFetching: false,
+  type: 'guest',
+  name: 'Anonymous',
 };
 
 export default function ecgResultReducer(state = userInitialState, action = {}) {
@@ -12,6 +14,7 @@ export default function ecgResultReducer(state = userInitialState, action = {}) 
         ...state,
         isLoggedIn: true,
         isLoginFetching: false,
+        type: action.payload.email.includes('admin') ? 'admin' : 'user',
       };
     }
 

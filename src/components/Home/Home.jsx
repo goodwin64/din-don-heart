@@ -12,7 +12,7 @@ import {
   imageParsingWorkerPT,
   areEcgExamplesVisiblePT,
   setEcgResultVisibilityPT,
-  onDiseaseResultLocalAnalysisPT,
+  onDiseaseResultLocalAnalysisPT, userPT,
 } from '../../helpers/proptypes.helper';
 import { AppDescription, HomeContainer } from './Home.styled';
 
@@ -33,6 +33,7 @@ import {
 
 export class App extends Component {
   static propTypes = {
+    user: userPT.isRequired,
     ecgLetters: ecgLettersPT.isRequired,
     ecgLettersDetailed: ecgLettersPT.isRequired,
     localization: localizationPT.isRequired,
@@ -72,7 +73,18 @@ export class App extends Component {
       areEcgExamplesVisible,
       ecgLetters,
       ecgLettersDetailed,
+      user,
     } = this.props;
+
+    const isAdmin = user.type === 'admin';
+
+    if (isAdmin) {
+      return (
+        <HomeContainer>
+          <DiseaseFormUploader />
+        </HomeContainer>
+      );
+    }
 
     return (
       <HomeContainer>
@@ -91,8 +103,70 @@ export class App extends Component {
   }
 }
 
+function DiseaseFormUploader() {
+  return (
+    <div className="col-md-4">
+      <form action="http://176.38.3.120/EKGSample/Add" method="POST">
+        <div className="form-group">
+          <label className="control-label" htmlFor="Mark">Mark</label>
+          <input className="form-control" type="text" id="Mark" name="Mark" defaultValue="" />
+          <span
+            className="text-danger field-validation-valid"
+            data-valmsg-for="Mark"
+            data-valmsg-replace="true"
+          />
+        </div>
+        <div className="form-group">
+          <label className="control-label" htmlFor="Source">Source</label>
+          <input className="form-control" type="text" id="Source" name="Source" defaultValue="" />
+          <span
+            className="text-danger field-validation-valid"
+            data-valmsg-for="Source"
+            data-valmsg-replace="true"
+          />
+        </div>
+        <div className="form-group">
+          <label className="control-label" htmlFor="Description">Description</label>
+          <input className="form-control" type="text" id="Description" name="Description" defaultValue="" />
+          <span
+            className="text-danger field-validation-valid"
+            data-valmsg-for="Description"
+            data-valmsg-replace="true"
+          />
+        </div>
+        <div className="form-group">
+          <label className="control-label" htmlFor="cellsSize">cellsSize</label>
+          <input
+            className="form-control"
+            type="number"
+            data-val="true"
+            data-val-required="The cellsSize field is required."
+            id="cellsSize"
+            name="cellsSize"
+            defaultValue="0"
+          />
+          <span
+            className="text-danger field-validation-valid"
+            data-valmsg-for="cellsSize"
+            data-valmsg-replace="true"
+          />
+        </div>
+        <div className="form-group">
+          <input type="submit" defaultValue="Create" className="btn btn-default" />
+        </div>
+        <input
+          name="__RequestVerificationToken"
+          type="hidden"
+          defaultValue="CfDJ8DPUy1YBqOdLkjCP8xD9Uz-RJDLBYE9IQn9umxmXz9HNCKDKALpv1ui9bn_KP7otzuU3peCGtpx2Y2rEonWx3mdacIAsxuYyOATqXe1BKeKlcBC417MEuD8IGkfQeG4IcyfwqHqKXKXRFqnALadik_U"
+        />
+      </form>
+    </div>
+  );
+}
+
 function mapStateToProps(state) {
   return {
+    user: state.user,
     ecgLetters: state.ecgResult.ecgLetters,
     ecgLettersDetailed: state.ecgResult.ecgLettersDetailed,
     localization: state.appCommonParams.localization,

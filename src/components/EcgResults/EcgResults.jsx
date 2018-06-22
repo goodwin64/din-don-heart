@@ -93,11 +93,11 @@ class EcgResults extends Component {
 
   renderEcgTextResult() {
     const { isFullResultShown } = this.state;
-
+    // 176.38.3.120
     return (
       <div className="ecg-result">
-        <p>{strings.ecgResultTitle}:</p>
-        <p>{strings.diseaseResult}: {this.props.diseaseResult}</p>
+        <h3>{strings.ecgResultTitle}:</h3>
+        <p>{strings.diseaseResult}: {this.props.diseaseResult.description}</p>
         {
           isFullResultShown && (
             <div>
@@ -105,6 +105,7 @@ class EcgResults extends Component {
               <p>{strings.cellsSize}: {this.props.cellsSize}</p>
               <p>{strings.ecgLetters}: {this.props.ecgLetters}</p>
               <p>{strings.ecgLettersDetailed}: {this.props.ecgLettersDetailed}</p>
+              <p>{strings.diseaseResultMark}: {this.props.diseaseResult.mark}</p>
             </div>
           )
         }
