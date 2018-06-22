@@ -25,6 +25,13 @@ class EcgResults extends Component {
     diseaseResult: diseaseResultPT.isRequired,
   };
 
+  constructor(props) {
+    super(props);
+    this.state = {
+      isFullResultShown: false,
+    };
+  }
+
   componentDidMount() {
     this.renderEcgImageResult(this.props);
   }
@@ -85,14 +92,28 @@ class EcgResults extends Component {
   };
 
   renderEcgTextResult() {
+    const { isFullResultShown } = this.state;
+    // 176.38.3.120
     return (
       <div className="ecg-result">
-        <p>{strings.ecgResultTitle}:</p>
-        <p>{strings.baseLineY}: {this.props.baseLineY}</p>
-        <p>{strings.cellsSize}: {this.props.cellsSize}</p>
-        <p>{strings.ecgLetters}: {this.props.ecgLetters}</p>
-        <p>{strings.ecgLettersDetailed}: {this.props.ecgLettersDetailed}</p>
-        <p>{strings.diseaseResult}: {this.props.diseaseResult}</p>
+        <h3>{strings.ecgResultTitle}:</h3>
+        <p>{strings.diseaseResult}: {this.props.diseaseResult.description}</p>
+        {
+          isFullResultShown && (
+            <div>
+              <p>{strings.baseLineY}: {this.props.baseLineY}</p>
+              <p>{strings.cellsSize}: {this.props.cellsSize}</p>
+              <p>{strings.ecgLetters}: {this.props.ecgLetters}</p>
+              <p>{strings.ecgLettersDetailed}: {this.props.ecgLettersDetailed}</p>
+              <p>{strings.diseaseResultMark}: {this.props.diseaseResult.mark}</p>
+            </div>
+          )
+        }
+        <button
+          onClick={() => this.setState({ isFullResultShown: !isFullResultShown })}
+        >
+          Show {isFullResultShown ? 'less' : 'more'}
+        </button>
       </div>
     );
   }

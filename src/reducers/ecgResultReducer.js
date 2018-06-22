@@ -1,9 +1,11 @@
 import {
   RESET_DISEASE_RESULT_FULLY,
   RESET_DISEASE_RESULT_LOCAL_ANALYSIS,
-  RESET_DISEASE_RESULT_SERVER_ANALYSIS, SET_CURRENT_IMAGE,
+  RESET_DISEASE_RESULT_SERVER_ANALYSIS,
+  SET_CURRENT_IMAGE,
   SET_DISEASE_RESULT_LOCAL_ANALYSIS,
-  SET_DISEASE_RESULT_SERVER_ANALYSIS, SET_ECG_RESULT_VISIBILITY,
+  SET_DISEASE_RESULT_SERVER_ANALYSIS,
+  SET_ECG_RESULT_VISIBILITY,
 } from '../constants/actionTypes';
 
 export const initialStateLocalAnalysis = {
@@ -16,7 +18,7 @@ export const initialStateLocalAnalysis = {
 };
 
 export const initialStateServerAnalysis = {
-  diseaseResult: '',
+  diseaseResult: {},
 };
 
 export const ecgResultInitialState = {

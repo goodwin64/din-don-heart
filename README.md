@@ -15,9 +15,9 @@ in computer memory, which is the base for detecting heart diseases.
 
 # Project state and TODO steps
 Must-have widgets:
-- [ ] Login page
+- [x] Login page
 - [x] ECG visual analysis
-- [ ] Heart diseases demo templates
+- [x] Heart diseases demo templates
 - [x] Save for offline usage
 - [ ] Configuring options
 
@@ -26,7 +26,7 @@ Optional nice features:
 - [x] Animated logo
 - [ ] Feedback
 - [ ] User actions analytics (with GDPR)
-- [x] Localization (EN, RU)
+- [x] Localization (EN, RU, UA)
 
 Easy development:
 - [x] Travis CI configuration

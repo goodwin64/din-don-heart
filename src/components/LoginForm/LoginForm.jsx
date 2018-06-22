@@ -49,12 +49,13 @@ export class LoginForm extends React.PureComponent {
   handleSubmit = (event) => {
     event.preventDefault();
     this.props.userStartLogin();
+    const email = event.target.email.value;
     const credentials = {
-      username: event.target.email.value,
+      email,
     };
 
     FakeAuthService(credentials)
-      .then(this.props.userLoggedIn)
+      .then(() => this.props.userLoggedIn(email))
       .then(() => this.props.history.push('/home'))
       .catch(this.props.userLoggedOut);
   };
