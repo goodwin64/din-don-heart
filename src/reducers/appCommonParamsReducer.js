@@ -7,12 +7,9 @@ import {
   SET_ECG_EXAMPLES_VISIBILITY,
 } from '../constants/actionTypes';
 
-import initImageParsingWorker from '../helpers/image-parsing.helper';
-
 export const appInitialState = {
   currentLanguage: strings.getLanguage() || defaultLanguageCode,
   localization: { ...strings },
-  imageParsingWorker: initImageParsingWorker(),
   areEcgExamplesVisible: false,
 };
 

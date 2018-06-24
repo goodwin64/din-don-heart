@@ -3,11 +3,11 @@ import { connect } from 'react-redux';
 
 import { ExampleImage, ExampleImageContainer, ExamplesContainer } from './EcgAnalysisExample.styled';
 import { resetEcgResult } from '../../actions/actions';
-import { imageParsingWorkerPT, resetEcgResultPT } from '../../helpers/proptypes.helper';
+import { resetEcgResultPT } from '../../helpers/proptypes.helper';
+import imageParsingWorker from '../../helpers/image-parsing-worker';
 
 export class EcgAnalysisExampleDumb extends PureComponent {
   static propTypes = {
-    imageParsingWorker: imageParsingWorkerPT.isRequired,
     resetEcgResult: resetEcgResultPT.isRequired,
   };
 
@@ -17,7 +17,7 @@ export class EcgAnalysisExampleDumb extends PureComponent {
       fetch(img.src)
         .then(resp => resp.blob())
         .then((blob) => {
-          this.props.imageParsingWorker.postMessage({ file: blob });
+          imageParsingWorker.postMessage({ file: blob });
         });
     } else {
       this.props.resetEcgResult();

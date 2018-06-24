@@ -12,6 +12,7 @@ import {
   resetEcgResultPT,
 } from '../../helpers/proptypes.helper';
 import { resetEcgResult } from '../../actions/actions';
+import imageHolder from '../../helpers/image-holder';
 
 class EcgResults extends Component {
   static propTypes = {
@@ -19,7 +20,6 @@ class EcgResults extends Component {
     cellsSize: PropTypes.number.isRequired,
     plotIndices: PropTypes.arrayOf(plotIndexPT).isRequired,
     resetEcgResult: resetEcgResultPT.isRequired,
-    currentImage: PropTypes.shape({}).isRequired, // image bitmap
     ecgLetters: ecgLettersPT.isRequired,
     ecgLettersDetailed: ecgLettersPT.isRequired,
     diseaseResult: diseaseResultPT.isRequired,
@@ -59,11 +59,12 @@ class EcgResults extends Component {
    */
   renderEcgImageResult = (props) => {
     const {
-      currentImage: image,
       plotIndices,
       cellsSize,
       ecgLetters,
     } = props;
+
+    const image = imageHolder.getImage();
 
     if (!image) return;
 
@@ -146,7 +147,6 @@ function mapStateToProps(state) {
     cellsSize: state.ecgResult.cellsSize,
     ecgLetters: state.ecgResult.ecgLetters,
     plotIndices: state.ecgResult.plotIndices,
-    currentImage: state.ecgResult.currentImage,
     diseaseResult: state.ecgResult.diseaseResult,
     ecgLettersDetailed: state.ecgResult.ecgLettersDetailed,
   };

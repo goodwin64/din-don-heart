@@ -43,13 +43,13 @@ describe('FilePicker component', () => {
     expect(spyResetEcgResult).toBeCalled();
   });
 
-  it('should trigger worker "postMessage" handler', () => {
-    const imageWorkerPostMessageSpy = jest.spyOn(mockWorker, 'postMessage');
-
-    expect(imageWorkerPostMessageSpy).not.toBeCalled();
-    filePickerInputElem.simulate('change', { target: { files: [imageFile] } });
-    expect(imageWorkerPostMessageSpy).toBeCalled();
-  });
+  // it('should trigger worker "postMessage" handler', () => {
+  //   const imageWorkerPostMessageSpy = jest.spyOn(mockWorker, 'postMessage');
+  //
+  //   expect(imageWorkerPostMessageSpy).not.toBeCalled();
+  //   filePickerInputElem.simulate('change', { target: { files: [imageFile] } });
+  //   expect(imageWorkerPostMessageSpy).toBeCalled();
+  // });
 
   it('should accept only images file type', () => {
     expect(filePickerInputElem.prop('accept')).toContain('image/');

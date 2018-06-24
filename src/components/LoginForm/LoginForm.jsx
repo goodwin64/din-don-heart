@@ -50,11 +50,9 @@ export class LoginForm extends React.PureComponent {
     event.preventDefault();
     this.props.userStartLogin();
     const email = event.target.email.value;
-    const credentials = {
-      email,
-    };
+    const password = event.target.password.value;
 
-    FakeAuthService(credentials)
+    FakeAuthService.login({ email, password })
       .then(() => this.props.userLoggedIn(email))
       .then(() => this.props.history.push('/home'))
       .catch(this.props.userLoggedOut);

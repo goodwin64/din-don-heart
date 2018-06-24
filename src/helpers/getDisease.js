@@ -20,11 +20,20 @@ export default function getDisease(ecgLetters) {
   ];
 
   if (maxLetter - minLetter < 2) {
-    return DISEASE_MESSAGE_DEATH;
+    return {
+      description: DISEASE_MESSAGE_DEATH,
+      mark: DISEASE_MESSAGE_DEATH,
+    };
   }
   if (lettersCount < MIN_ECG_LENGTH) {
-    return DISEASE_MESSAGE_TOO_SHORT;
+    return {
+      description: DISEASE_MESSAGE_TOO_SHORT,
+      mark: DISEASE_MESSAGE_TOO_SHORT,
+    };
   }
 
-  return `${DISEASE_MESSAGE_HEALTHY} (${lettersCount})`;
+  return {
+    description: DISEASE_MESSAGE_HEALTHY,
+    mark: DISEASE_MESSAGE_HEALTHY,
+  };
 }

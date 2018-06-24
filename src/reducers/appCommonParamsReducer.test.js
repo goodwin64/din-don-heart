@@ -6,7 +6,6 @@ import {
 
 describe('appCommonParamsReducer', () => {
   const mockStateBefore = {
-    currentImage: { data: 1 },
     currentLanguage: 'Lang 123',
     areEcgExamplesVisible: false,
     localization: {

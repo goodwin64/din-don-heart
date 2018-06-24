@@ -9,11 +9,18 @@ import {
 
 describe('getDisease method', () => {
   it('should detect death', () => {
-    expect(getDisease('KKKKKKLLLLLL')).toEqual(DISEASE_MESSAGE_DEATH);
+    expect(getDisease('KKKKKKLLLLLL')).toEqual({
+      description: DISEASE_MESSAGE_DEATH,
+      mark: DISEASE_MESSAGE_DEATH,
+    });
   });
 
   it('should detect too short ECG', () => {
-    expect(getDisease('ABC')).toEqual(DISEASE_MESSAGE_TOO_SHORT);
+    const shortEcgResult = {
+      description: DISEASE_MESSAGE_TOO_SHORT,
+      mark: DISEASE_MESSAGE_TOO_SHORT,
+    };
+    expect(getDisease('ABC')).toEqual(shortEcgResult);
   });
 
   it('should detect healthy ECG', () => {
@@ -23,8 +30,12 @@ describe('getDisease method', () => {
       .map(() => mockAbc[random(0, 4)]);
 
     const randomLongEcgString = randomLongEcgList.join('');
+    const healthyEcgResult = {
+      description: "You're healthy!",
+      mark: "You're healthy!",
+    };
 
-    expect(getDisease(randomLongEcgList)).toEqual(`You're healthy! (${MIN_ECG_LENGTH + 1})`);
-    expect(getDisease(randomLongEcgString)).toEqual(`You're healthy! (${MIN_ECG_LENGTH + 1})`);
+    expect(getDisease(randomLongEcgList)).toEqual(healthyEcgResult);
+    expect(getDisease(randomLongEcgString)).toEqual(healthyEcgResult);
   });
 });
