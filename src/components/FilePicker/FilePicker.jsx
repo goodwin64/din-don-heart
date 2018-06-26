@@ -8,7 +8,6 @@ import {
 import {
   localizationPT,
   resetEcgResultPT,
-  imageParsingWorkerPT,
   areEcgExamplesVisiblePT,
   setEcgExamplesVisibilityPT,
 } from '../../helpers/proptypes.helper';
@@ -20,12 +19,12 @@ import {
   FilePickerLabelText,
   ShowExamplesButton,
 } from './FilePicker.styled';
+import imageParsingWorker from '../../helpers/image-parsing-worker';
 
 export class FilePicker extends Component {
   static propTypes = {
     localization: localizationPT.isRequired,
     resetEcgResult: resetEcgResultPT.isRequired,
-    imageParsingWorker: imageParsingWorkerPT.isRequired,
     areEcgExamplesVisible: areEcgExamplesVisiblePT.isRequired,
     setEcgExamplesVisibility: setEcgExamplesVisibilityPT.isRequired,
   };
@@ -33,7 +32,7 @@ export class FilePicker extends Component {
   onFileChange = (event) => {
     const file = event.target.files[0];
     if (file) {
-      this.props.imageParsingWorker.postMessage({ file });
+      imageParsingWorker.postMessage({ file });
     } else {
       this.props.resetEcgResult();
     }

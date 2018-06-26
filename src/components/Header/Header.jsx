@@ -6,6 +6,7 @@ import { LinkContainer } from 'react-router-bootstrap';
 import { AppLogo, HeaderContainer } from './Header.styled';
 import { isLoggedInPT, localizationPT, userLogOutPT } from '../../helpers/proptypes.helper';
 import { userLoggedOut } from '../../actions/userActions';
+import imageHolder from '../../helpers/image-holder';
 
 class Header extends PureComponent {
   static propTypes = {
@@ -17,7 +18,11 @@ class Header extends PureComponent {
   getHeaderForUser = () => (
     <Nav>
       <LinkContainer to="/login">
-        <NavItem onClick={this.props.userLoggedOut}>
+        <NavItem onClick={() => {
+          this.props.userLoggedOut();
+          imageHolder.resetImage();
+        }}
+        >
           {this.props.localization.logoutButtonText}
         </NavItem>
       </LinkContainer>

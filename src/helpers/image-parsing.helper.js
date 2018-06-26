@@ -18,10 +18,6 @@ import {
 
 export const getRgbSum = pixel => pixel.r + pixel.g + pixel.b;
 
-export default function initImageParsingWorker() {
-  return new Worker('image-worker.js');
-}
-
 /**
  * Groups flat Pixels array by Y coordinate (letters)
  */

@@ -8,8 +8,6 @@ import {
   ecgLettersPT,
   localizationPT,
   resetEcgResultPT,
-  setCurrentImagePT,
-  imageParsingWorkerPT,
   areEcgExamplesVisiblePT,
   setEcgResultVisibilityPT,
   onDiseaseResultLocalAnalysisPT,
@@ -27,11 +25,12 @@ import EcgAnalysisExample from '../EcgAnalysisExample/EcgAnalysisExample';
 import { onImageError } from '../../helpers/error-handlers.helper';
 import { getImageData } from '../../helpers/canvas.helper';
 import {
-  setCurrentImage,
   setEcgResultVisibility,
   onDiseaseResultLocalAnalysis,
   resetEcgResult,
 } from '../../actions/actions';
+import imageParsingWorker from '../../helpers/image-parsing-worker';
+import imageHolder from '../../helpers/image-holder';
 
 export class App extends Component {
   static propTypes = {
@@ -41,8 +40,6 @@ export class App extends Component {
     ecgLettersDetailed: ecgLettersPT.isRequired,
     localization: localizationPT.isRequired,
     resetEcgResult: resetEcgResultPT.isRequired,
-    setCurrentImage: setCurrentImagePT.isRequired,
-    imageParsingWorker: imageParsingWorkerPT.isRequired,
     isEcgResultVisible: PropTypes.bool.isRequired,
     areEcgExamplesVisible: areEcgExamplesVisiblePT.isRequired,
     setEcgResultVisibility: setEcgResultVisibilityPT.isRequired,
@@ -50,7 +47,7 @@ export class App extends Component {
   };
 
   componentDidMount() {
-    this.props.imageParsingWorker.onmessage = this.onMessageWorkerHandler;
+    imageParsingWorker.onmessage = this.onMessageWorkerHandler;
   }
 
   onMessageWorkerHandler = (workerEvent) => {
@@ -65,7 +62,7 @@ export class App extends Component {
       const imageData = getImageData(workerResponse);
       const ecgResult = getEcgResult(imageData);
       this.props.onDiseaseResultLocalAnalysis(ecgResult);
-      this.props.setCurrentImage(workerResponse);
+      imageHolder.setImage(workerResponse);
       this.props.setEcgResultVisibility(true);
     }
   };
@@ -224,6 +221,5 @@ function mapStateToProps(state) {
 export default connect(mapStateToProps, {
   onDiseaseResultLocalAnalysis,
   setEcgResultVisibility,
-  setCurrentImage,
   resetEcgResult,
 })(App);

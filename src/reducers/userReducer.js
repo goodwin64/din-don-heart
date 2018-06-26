@@ -1,10 +1,11 @@
-import { USER_LOGIN_FETCHING, USER_LOGGED_IN, USER_LOGGED_OUT } from '../constants/actionTypes';
+import { USER_LOGIN_FETCHING, USER_LOGGED_IN, USER_LOGGED_OUT, USER_SIGNED_UP } from '../constants/actionTypes';
 
 export const userInitialState = {
   isLoggedIn: false,
   isLoginFetching: false,
   type: 'guest',
   name: 'Anonymous',
+  signedUpUsername: null,
 };
 
 export default function ecgResultReducer(state = userInitialState, action = {}) {
@@ -19,17 +20,22 @@ export default function ecgResultReducer(state = userInitialState, action = {}) 
     }
 
     case USER_LOGGED_OUT: {
-      return {
-        ...state,
-        isLoggedIn: false,
-        isLoginFetching: false,
-      };
+      return userInitialState;
     }
 
     case USER_LOGIN_FETCHING: {
       return {
         ...state,
         isLoginFetching: true,
+      };
+    }
+
+    case USER_SIGNED_UP: {
+      const email = action.payload.email || '';
+      const username = email.replace(/@.*/, '');
+      return {
+        ...state,
+        signedUpUsername: username,
       };
     }
 

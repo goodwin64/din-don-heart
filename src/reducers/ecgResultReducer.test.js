@@ -3,7 +3,6 @@ import {
   RESET_DISEASE_RESULT_FULLY,
   RESET_DISEASE_RESULT_LOCAL_ANALYSIS,
   RESET_DISEASE_RESULT_SERVER_ANALYSIS,
-  SET_CURRENT_IMAGE,
   SET_DISEASE_RESULT_LOCAL_ANALYSIS,
   SET_DISEASE_RESULT_SERVER_ANALYSIS,
   SET_ECG_RESULT_VISIBILITY,
@@ -17,7 +16,6 @@ describe('ecgResultReducer', () => {
     ecgLettersDetailed: 'ABCD',
     plotIndices: [1, 2, 3],
     diseaseResult: '123',
-    currentImage: { data: 1 },
     isEcgResultVisible: false,
   };
   let mockStateAfter;
@@ -95,17 +93,6 @@ describe('ecgResultReducer', () => {
     expect(ecgResultReducer(mockStateBefore, {
       type: SET_DISEASE_RESULT_SERVER_ANALYSIS,
       payload: 'You are healthy',
-    })).toEqual(mockStateAfter);
-  });
-
-  it('should update ecg image', () => {
-    mockStateAfter = {
-      ...mockStateBefore,
-      currentImage: { data: 2 },
-    };
-    expect(ecgResultReducer(mockStateBefore, {
-      type: SET_CURRENT_IMAGE,
-      payload: { data: 2 },
     })).toEqual(mockStateAfter);
   });
 
