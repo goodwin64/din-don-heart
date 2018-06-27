@@ -31,18 +31,20 @@ export class DiseaseDetector extends Component {
   }
 
   sendEcgForAnalysis = (ecgLettersDetailed, cellsSize) => {
-    const fakeServerResponse = wait(500).then(() => getDisease(ecgLettersDetailed));
+    const fakeServerResponse = wait(1).then(() => getDisease(ecgLettersDetailed));
     const realServerResponse = getData('http://176.38.3.120', {
       ecgletters: ecgLettersDetailed,
       cellcount: cellsSize,
-    });
+    })
+      .catch(() => wait(Infinity));
 
     Promise.race([
       fakeServerResponse,
       realServerResponse,
-    ]).then((result) => {
-      this.props.onDiseaseResult(result);
-    })
+    ])
+      .then((result) => {
+        this.props.onDiseaseResult(result);
+      })
       .catch((err) => {
         console.error('Error in Disease Detector', err);
       });
